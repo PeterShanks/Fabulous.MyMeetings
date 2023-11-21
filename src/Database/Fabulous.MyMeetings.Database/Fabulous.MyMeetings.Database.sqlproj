@@ -60,9 +60,10 @@
     <Folder Include="Schema\Users" />
     <Folder Include="Schema\Users\Tables" />
     <Folder Include="Schema\Users\Views" />
+    <Folder Include="Scripts" />
+    <Folder Include="Scripts\Migrations" />
   </ItemGroup>
   <ItemGroup>
-    <Build Include="Schema\Schema.sql" />
     <Build Include="Schema\Users\Tables\Users.sql" />
     <Build Include="Schema\Users\Tables\UserRoles.sql" />
     <Build Include="Schema\Users\Tables\UserRegistrations.sql" />
@@ -75,5 +76,10 @@
     <Build Include="Schema\Users\Views\v_UserRoles.sql" />
     <Build Include="Schema\Users\Views\v_UserRegistrations.sql" />
     <Build Include="Schema\Users\Views\v_UserPermissions.sql" />
+    <Build Include="Schema\Users\Schema.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Fabulous.MyMeetings.Database.publish.xml" />
+    <None Include="Scripts\Migrations\0001_Initial.sql" />
   </ItemGroup>
 </Project>

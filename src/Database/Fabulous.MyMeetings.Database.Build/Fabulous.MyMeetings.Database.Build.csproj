@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="..\Fabulous.MyMeetings.Database\**\*.sql" />
+    <Content Include="..\Fabulous.MyMeetings.Database\Schema\**\*.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="..\Fabulous.MyMeetings.Database\bin\Debug\**" />
   </ItemGroup>
 </Project>

@@ -110,8 +110,4 @@ public partial class Build : NukeBuild
         });
 
     #endregion
-
-    #region IntegrationTests
-
-    #endregion
 }
