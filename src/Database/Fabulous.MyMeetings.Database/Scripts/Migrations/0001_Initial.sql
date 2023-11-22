@@ -1,13 +1,4 @@
-﻿CREATE DATABASE [MyMeetings];
-GO
-
-USE [MyMeetings]
-GO
-
-CREATE SCHEMA app AUTHORIZATION dbo
-
-
-GO
+﻿
 PRINT N'Creating Schema [Users]...';
 
 

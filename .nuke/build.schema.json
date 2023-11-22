@@ -14,13 +14,13 @@
             "Release"
           ]
         },
+        "ConnectionString": {
+          "type": "string",
+          "description": "Connection string"
+        },
         "Continue": {
           "type": "boolean",
           "description": "Indicates to continue a previously failed build attempt"
-        },
-        "DatabaseConnectionString": {
-          "type": "string",
-          "description": "Modular Monolith database connection string"
         },
         "Help": {
           "type": "boolean",

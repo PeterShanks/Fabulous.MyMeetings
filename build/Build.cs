@@ -1,5 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using JetBrains.Annotations;
+using Microsoft.Extensions.Configuration;
 using Nuke.Common;
 using Nuke.Common.CI;
 using Nuke.Common.Execution;
@@ -7,6 +12,7 @@ using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Utilities;
 using Nuke.Common.Utilities.Collections;
 using static Nuke.Common.EnvironmentInfo;
 using static Nuke.Common.IO.FileSystemTasks;
@@ -20,7 +26,11 @@ public partial class Build : NukeBuild
     ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
     ///   - Microsoft VSCode           https://nuke.build/vscode
 
-    public static int Main () => Execute<Build>(x => x.Compile);
+    static readonly IConfiguration Settings = new ConfigurationBuilder()
+        .AddUserSecrets(typeof(Build).Assembly)
+        .Build();
+
+    public static int Main () => Execute<Build>(x => x.MigrateDatabase);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
@@ -88,7 +98,7 @@ public partial class Build : NukeBuild
     Target CompileDbUpMigrator => _ => _
         .Executes(() =>
         {
-            var dbUpMigratorProject = Solution.GetProject("DatabaseMigrator");
+            var dbUpMigratorProject = Solution.GetAllProjects("DatabaseMigrator").FirstOrDefault();
 
             DotNetTasks.DotNetBuild(s => s
                 .SetProjectFile(dbUpMigratorProject)
@@ -97,17 +107,27 @@ public partial class Build : NukeBuild
             );
         });
 
-    [Parameter("Modular Monolith database connection string")] readonly string DatabaseConnectionString;
+    [Parameter("Connection string")] readonly string ConnectionString = Settings.GetConnectionString("MyMeetings");
 
     Target MigrateDatabase => _ => _
-        .Requires(() => DatabaseConnectionString != null)
+        .Requires(() => ConnectionString != null)
         .DependsOn(CompileDbUpMigrator)
         .Executes(() =>
         {
             var migrationsPath = DatabaseDirectory / "Migrations";
 
-            DotNetTasks.DotNet($"{DbUpMigratorPath} {DatabaseConnectionString} {migrationsPath}");
+            DotNetTasksExtensions.DotNet($@"""{DbUpMigratorPath}"" ""{ConnectionString}"" ""{migrationsPath}""");
         });
 
     #endregion
+}
+
+public static class DotNetTasksExtensions
+{
+    public static IReadOnlyCollection<Output> DotNet(string command, string workingDirectory = null, IReadOnlyDictionary<string, string> environmentVariables = null, int? timeout = null, bool? logOutput = null, bool? logInvocation = null, Action<OutputType, string> logger = null, Action<IProcess> exitHandler = null)
+    {
+        using var process = ProcessTasks.StartProcess(DotNetTasks.DotNetPath, command, workingDirectory, environmentVariables, timeout, logOutput, logInvocation, logger ?? DotNetTasks.DotNetLogger);
+        (exitHandler ?? (p => DotNetTasks.DotNetExitHandler.Invoke(null, p))).Invoke(process.AssertWaitForExit());
+        return process.Output;
+    }
 }

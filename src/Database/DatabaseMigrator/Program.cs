@@ -35,6 +35,9 @@ if (!Directory.Exists(scriptsPath))
 
 var serilogUpgradeLog = new SerilogUpgradeLog(logger);
 
+
+EnsureDatabase.For.SqlDatabase(connectionString);
+
 var upgrader =
     DeployChanges.To
         .SqlDatabase(connectionString)
@@ -43,7 +46,7 @@ var upgrader =
             IncludeSubDirectories = true
         })
         .LogTo(serilogUpgradeLog)
-        .JournalToSqlTable("app", "MigrationsJournal")
+        .JournalToSqlTable("dbo", "MigrationsJournal")
         .Build();
 
 var result = upgrader.PerformUpgrade();
