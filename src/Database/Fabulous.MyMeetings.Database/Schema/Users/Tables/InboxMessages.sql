@@ -10,4 +10,9 @@
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Users_InboxMessages_ClusterKey ON Users.InboxMessages(ClusterKey);
+CREATE UNIQUE CLUSTERED INDEX IX_Users_InboxMessages_OccurredOn_ClusterKey ON Users.InboxMessages(OccurredOn, ClusterKey);
+GO
+
+CREATE NONCLUSTERED INDEX IX_Users_InboxMessages_ProcessedDate
+	ON Users.InboxMessages(ProcessedDate)
+	WHERE ProcessedDate IS NULL

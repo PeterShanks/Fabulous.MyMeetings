@@ -77,6 +77,17 @@
     <Build Include="Schema\Users\Views\v_UserRegistrations.sql" />
     <Build Include="Schema\Users\Views\v_UserPermissions.sql" />
     <Build Include="Schema\Users\Schema.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_CALENDARS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_CRON_TRIGGERS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_FIRED_TRIGGERS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_PAUSED_TRIGGER_GRPS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_SCHEDULER_STATE.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_LOCKS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_JOB_DETAILS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_SIMPLE_TRIGGERS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_SIMPROP_TRIGGERS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_BLOB_TRIGGERS.sql" />
+    <Build Include="Schema\Users\Tables\QRTZ_TRIGGERS.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fabulous.MyMeetings.Database.publish.xml" />

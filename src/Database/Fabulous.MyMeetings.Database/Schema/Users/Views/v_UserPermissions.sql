@@ -5,6 +5,6 @@ SELECT
 	[UserRole].UserId,
 	[RolesToPermission].PermissionCode
 FROM [Users].UserRoles AS [UserRole]
-	INNER JOIN [Users].RolesToPermissions AS [RolesToPermission]
+	INNER JOIN [Users].RolePermissions AS [RolesToPermission]
 		ON [UserRole].RoleCode = [RolesToPermission].RoleCode
 GO

@@ -11,4 +11,9 @@
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Users_InternalCommands_ClusterKey ON Users.InternalCommands(ClusterKey);
+CREATE UNIQUE CLUSTERED INDEX IX_Users_InternalCommands_EnqueueDate_ClusterKey ON Users.InternalCommands(EnqueueDate, ClusterKey);
+GO
+
+CREATE NONCLUSTERED INDEX IX_Users_InternalCommands_ProcessedDate
+	ON Users.InternalCommands(ProcessedDate)
+	WHERE ProcessedDate IS NULL

@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.24" />
+    <PackageReference Include="FluentValidation" Version="11.8.1" />
+    <PackageReference Include="MediatR" Version="12.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Fabulous.MyMeetings.BuildingBlocks.Application\Fabulous.MyMeetings.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\..\BuildingBlocks\Fabulous.MyMeetings.BuildingBlocks.Infrastructure\Fabulous.MyMeetings.BuildingBlocks.Infrastructure.csproj" />
+    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.UserAccess.Domain\Fabulous.MyMeetings.Modules.UserAccess.Domain.csproj" />
+    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.UserAccess.IntegrationEvents\Fabulous.MyMeetings.Modules.UserAccess.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>

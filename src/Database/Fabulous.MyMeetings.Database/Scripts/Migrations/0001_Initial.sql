@@ -82,25 +82,25 @@ CREATE UNIQUE CLUSTERED INDEX [IX_Users_Permissions_ClusterKey]
 
 
 GO
-PRINT N'Creating Table [Users].[RolesToPermissions]...';
+PRINT N'Creating Table [Users].[RolePermissions]...';
 
 
 GO
-CREATE TABLE [Users].[RolesToPermissions] (
+CREATE TABLE [Users].[RolePermissions] (
 	[ClusterKey]     INT          IDENTITY (1, 1) NOT NULL,
 	[RoleCode]       VARCHAR (50) NOT NULL,
 	[PermissionCode] VARCHAR (50) NOT NULL,
-	CONSTRAINT [PK_RolesToPermissions_RoleCode_PermissionCode] PRIMARY KEY NONCLUSTERED ([RoleCode] ASC, [PermissionCode] ASC)
+	CONSTRAINT [PK_RolePermissions_RoleCode_PermissionCode] PRIMARY KEY NONCLUSTERED ([RoleCode] ASC, [PermissionCode] ASC)
 );
 
 
 GO
-PRINT N'Creating Index [Users].[RolesToPermissions].[IX_Users_RolesToPermissions_ClusterKey]...';
+PRINT N'Creating Index [Users].[RolePermissions].[IX_Users_RolePermissions_ClusterKey]...';
 
 
 GO
-CREATE UNIQUE CLUSTERED INDEX [IX_Users_RolesToPermissions_ClusterKey]
-	ON [Users].[RolesToPermissions]([ClusterKey] ASC);
+CREATE UNIQUE CLUSTERED INDEX [IX_Users_RolePermissions_ClusterKey]
+	ON [Users].[RolePermissions]([ClusterKey] ASC);
 
 
 GO
@@ -220,7 +220,7 @@ SELECT
 	[UserRole].UserId,
 	[RolesToPermission].PermissionCode
 FROM [Users].UserRoles AS [UserRole]
-	INNER JOIN [Users].RolesToPermissions AS [RolesToPermission]
+	INNER JOIN [Users].RolePermissions AS [RolesToPermission]
 		ON [UserRole].RoleCode = [RolesToPermission].RoleCode
 GO
 PRINT N'Creating View [Users].[v_UserRegistrations]...';

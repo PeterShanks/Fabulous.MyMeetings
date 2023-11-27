@@ -1,0 +1,75 @@
+﻿using System.Text.Json;
+using Dapper;
+using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
+using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
+using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
+using MediatR;
+using Microsoft.Extensions.Logging;
+
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox
+{
+    internal class ProcessOutboxCommandHandler: ICommandHandler<ProcessOutboxCommand>
+    {
+        private readonly IMediator _mediator;
+
+        private readonly ISqlConnectionFactory _sqlConnectionFactory;
+
+        private readonly IDomainNotificationsMapper _domainNotificationsMapper;
+        private readonly ILogger _logger;
+
+        public ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFactory sqlConnectionFactory,
+            IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger)
+        {
+            _mediator = mediator;
+            _sqlConnectionFactory = sqlConnectionFactory;
+            _domainNotificationsMapper = domainNotificationsMapper;
+            _logger = logger;
+        }
+
+        /// <exception cref="InvalidOperationException">When deserialization fails to destination type.</exception>
+        public async Task Handle(ProcessOutboxCommand request, CancellationToken cancellationToken)
+        {
+            var connection = _sqlConnectionFactory.GetOpenConnection();
+            const string sql =
+                """
+                SELECT
+                    Id,
+                    Type,
+                    Data
+                FROM Users.OutboxMessages
+                WHERE ProcessedDate IS NULL
+                ORDER BY OccurredOn
+                """;
+
+            var messages = await connection.QueryAsync<OutboxMessageDto>(sql);
+
+            const string updateProcessedDateSql =
+                """
+                UPDATE Users.OutboxMessages
+                    SET ProcessedDate = @Date
+                WHERE Id = @Id
+                """;
+
+            foreach (var message in messages)
+            {
+                var type = _domainNotificationsMapper.GetType(message.Type);
+                var notification = JsonSerializer.Deserialize(message.Data, type!, JsonSerializerOptionsInstance) as IDomainEventNotification;
+
+                if (notification is null)
+                    throw new InvalidOperationException($"Couldn't deserialize into type {message.Type}");
+
+                using (_logger.BeginScope(new List<KeyValuePair<string, object>>
+                           { new("Context", message.Id) }))
+                {
+                    await _mediator.Publish(notification, cancellationToken);
+                    await connection.ExecuteScalarAsync(updateProcessedDateSql, new
+                    {
+                        Date = DateTime.UtcNow,
+                        message.Id
+                    });
+                }
+            }
+        }
+    }
+}

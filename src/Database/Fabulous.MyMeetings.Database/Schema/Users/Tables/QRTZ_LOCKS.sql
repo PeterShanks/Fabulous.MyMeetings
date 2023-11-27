@@ -1,0 +1,10 @@
+﻿CREATE TABLE [Users].[QRTZ_LOCKS] (
+  [SCHED_NAME] nvarchar(120) NOT NULL,
+  [LOCK_NAME] nvarchar(40) NOT NULL,
+  CONSTRAINT [PK_Users_QRTZ_LOCKS] PRIMARY KEY  CLUSTERED
+  (
+    [SCHED_NAME],
+    [LOCK_NAME]
+  )
+);
+GO
