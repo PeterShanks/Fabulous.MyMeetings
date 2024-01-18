@@ -8,6 +8,7 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Ev
     {
         private readonly IEventBus _eventBus;
         private readonly ILogger _logger;
+
         public EventBusHostedService(IEventBus eventBus, ILogger logger)
         {
             _eventBus = eventBus;
@@ -20,11 +21,11 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Ev
             return Task.CompletedTask;
         }
 
-        private static void SubscribeToIntegrationEvent<T>(IEventBus eventBus, ILogger logger)
-            where T : IntegrationEvent
-        {
-            logger.LogInformation("Subscribed to {IntegrationEvent}", typeof(T).FullName);
-            eventBus.Subscribe(new IntegrationEventGenericHandler<T>());
-        }
+        //private static void SubscribeToIntegrationEvent<T>(IEventBus eventBus, ILogger logger)
+        //    where T : IntegrationEvent
+        //{
+        //    logger.LogInformation("Subscribed to {IntegrationEvent}", typeof(T).FullName);
+        //    eventBus.Subscribe(new IntegrationEventGenericHandler<T>());
+        //}
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure
 {
-    public class UserAccessModule: IUserAccessModule
+    internal class UserAccessModule: IUserAccessModule
     {
         public Task<TResult> ExecuteCommandAsync<TResult>(ICommand<TResult> command)
         {

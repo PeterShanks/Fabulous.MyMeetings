@@ -14,7 +14,7 @@ namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails
         private readonly ISqlConnectionFactory _sqlConnectionFactory;
 
         public EmailSender(
-            ILogger logger,
+            ILogger<EmailSender> logger,
             EmailsConfiguration configuration,
             ISqlConnectionFactory sqlConnectionFactory)
         {

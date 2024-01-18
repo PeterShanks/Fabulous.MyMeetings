@@ -21,6 +21,7 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Da
 
             services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<DbContext, UserAccessContext>();
         }
     }
 }

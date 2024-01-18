@@ -2,7 +2,7 @@
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Outbox
 {
-    public class OutboxAccessor : IOutbox
+    internal class OutboxAccessor : IOutbox
     {
         private readonly UserAccessContext _userAccessContext;
 

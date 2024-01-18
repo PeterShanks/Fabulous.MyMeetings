@@ -2,7 +2,7 @@
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.Users
 {
-    public class UserRepository : IUserRepository
+    internal class UserRepository : IUserRepository
     {
         private readonly UserAccessContext _userAccessContext;
 

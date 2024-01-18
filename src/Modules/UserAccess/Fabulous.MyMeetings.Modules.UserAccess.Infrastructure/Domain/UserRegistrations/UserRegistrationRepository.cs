@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.UserRegistrations
 {
-    public class UserRegistrationRepository : IUserRegistrationRepository
+    internal class UserRegistrationRepository : IUserRegistrationRepository
     {
         private readonly UserAccessContext _userAccessContext;
 

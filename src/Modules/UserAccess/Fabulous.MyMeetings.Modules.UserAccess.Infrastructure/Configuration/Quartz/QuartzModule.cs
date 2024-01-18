@@ -120,7 +120,7 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Qu
                     store.UseSqlServer(cfg =>
                     {
                         cfg.ConnectionString = connectionString;
-                        cfg.TablePrefix = "Users.QRTZ";
+                        cfg.TablePrefix = "Users.QRTZ_";
                     });
                     store.UseNewtonsoftJsonSerializer();
                 });

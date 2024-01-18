@@ -33,6 +33,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabulous.MyMeetings.Modules
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabulous.MyMeetings.Modules.UserAccess.Infrastructure", "Modules\UserAccess\Fabulous.MyMeetings.Modules.UserAccess.Infrastructure\Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.csproj", "{DF27A882-75C8-438E-9D5A-AF24B78B1156}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabulous.MyMeetings.Api", "Fabulous.MyMeetings.Api\Fabulous.MyMeetings.Api.csproj", "{6B725F30-F561-4973-89A5-79FFFFB30C32}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -82,6 +84,10 @@ Global
 		{DF27A882-75C8-438E-9D5A-AF24B78B1156}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DF27A882-75C8-438E-9D5A-AF24B78B1156}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF27A882-75C8-438E-9D5A-AF24B78B1156}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B725F30-F561-4973-89A5-79FFFFB30C32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B725F30-F561-4973-89A5-79FFFFB30C32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B725F30-F561-4973-89A5-79FFFFB30C32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B725F30-F561-4973-89A5-79FFFFB30C32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

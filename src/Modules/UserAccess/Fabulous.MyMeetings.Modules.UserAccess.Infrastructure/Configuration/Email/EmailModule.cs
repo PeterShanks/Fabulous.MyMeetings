@@ -15,7 +15,7 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Em
             else
             {
                 services.AddSingleton(configuration);
-                services.AddSingleton<IEmailSender, EmailSender>();
+                services.AddScoped<IEmailSender, EmailSender>();
             }
         }
     }

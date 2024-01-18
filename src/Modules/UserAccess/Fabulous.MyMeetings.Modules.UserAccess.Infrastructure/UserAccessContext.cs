@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure
 {
-    public class UserAccessContext : DbContext
+    internal class UserAccessContext : DbContext
     {
         public DbSet<UserRegistration> UserRegistrations { get; set; }
 

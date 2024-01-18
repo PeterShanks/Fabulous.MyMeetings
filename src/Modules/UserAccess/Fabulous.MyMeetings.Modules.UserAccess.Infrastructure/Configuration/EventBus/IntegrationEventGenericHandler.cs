@@ -2,21 +2,22 @@
 using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
-using Microsoft.Extensions.DependencyInjection;
-
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventBus
 {
     internal class IntegrationEventGenericHandler<T> : IIntegrationEventHandler<T>
         where T : IntegrationEvent
     {
-        public Task Handle(T @event)
+        private readonly ISqlConnectionFactory _sqlConnectionFactory;
+
+        public IntegrationEventGenericHandler(ISqlConnectionFactory sqlConnectionFactory)
         {
-            using var scope = CompositionRoot.BeginScope();
-            using var connection =
-                scope.ServiceProvider
-                    .GetRequiredService<ISqlConnectionFactory>()
-                    .GetOpenConnection();
+            _sqlConnectionFactory = sqlConnectionFactory;
+        }
+
+        public async Task Handle(T @event)
+        {
+            using var connection = _sqlConnectionFactory.GetOpenConnection();
 
             var json = JsonSerializer.Serialize(@event, JsonSerializerOptionsInstance);
 
@@ -35,7 +36,7 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Ev
                 )
                 """;
 
-            return connection.ExecuteScalarAsync(sql, new
+            await connection.ExecuteScalarAsync(sql, new
             {
                 @event.Id,
                 @event.OccurredOn,
