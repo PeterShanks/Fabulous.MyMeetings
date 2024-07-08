@@ -2,35 +2,34 @@
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUser
+namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUser;
+
+internal class AddAdminUserCommandHandler : ICommandHandler<AddAdminUserCommand>
 {
-    internal class AddAdminUserCommandHandler: ICommandHandler<AddAdminUserCommand>
+    private readonly IPasswordManager _passwordManager;
+    private readonly IUserRepository _userRepository;
+
+    public AddAdminUserCommandHandler(IUserRepository userRepository, IPasswordManager passwordManager)
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IPasswordManager _passwordManager;
+        _userRepository = userRepository;
+        _passwordManager = passwordManager;
+    }
 
-        public AddAdminUserCommandHandler(IUserRepository userRepository, IPasswordManager passwordManager)
-        {
-            _userRepository = userRepository;
-            _passwordManager = passwordManager;
-        }
+    public Task Handle(AddAdminUserCommand request, CancellationToken cancellationToken)
+    {
+        var hashedPassword = _passwordManager.HashPassword(request.Password);
 
-        public Task Handle(AddAdminUserCommand request, CancellationToken cancellationToken)
-        {
-            var hashedPassword = _passwordManager.HashPassword(request.Password);
+        var user = User.CreateAdmin(
+            request.Login,
+            hashedPassword,
+            request.Email,
+            request.FirstName,
+            request.LastName,
+            request.Name
+        );
 
-            var user = User.CreateAdmin(
-                request.Login,
-                hashedPassword,
-                request.Email,
-                request.FirstName,
-                request.LastName,
-                request.Name
-            );
+        _userRepository.Add(user);
 
-            _userRepository.Add(user);
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }

@@ -8,19 +8,16 @@ using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
 
-public partial class Build : NukeBuild
+public class Build : NukeBuild
 {
     /// Support plugins are available for:
-    ///   - JetBrains ReSharper        https://nuke.build/resharper
-    ///   - JetBrains Rider            https://nuke.build/rider
-    ///   - Microsoft VisualStudio     https://nuke.build/visualstudio
-    ///   - Microsoft VSCode           https://nuke.build/vscode
-
+    /// - JetBrains ReSharper        https://nuke.build/resharper
+    /// - JetBrains Rider            https://nuke.build/rider
+    /// - Microsoft VisualStudio     https://nuke.build/visualstudio
+    /// - Microsoft VSCode           https://nuke.build/vscode
     static readonly IConfiguration Settings = new ConfigurationBuilder()
         .AddUserSecrets(typeof(Build).Assembly)
         .Build();
-
-    public static int Main () => Execute<Build>(x => x.MigrateDatabase);
 
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
@@ -38,8 +35,11 @@ public partial class Build : NukeBuild
     AbsolutePath DatabaseDirectory => RootDirectory / "src" / "Database" / "Fabulous.MyMeetings.Database" / "Scripts";
     AbsolutePath DbUpMigratorPath => OutputDbUpMigratorBuildDirectory / "DatabaseMigrator.dll";
 
+    public static int Main() => Execute<Build>(x => x.MigrateDatabase);
+
 
     #region Main
+
     Target Clean => _ => _
         .Executes(() =>
         {
@@ -82,9 +82,11 @@ public partial class Build : NukeBuild
         .Executes(() =>
         {
         });
+
     #endregion
 
     #region Database
+
     Target CompileDbUpMigrator => _ => _
         .Executes(() =>
         {
@@ -114,9 +116,12 @@ public partial class Build : NukeBuild
 
 public static class DotNetTasksExtensions
 {
-    public static IReadOnlyCollection<Output> DotNet(string command, string workingDirectory = null, IReadOnlyDictionary<string, string> environmentVariables = null, int? timeout = null, bool? logOutput = null, bool? logInvocation = null, Action<OutputType, string> logger = null, Action<IProcess> exitHandler = null)
+    public static IReadOnlyCollection<Output> DotNet(string command, string workingDirectory = null,
+        IReadOnlyDictionary<string, string> environmentVariables = null, int? timeout = null, bool? logOutput = null,
+        bool? logInvocation = null, Action<OutputType, string> logger = null, Action<IProcess> exitHandler = null)
     {
-        using var process = ProcessTasks.StartProcess(DotNetTasks.DotNetPath, command, workingDirectory, environmentVariables, timeout, logOutput, logInvocation, logger ?? DotNetTasks.DotNetLogger);
+        using var process = ProcessTasks.StartProcess(DotNetTasks.DotNetPath, command, workingDirectory,
+            environmentVariables, timeout, logOutput, logInvocation, logger ?? DotNetTasks.DotNetLogger);
         (exitHandler ?? (p => DotNetTasks.DotNetExitHandler.Invoke(null, p))).Invoke(process.AssertWaitForExit());
         return process.Output;
     }

@@ -1,11 +1,10 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Domain;
 
-namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching
-{
-    public interface IDomainEventsAccessor
-    {
-        IReadOnlyCollection<IDomainEvent> GetAllDomainEvents();
+namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
-        void ClearAllDomainEvents();
-    }
+public interface IDomainEventsAccessor
+{
+    IReadOnlyCollection<IDomainEvent> GetAllDomainEvents();
+
+    void ClearAllDomainEvents();
 }

@@ -1,15 +1,13 @@
 ﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions
+namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions;
+
+public class GetUserPermissionsQuery : Query<List<UserPermissionDto>>
 {
-    public class GetUserPermissionsQuery: Query<List<UserPermissionDto>>
+    public GetUserPermissionsQuery(Guid userId)
     {
-        public GetUserPermissionsQuery(Guid userId)
-        {
-            UserId = userId;
-        }
-
-        public Guid UserId { get; }
-
+        UserId = userId;
     }
+
+    public Guid UserId { get; }
 }

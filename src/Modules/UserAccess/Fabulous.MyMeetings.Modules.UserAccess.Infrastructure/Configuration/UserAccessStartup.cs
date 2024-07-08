@@ -19,46 +19,44 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
+
+public static class UserAccessStartup
 {
-    public static class UserAccessStartup
+    public static Task Initialize(
+        IConfiguration configuration,
+        string connectionString,
+        IExecutionContextAccessor executionContextAccessor,
+        ILoggerFactory loggerFactory,
+        IConfigureOptions<LoggerFilterOptions> loggerFilterOptions,
+        EmailsConfiguration emailsConfiguration,
+        IEmailSender? emailSender,
+        IEventBus? eventBus,
+        long? internalProcessingPoolingInterval = null)
     {
-        public static Task Initialize(
-            IConfiguration configuration,
-            string connectionString,
-            IExecutionContextAccessor executionContextAccessor,
-            ILoggerFactory loggerFactory,
-            IConfigureOptions<LoggerFilterOptions> loggerFilterOptions,
-            EmailsConfiguration emailsConfiguration,
-            IEmailSender? emailSender,
-            IEventBus? eventBus,
-            long? internalProcessingPoolingInterval = null)
-        {
+        var host = new HostBuilder()
+            .ConfigureHostConfiguration(c => c.AddConfiguration(configuration))
+            .ConfigureAppConfiguration(cfg => cfg.AddConfiguration(configuration))
+            .ConfigureServices(services =>
+            {
+                var domainNotificationMap = new BiDictionary<string, Type>();
+                domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
 
-            var host = new HostBuilder()
-                .ConfigureHostConfiguration(c => c.AddConfiguration(configuration))
-                .ConfigureAppConfiguration(cfg => cfg.AddConfiguration(configuration))
-                .ConfigureServices(services =>
-                {
-                    var domainNotificationMap = new BiDictionary<string, Type>();
-                    domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
+                services.AddLogging(loggerFactory, loggerFilterOptions);
+                services.AddDataAccess(connectionString);
+                services.AddDomainServices();
+                services.AddMediator();
+                services.AddProcessing(domainNotificationMap);
+                services.AddEventBus(eventBus);
+                services.AddOutbox();
+                services.AddQuartz(connectionString, internalProcessingPoolingInterval);
+                services.AddEmail(emailsConfiguration, emailSender);
+                services.AddSingleton(executionContextAccessor);
+            })
+            .Build();
 
-                    services.AddLogging(loggerFactory, loggerFilterOptions);
-                    services.AddDataAccess(connectionString);
-                    services.AddDomainServices();
-                    services.AddMediator();
-                    services.AddProcessing(domainNotificationMap);
-                    services.AddEventBus(eventBus);
-                    services.AddOutbox();
-                    services.AddQuartz(connectionString, internalProcessingPoolingInterval);
-                    services.AddEmail(emailsConfiguration, emailSender);
-                    services.AddSingleton(executionContextAccessor);
-                })
-                .Build();
+        CompositionRoot.SetContainer(host.Services);
 
-            CompositionRoot.SetContainer(host.Services);
-
-            return host.StartAsync();
-        }
+        return host.StartAsync();
     }
 }

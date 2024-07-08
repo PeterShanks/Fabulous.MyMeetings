@@ -1,9 +1,7 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Domain
-{
-    public interface IBusinessRule
-    {
-        bool IsBroken();
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Domain;
 
-        string Message { get; }
-    }
+public interface IBusinessRule
+{
+    string Message { get; }
+    bool IsBroken();
 }

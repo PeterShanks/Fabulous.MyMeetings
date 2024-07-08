@@ -1,24 +1,23 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure
+namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
+
+public class UnitOfWork : IUnitOfWork
 {
-    public class UnitOfWork: IUnitOfWork
+    private readonly DbContext _context;
+    private readonly IDomainEventsDispatcher _domainEventsDispatcher;
+
+    public UnitOfWork(DbContext context, IDomainEventsDispatcher domainEventsDispatcher)
     {
-        private readonly DbContext _context;
-        private readonly IDomainEventsDispatcher _domainEventsDispatcher;
+        _context = context;
+        _domainEventsDispatcher = domainEventsDispatcher;
+    }
 
-        public UnitOfWork(DbContext context, IDomainEventsDispatcher domainEventsDispatcher)
-        {
-            _context = context;
-            _domainEventsDispatcher = domainEventsDispatcher;
-        }
+    public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
+    {
+        await _domainEventsDispatcher.DispatchEventsAsync();
 
-        public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
-        {
-            await _domainEventsDispatcher.DispatchEventsAsync();
-
-            return await _context.SaveChangesAsync(cancellationToken);
-        }
+        return await _context.SaveChangesAsync(cancellationToken);
     }
 }

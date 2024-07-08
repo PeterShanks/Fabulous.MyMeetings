@@ -1,22 +1,21 @@
-﻿namespace Fabulous.MyMeetings.Api.Configuration.ExecutionContext
+﻿namespace Fabulous.MyMeetings.Api.Configuration.ExecutionContext;
+
+public class CorrelationMiddleware
 {
-    public class CorrelationMiddleware
+    internal const string CorrelationHeaderKey = "CorrelationId";
+    private readonly RequestDelegate _next;
+
+    public CorrelationMiddleware(RequestDelegate next)
     {
-        internal const string CorrelationHeaderKey = "CorrelationId";
-        private readonly RequestDelegate _next;
+        _next = next;
+    }
 
-        public CorrelationMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
+    public async Task Invoke(HttpContext context)
+    {
+        var correlationId = Guid.NewGuid();
 
-        public async Task Invoke(HttpContext context)
-        {
-            var correlationId = Guid.NewGuid();
+        context.Request?.Headers.Append(CorrelationHeaderKey, correlationId.ToString());
 
-            context.Request?.Headers.Append(CorrelationHeaderKey, correlationId.ToString());
-
-            await _next.Invoke(context);
-        }
+        await _next.Invoke(context);
     }
 }

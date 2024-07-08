@@ -1,8 +1,8 @@
 ﻿using DatabaseMigrator;
-using DbUp.ScriptProviders;
 using DbUp;
-using Serilog.Formatting.Compact;
+using DbUp.ScriptProviders;
 using Serilog;
+using Serilog.Formatting.Compact;
 
 var logsPath = "logs\\migration-logs";
 

@@ -1,21 +1,23 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations;
+
+public class UserRegistrationStatus : ValueObject
 {
-    public class UserRegistrationStatus: ValueObject
+    private UserRegistrationStatus(string value)
     {
-        public static UserRegistrationStatus WaitingForConfirmation => new(nameof(WaitingForConfirmation));
+        Value = value;
+    }
 
-        public static UserRegistrationStatus Confirmed => new(nameof(Confirmed));
+    public static UserRegistrationStatus WaitingForConfirmation => new(nameof(WaitingForConfirmation));
 
-        public static UserRegistrationStatus Expired => new(nameof(Expired));
+    public static UserRegistrationStatus Confirmed => new(nameof(Confirmed));
+
+    public static UserRegistrationStatus Expired => new(nameof(Expired));
 
 
-        public string Value { get; }
+    public string Value { get; }
 
-        private UserRegistrationStatus(string value)
-        {
-            Value = value;
-        }
-
-        public override string ToString() => Value;
+    public override string ToString()
+    {
+        return Value;
     }
 }

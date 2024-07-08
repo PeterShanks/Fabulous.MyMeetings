@@ -1,22 +1,21 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
+
+public abstract class Command : ICommand
 {
-    public abstract class Command: ICommand
+    protected Command()
     {
-        public Guid Id { get; }
-
-        protected Command()
-        {
-            Id = Guid.NewGuid();
-        }
+        Id = Guid.NewGuid();
     }
 
-    public abstract class Command<TResult> : ICommand<TResult>
-    {
-        public Guid Id { get; }
+    public Guid Id { get; }
+}
 
-        protected Command()
-        {
-            Id = Guid.NewGuid();
-        }
+public abstract class Command<TResult> : ICommand<TResult>
+{
+    protected Command()
+    {
+        Id = Guid.NewGuid();
     }
+
+    public Guid Id { get; }
 }

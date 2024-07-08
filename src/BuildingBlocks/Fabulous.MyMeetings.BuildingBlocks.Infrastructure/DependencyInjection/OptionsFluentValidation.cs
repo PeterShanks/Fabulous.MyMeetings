@@ -7,8 +7,8 @@ namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 public class OptionsFluentValidation<TOptions> : IValidateOptions<TOptions>
     where TOptions : class
 {
-    private readonly IServiceProvider _serviceProvider;
     private readonly string? _name;
+    private readonly IServiceProvider _serviceProvider;
 
     public OptionsFluentValidation(string? name, IServiceProvider serviceProvider)
     {
@@ -32,12 +32,11 @@ public class OptionsFluentValidation<TOptions> : IValidateOptions<TOptions>
         if (results.IsValid)
             return ValidateOptionsResult.Success;
 
-        string typeName = options.GetType().Name;
+        var typeName = options.GetType().Name;
         var errors = new List<string>();
         foreach (var result in results.Errors)
-        {
-            errors.Add($"Fluent validation failed for '{typeName}.{result.PropertyName}' with the error: '{result.ErrorMessage}'.");
-        }
+            errors.Add(
+                $"Fluent validation failed for '{typeName}.{result.PropertyName}' with the error: '{result.ErrorMessage}'.");
 
         return ValidateOptionsResult.Fail(errors);
     }

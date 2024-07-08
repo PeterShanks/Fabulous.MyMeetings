@@ -1,7 +1,6 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions;
+
+public class UserPermissionDto
 {
-    public class UserPermissionDto
-    {
-        public required string Code { get; set; }
-    }
+    public required string Code { get; set; }
 }

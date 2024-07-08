@@ -1,25 +1,24 @@
 ﻿using Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations;
 using Microsoft.EntityFrameworkCore;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.UserRegistrations
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.UserRegistrations;
+
+internal class UserRegistrationRepository : IUserRegistrationRepository
 {
-    internal class UserRegistrationRepository : IUserRegistrationRepository
+    private readonly UserAccessContext _userAccessContext;
+
+    public UserRegistrationRepository(UserAccessContext userAccessContext)
     {
-        private readonly UserAccessContext _userAccessContext;
+        _userAccessContext = userAccessContext;
+    }
 
-        public UserRegistrationRepository(UserAccessContext userAccessContext)
-        {
-            _userAccessContext = userAccessContext;
-        }
+    public void Add(UserRegistration userRegistration)
+    {
+        _userAccessContext.Add(userRegistration);
+    }
 
-        public void Add(UserRegistration userRegistration)
-        {
-            _userAccessContext.Add(userRegistration);
-        }
-
-        public Task<UserRegistration?> GetByIdAsync(UserRegistrationId userRegistrationId)
-        {
-            return _userAccessContext.UserRegistrations.FirstOrDefaultAsync(x => x.Id == userRegistrationId);
-        }
+    public Task<UserRegistration?> GetByIdAsync(UserRegistrationId userRegistrationId)
+    {
+        return _userAccessContext.UserRegistrations.FirstOrDefaultAsync(x => x.Id == userRegistrationId);
     }
 }

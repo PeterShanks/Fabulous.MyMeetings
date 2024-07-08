@@ -1,11 +1,10 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
+
+public interface IUserAccessModule
 {
-    public interface IUserAccessModule
-    {
-        Task<TResult> ExecuteCommandAsync<TResult>(ICommand<TResult> command);
+    Task<TResult> ExecuteCommandAsync<TResult>(ICommand<TResult> command);
 
-        Task ExecuteCommandAsync(ICommand command);
+    Task ExecuteCommandAsync(ICommand command);
 
-        Task<TResult> ExecuteQueryAsync<TResult>(IQuery<TResult> query);
-    }
+    Task<TResult> ExecuteQueryAsync<TResult>(IQuery<TResult> query);
 }

@@ -1,10 +1,9 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.Users
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
+
+public class UserId : TypedId
 {
-    public class UserId : TypedId
+    public UserId(Guid value)
+        : base(value)
     {
-        public UserId(Guid value)
-            : base(value)
-        {
-        }
     }
 }

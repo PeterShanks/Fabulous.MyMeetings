@@ -1,8 +1,7 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
+
+public static class Roles
 {
-    public static class Roles
-    {
-        public const string Admin = "Admin";
-        public const string User = "User";
-    }
+    public const string Admin = "Admin";
+    public const string User = "User";
 }

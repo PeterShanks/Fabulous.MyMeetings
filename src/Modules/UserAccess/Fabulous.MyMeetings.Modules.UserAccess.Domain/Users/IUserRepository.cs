@@ -1,7 +1,6 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.Users
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        void Add(User user);
-    }
+    void Add(User user);
 }

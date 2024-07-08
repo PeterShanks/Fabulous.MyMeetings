@@ -1,26 +1,32 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
+
+public class AuthenticationResult
 {
-    public class AuthenticationResult
+    public AuthenticationResult(string authenticationError)
     {
-        public static AuthenticationResult Success(UserDto user) => new AuthenticationResult(user);
+        IsAuthenticated = false;
+        AuthenticationError = authenticationError;
+    }
 
-        public static AuthenticationResult Failure(string error) => new AuthenticationResult(error);
+    public AuthenticationResult(UserDto user)
+    {
+        IsAuthenticated = true;
+        User = user;
+    }
 
-        public AuthenticationResult(string authenticationError)
-        {
-            IsAuthenticated = false;
-            AuthenticationError = authenticationError;
-        }
+    public bool IsAuthenticated { get; }
 
-        public AuthenticationResult(UserDto user)
-        {
-            IsAuthenticated = true;
-            User = user;
-        }
-        public bool IsAuthenticated { get; }
+    public string? AuthenticationError { get; }
 
-        public string? AuthenticationError { get; }
+    public UserDto? User { get; }
 
-        public UserDto? User { get; }
+    public static AuthenticationResult Success(UserDto user)
+    {
+        return new AuthenticationResult(user);
+    }
+
+    public static AuthenticationResult Failure(string error)
+    {
+        return new AuthenticationResult(error);
     }
 }

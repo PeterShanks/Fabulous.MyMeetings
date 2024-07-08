@@ -1,17 +1,13 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
-using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Outbox;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox;
+
+internal static class OutboxModule
 {
-    internal static class OutboxModule
+    public static void AddOutbox(this IServiceCollection services)
     {
-        public static void AddOutbox(this IServiceCollection services)
-        {
-            services.AddScoped<IOutbox, OutboxAccessor>();
-        }
+        services.AddScoped<IOutbox, OutboxAccessor>();
     }
 }

@@ -1,17 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 using Microsoft.EntityFrameworkCore;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.InternalCommands
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.InternalCommands;
+
+internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration<InternalCommand>
 {
-    internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration<InternalCommand>
+    public void Configure(EntityTypeBuilder<InternalCommand> builder)
     {
-        public void Configure(EntityTypeBuilder<InternalCommand> builder)
-        {
-            builder.ToTable("InternalCommands", "users");
+        builder.ToTable("InternalCommands", "users");
 
-            builder.HasKey(b => b.Id);
-            builder.Property(b => b.Id).ValueGeneratedNever();
-        }
+        builder.HasKey(b => b.Id);
+        builder.Property(b => b.Id).ValueGeneratedNever();
     }
 }

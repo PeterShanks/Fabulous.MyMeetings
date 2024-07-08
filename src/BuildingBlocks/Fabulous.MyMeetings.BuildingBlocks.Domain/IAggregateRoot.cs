@@ -1,6 +1,5 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Domain
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Domain;
+
+public interface IAggregateRoot
 {
-    public interface IAggregateRoot
-    {
-    }
 }

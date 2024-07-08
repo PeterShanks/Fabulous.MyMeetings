@@ -1,9 +1,8 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application.Outbox
-{
-    public interface IOutbox
-    {
-        void Add(OutboxMessage message);
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
 
-        Task Save();
-    }
+public interface IOutbox
+{
+    void Add(OutboxMessage message);
+
+    Task Save();
 }

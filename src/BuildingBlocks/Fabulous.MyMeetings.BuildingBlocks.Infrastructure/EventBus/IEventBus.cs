@@ -1,9 +1,9 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+
+public interface IEventBus
 {
-    public interface IEventBus
-    {
-        Task Publish<T>(T @event) where T : IntegrationEvent;
-        void Subscribe<T>(IIntegrationEventHandler<T> handler)
-            where T: IntegrationEvent;
-    }
+    Task Publish<T>(T @event) where T : IntegrationEvent;
+
+    void Subscribe<T>(IIntegrationEventHandler<T> handler)
+        where T : IntegrationEvent;
 }

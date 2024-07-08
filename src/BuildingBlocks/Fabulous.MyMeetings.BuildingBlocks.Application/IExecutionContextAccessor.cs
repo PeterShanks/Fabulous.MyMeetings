@@ -1,11 +1,10 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application;
+
+public interface IExecutionContextAccessor
 {
-    public interface IExecutionContextAccessor
-    {
-        Guid UserId { get; }
+    Guid UserId { get; }
 
-        Guid CorrelationId { get; }
+    Guid CorrelationId { get; }
 
-        bool IsAvailable { get; }
-    }
+    bool IsAvailable { get; }
 }

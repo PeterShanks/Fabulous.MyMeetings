@@ -1,9 +1,8 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
+
+public static class CustomClaimTypes
 {
-    public static class CustomClaimTypes
-    {
-        public const string Roles = "roles";
-        public const string Email = "email";
-        public const string Name = "name";
-    }
+    public const string Roles = "roles";
+    public const string Email = "email";
+    public const string Name = "name";
 }

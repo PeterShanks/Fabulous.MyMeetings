@@ -7,21 +7,20 @@ using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
+
+internal static class DataAccessModule
 {
-    internal static class DataAccessModule
+    public static void AddDataAccess(this IServiceCollection services, string databaseConnectionString)
     {
-        public static void AddDataAccess(this IServiceCollection services, string databaseConnectionString)
-        {
-            services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>(_ =>
-                new SqlConnectionFactory(databaseConnectionString));
+        services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>(_ =>
+            new SqlConnectionFactory(databaseConnectionString));
 
-            services.AddDbContext<UserAccessContext>(b =>
-                b.UseSqlServer(databaseConnectionString));
+        services.AddDbContext<UserAccessContext>(b =>
+            b.UseSqlServer(databaseConnectionString));
 
-            services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<DbContext, UserAccessContext>();
-        }
+        services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<DbContext, UserAccessContext>();
     }
 }

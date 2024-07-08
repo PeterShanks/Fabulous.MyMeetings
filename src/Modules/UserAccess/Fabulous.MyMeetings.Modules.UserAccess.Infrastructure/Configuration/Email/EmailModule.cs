@@ -1,22 +1,22 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Email
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Email;
+
+internal static class EmailModule
 {
-    internal static class EmailModule
+    public static void AddEmail(this IServiceCollection services, EmailsConfiguration configuration,
+        IEmailSender? emailSender)
     {
-        public static void AddEmail(this IServiceCollection services, EmailsConfiguration configuration,
-            IEmailSender? emailSender)
+        if (emailSender is not null)
         {
-            if (emailSender is not null)
-                services.AddSingleton<IEmailSender>(_ => emailSender);
-            else
-            {
-                services.AddSingleton(configuration);
-                services.AddScoped<IEmailSender, EmailSender>();
-            }
+            services.AddSingleton<IEmailSender>(_ => emailSender);
+        }
+        else
+        {
+            services.AddSingleton(configuration);
+            services.AddScoped<IEmailSender, EmailSender>();
         }
     }
 }

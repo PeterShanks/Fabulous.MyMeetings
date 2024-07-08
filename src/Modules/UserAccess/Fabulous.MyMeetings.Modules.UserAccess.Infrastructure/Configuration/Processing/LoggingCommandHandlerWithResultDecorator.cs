@@ -3,47 +3,48 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 using Microsoft.Extensions.Logging;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing
+namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing;
+
+internal class LoggingCommandHandlerWithResultDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+    where TCommand : ICommand<TResult>
 {
-    internal class LoggingCommandHandlerWithResultDecorator<TCommand, TResult>: ICommandHandler<TCommand, TResult>
-        where TCommand: ICommand<TResult>
+    private readonly ICommandHandler<TCommand, TResult> _decorated;
+    private readonly IExecutionContextAccessor _executionContextAccessor;
+    private readonly ILogger _logger;
+
+    public LoggingCommandHandlerWithResultDecorator(
+        ILogger logger,
+        IExecutionContextAccessor executionContextAccessor,
+        ICommandHandler<TCommand, TResult> decorated)
     {
-        private readonly ILogger _logger;
-        private readonly IExecutionContextAccessor _executionContextAccessor;
-        private readonly ICommandHandler<TCommand, TResult> _decorated;
+        _logger = logger;
+        _executionContextAccessor = executionContextAccessor;
+        _decorated = decorated;
+    }
 
-        public LoggingCommandHandlerWithResultDecorator(
-            ILogger logger,
-            IExecutionContextAccessor executionContextAccessor,
-            ICommandHandler<TCommand, TResult> decorated)
+    public async Task<TResult> Handle(TCommand request, CancellationToken cancellationToken)
+    {
+        using (_logger.BeginScope(new List<KeyValuePair<string, object>>
+               {
+                   new("CorrelationId", _executionContextAccessor.CorrelationId),
+                   new("Context", request.Id)
+               }))
         {
-            _logger = logger;
-            _executionContextAccessor = executionContextAccessor;
-            _decorated = decorated;
-        }
-        public async Task<TResult> Handle(TCommand request, CancellationToken cancellationToken)
-        {
-            using (_logger.BeginScope(new List<KeyValuePair<string, object>>()
-                   {
-                       new("CorrelationId", _executionContextAccessor.CorrelationId),
-                       new("Context", request.Id)
-                   }))
+            try
             {
-                try
-                {
-                    _logger.LogInformation("Executing command {Command}", request.GetType().Name);
+                _logger.LogInformation("Executing command {Command}", request.GetType().Name);
 
-                    var result = await _decorated.Handle(request, cancellationToken);
+                var result = await _decorated.Handle(request, cancellationToken);
 
-                    _logger.LogInformation("Command {Command} processed successful, result {Result}", request.GetType().Name, result);
+                _logger.LogInformation("Command {Command} processed successful, result {Result}",
+                    request.GetType().Name, result);
 
-                    return result;
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "Command {Command} processing failed", request.GetType().Name);
-                    throw;
-                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Command {Command} processing failed", request.GetType().Name);
+                throw;
             }
         }
     }

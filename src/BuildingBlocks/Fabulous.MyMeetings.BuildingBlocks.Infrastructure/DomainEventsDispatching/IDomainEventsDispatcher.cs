@@ -1,7 +1,6 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
+
+public interface IDomainEventsDispatcher
 {
-    public interface IDomainEventsDispatcher
-    {
-        Task DispatchEventsAsync();
-    }
+    Task DispatchEventsAsync();
 }

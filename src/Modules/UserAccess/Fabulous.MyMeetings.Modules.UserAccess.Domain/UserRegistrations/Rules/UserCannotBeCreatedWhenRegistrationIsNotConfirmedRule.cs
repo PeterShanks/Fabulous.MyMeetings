@@ -1,16 +1,18 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations.Rules
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations.Rules;
+
+public class UserCannotBeCreatedWhenRegistrationIsNotConfirmedRule : IBusinessRule
 {
-    public class UserCannotBeCreatedWhenRegistrationIsNotConfirmedRule : IBusinessRule
+    private readonly UserRegistrationStatus _actualRegistrationStatus;
+
+    internal UserCannotBeCreatedWhenRegistrationIsNotConfirmedRule(UserRegistrationStatus actualRegistrationStatus)
     {
-        private readonly UserRegistrationStatus _actualRegistrationStatus;
-
-        internal UserCannotBeCreatedWhenRegistrationIsNotConfirmedRule(UserRegistrationStatus actualRegistrationStatus)
-        {
-            _actualRegistrationStatus = actualRegistrationStatus;
-        }
-
-        public bool IsBroken() => _actualRegistrationStatus != UserRegistrationStatus.Confirmed;
-
-        public string Message => "User cannot be created when registration is not confirmed";
+        _actualRegistrationStatus = actualRegistrationStatus;
     }
+
+    public bool IsBroken()
+    {
+        return _actualRegistrationStatus != UserRegistrationStatus.Confirmed;
+    }
+
+    public string Message => "User cannot be created when registration is not confirmed";
 }

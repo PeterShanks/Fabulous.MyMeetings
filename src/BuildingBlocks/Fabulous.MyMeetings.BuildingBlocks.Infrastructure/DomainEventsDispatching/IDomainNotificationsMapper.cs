@@ -1,9 +1,8 @@
-﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching
-{
-    public interface IDomainNotificationsMapper
-    {
-        string? GetName(Type type);
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
-        Type? GetType(string name);
-    }
+public interface IDomainNotificationsMapper
+{
+    string? GetName(Type type);
+
+    Type? GetType(string name);
 }
