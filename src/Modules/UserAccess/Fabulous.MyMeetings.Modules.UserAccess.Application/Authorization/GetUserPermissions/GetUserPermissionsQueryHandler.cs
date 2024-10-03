@@ -4,19 +4,12 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Queries;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions;
 
-internal class GetUserPermissionsQueryHandler : IQueryHandler<GetUserPermissionsQuery, List<UserPermissionDto>>
+internal class GetUserPermissionsQueryHandler(ISqlConnectionFactory sqlConnectionFactory) : IQueryHandler<GetUserPermissionsQuery, List<UserPermissionDto>>
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public GetUserPermissionsQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public async Task<List<UserPermissionDto>> Handle(GetUserPermissionsQuery request,
         CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
             """

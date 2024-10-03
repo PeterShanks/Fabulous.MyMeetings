@@ -1,5 +1,4 @@
-﻿using Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations;
-using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users.Events;
+﻿using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users.Events;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
 
@@ -34,10 +33,10 @@ public class User : Entity, IAggregateRoot
 
         IsActive = true;
 
-        _roles = new List<UserRole>
-        {
+        _roles =
+        [
             role
-        };
+        ];
 
         AddDomainEvent(new UserCreatedDomainEvent(Id));
     }
@@ -77,23 +76,22 @@ public class User : Entity, IAggregateRoot
             UserRole.Administrator);
     }
 
-    internal static User CreateFromUserRegistration(
-        UserRegistrationId userRegistrationId,
+    public static User CreateUser(
+        Guid userId,
         string login,
         string password,
         string email,
         string firstName,
-        string lastName,
-        string name)
+        string lastName)
     {
         return new User(
-            userRegistrationId.Value,
+            userId,
             login,
             password,
             email,
             firstName,
             lastName,
-            name,
+            $"{firstName} {lastName}",
             UserRole.Member);
     }
 }

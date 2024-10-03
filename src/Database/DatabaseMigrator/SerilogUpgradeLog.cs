@@ -3,27 +3,20 @@ using Serilog;
 
 namespace DatabaseMigrator;
 
-internal class SerilogUpgradeLog : IUpgradeLog
+internal class SerilogUpgradeLog(ILogger logger) : IUpgradeLog
 {
-    private readonly ILogger _logger;
-
-    public SerilogUpgradeLog(ILogger logger)
-    {
-        _logger = logger;
-    }
-
     public void WriteInformation(string format, params object[] args)
     {
-        _logger.Information(format, args);
+        logger.Information(format, args);
     }
 
     public void WriteError(string format, params object[] args)
     {
-        _logger.Error(format, args);
+        logger.Error(format, args);
     }
 
     public void WriteWarning(string format, params object[] args)
     {
-        _logger.Warning(format, args);
+        logger.Warning(format, args);
     }
 }

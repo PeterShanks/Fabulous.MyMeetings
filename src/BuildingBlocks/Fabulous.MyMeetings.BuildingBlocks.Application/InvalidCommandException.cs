@@ -1,11 +1,6 @@
 ﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application;
 
-public class InvalidCommandException : Exception
+public class InvalidCommandException(List<string> errors) : Exception
 {
-    public InvalidCommandException(List<string> errors)
-    {
-        Errors = errors;
-    }
-
-    public List<string> Errors { get; }
+    public List<string> Errors { get; } = errors;
 }

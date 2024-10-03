@@ -3,7 +3,6 @@ using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
-using Fabulous.MyMeetings.Modules.UserAccess.Application.UserRegistrations.RegisterNewUser;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Domain;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Email;
@@ -40,7 +39,6 @@ public static class UserAccessStartup
             .ConfigureServices(services =>
             {
                 var domainNotificationMap = new BiDictionary<string, Type>();
-                domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
 
                 services.AddLogging(loggerFactory, loggerFilterOptions);
                 services.AddDataAccess(connectionString);
@@ -49,7 +47,7 @@ public static class UserAccessStartup
                 services.AddProcessing(domainNotificationMap);
                 services.AddEventBus(eventBus);
                 services.AddOutbox();
-                services.AddQuartz(connectionString, internalProcessingPoolingInterval);
+                services.AddQuartz(internalProcessingPoolingInterval);
                 services.AddEmail(emailsConfiguration, emailSender);
                 services.AddSingleton(executionContextAccessor);
             })

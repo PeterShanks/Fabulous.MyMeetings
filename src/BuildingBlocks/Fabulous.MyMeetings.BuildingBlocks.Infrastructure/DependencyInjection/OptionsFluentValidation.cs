@@ -4,21 +4,12 @@ using Microsoft.Extensions.Options;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 
-public class OptionsFluentValidation<TOptions> : IValidateOptions<TOptions>
+public class OptionsFluentValidation<TOptions>(string? name, IServiceProvider serviceProvider) : IValidateOptions<TOptions>
     where TOptions : class
 {
-    private readonly string? _name;
-    private readonly IServiceProvider _serviceProvider;
-
-    public OptionsFluentValidation(string? name, IServiceProvider serviceProvider)
+    public ValidateOptionsResult Validate(string? name1, TOptions options)
     {
-        _name = name;
-        _serviceProvider = serviceProvider;
-    }
-
-    public ValidateOptionsResult Validate(string? name, TOptions options)
-    {
-        if (name != null && name != _name)
+        if (name1 != null && name1 != name)
             return ValidateOptionsResult.Skip;
 
         // Ensure options are provided to validate against
@@ -26,7 +17,7 @@ public class OptionsFluentValidation<TOptions> : IValidateOptions<TOptions>
 
         // Validators are registered as scoped, so need to create a scope,
         // as we will be called from the root scope
-        using var scope = _serviceProvider.CreateScope();
+        using var scope = serviceProvider.CreateScope();
         var validator = scope.ServiceProvider.GetRequiredService<IValidator<TOptions>>();
         var results = validator.Validate(options);
         if (results.IsValid)

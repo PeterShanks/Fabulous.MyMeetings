@@ -6,20 +6,11 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
 
-internal class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommand, AuthenticationResult>
+internal class AuthenticateCommandHandler(ISqlConnectionFactory sqlConnectionFactory, IPasswordManager passwordManager) : ICommandHandler<AuthenticateCommand, AuthenticationResult>
 {
-    private readonly IPasswordManager _passwordManager;
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public AuthenticateCommandHandler(ISqlConnectionFactory sqlConnectionFactory, IPasswordManager passwordManager)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-        _passwordManager = passwordManager;
-    }
-
     public async Task<AuthenticationResult> Handle(AuthenticateCommand request, CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
             """
@@ -43,16 +34,16 @@ internal class AuthenticateCommandHandler : ICommandHandler<AuthenticateCommand,
         if (!user.IsActive)
             return AuthenticationResult.Failure("User is not active");
 
-        var verifyPasswordResult = _passwordManager.VerifyHashedPassword(user.Password, request.Password);
+        var verifyPasswordResult = passwordManager.VerifyHashedPassword(user.Password, request.Password);
 
         if (verifyPasswordResult == PasswordVerificationResult.Failed)
             return new AuthenticationResult("Incorrect login or password");
 
-        user.Claims = new List<Claim>
-        {
+        user.Claims =
+        [
             new(CustomClaimTypes.Name, user.Name),
             new(CustomClaimTypes.Email, user.Email)
-        };
+        ];
 
         return AuthenticationResult.Success(user);
     }

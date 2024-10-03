@@ -13,39 +13,26 @@ namespace Fabulous.MyMeetings.Identity.Pages.Grants;
 
 [SecurityHeaders]
 [Authorize]
-public class Index : PageModel
+public class Index(IIdentityServerInteractionService interaction,
+    IClientStore clients,
+    IResourceStore resources,
+    IEventService events) : PageModel
 {
-    private readonly IClientStore _clients;
-    private readonly IEventService _events;
-    private readonly IIdentityServerInteractionService _interaction;
-    private readonly IResourceStore _resources;
-
-    public Index(IIdentityServerInteractionService interaction,
-        IClientStore clients,
-        IResourceStore resources,
-        IEventService events)
-    {
-        _interaction = interaction;
-        _clients = clients;
-        _resources = resources;
-        _events = events;
-    }
-
     public ViewModel View { get; set; } = default!;
 
     [BindProperty] public string ClientId { get; set; }
 
     public async Task OnGet()
     {
-        var grants = await _interaction.GetAllUserGrantsAsync();
+        var grants = await interaction.GetAllUserGrantsAsync();
 
         var list = new List<GrantViewModel>();
         foreach (var grant in grants)
         {
-            var client = await _clients.FindClientByIdAsync(grant.ClientId);
+            var client = await clients.FindClientByIdAsync(grant.ClientId);
             if (client != null)
             {
-                var resources = await _resources.FindResourcesByScopeAsync(grant.Scopes);
+                var resources1 = await resources.FindResourcesByScopeAsync(grant.Scopes);
 
                 var item = new GrantViewModel
                 {
@@ -56,8 +43,8 @@ public class Index : PageModel
                     Description = grant.Description,
                     Created = grant.CreationTime,
                     Expires = grant.Expiration,
-                    IdentityGrantNames = resources.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
-                    ApiGrantNames = resources.ApiScopes.Select(x => x.DisplayName ?? x.Name).ToArray()
+                    IdentityGrantNames = resources1.IdentityResources.Select(x => x.DisplayName ?? x.Name).ToArray(),
+                    ApiGrantNames = resources1.ApiScopes.Select(x => x.DisplayName ?? x.Name).ToArray()
                 };
 
                 list.Add(item);
@@ -72,8 +59,8 @@ public class Index : PageModel
 
     public async Task<IActionResult> OnPost()
     {
-        await _interaction.RevokeUserConsentAsync(ClientId);
-        await _events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), ClientId));
+        await interaction.RevokeUserConsentAsync(ClientId);
+        await events.RaiseAsync(new GrantsRevokedEvent(User.GetSubjectId(), ClientId));
         Telemetry.Metrics.GrantsRevoked(ClientId);
 
         return RedirectToPage("/Grants/Index");

@@ -2,12 +2,7 @@
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.GetUser;
 
-public class GetUserQuery : Query<UserDto>
+public class GetUserQuery(Guid userId) : Query<UserDto>
 {
-    public GetUserQuery(Guid userId)
-    {
-        UserId = userId;
-    }
-
-    public Guid UserId { get; }
+    public Guid UserId { get; } = userId;
 }

@@ -16,22 +16,11 @@ namespace Fabulous.MyMeetings.Identity.Pages.Consent;
 
 [Authorize]
 [SecurityHeaders]
-public class Index : PageModel
+public class Index(
+    IIdentityServerInteractionService interaction,
+    IEventService events,
+    ILogger<Index> logger) : PageModel
 {
-    private readonly IEventService _events;
-    private readonly IIdentityServerInteractionService _interaction;
-    private readonly ILogger<Index> _logger;
-
-    public Index(
-        IIdentityServerInteractionService interaction,
-        IEventService events,
-        ILogger<Index> logger)
-    {
-        _interaction = interaction;
-        _events = events;
-        _logger = logger;
-    }
-
     public ViewModel View { get; set; } = default!;
 
     [BindProperty] public InputModel Input { get; set; } = default!;
@@ -51,7 +40,7 @@ public class Index : PageModel
     public async Task<IActionResult> OnPost()
     {
         // validate return url is still valid
-        var request = await _interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
+        var request = await interaction.GetAuthorizationContextAsync(Input.ReturnUrl);
         if (request == null) return RedirectToPage("/Home/Error/Index");
 
         ConsentResponse grantedConsent = null;
@@ -62,7 +51,7 @@ public class Index : PageModel
             grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
             // emit event
-            await _events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId,
+            await events.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId,
                 request.ValidatedResources.RawScopeValues));
             Telemetry.Metrics.ConsentDenied(request.Client.ClientId,
                 request.ValidatedResources.ParsedScopes.Select(s => s.ParsedName));
@@ -85,7 +74,7 @@ public class Index : PageModel
                 };
 
                 // emit event
-                await _events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId,
+                await events.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId,
                     request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented,
                     grantedConsent.RememberConsent));
                 Telemetry.Metrics.ConsentGranted(request.Client.ClientId, grantedConsent.ScopesValuesConsented,
@@ -109,7 +98,7 @@ public class Index : PageModel
             ArgumentNullException.ThrowIfNull(Input.ReturnUrl, nameof(Input.ReturnUrl));
 
             // communicate outcome of consent back to identityserver
-            await _interaction.GrantConsentAsync(request, grantedConsent);
+            await interaction.GrantConsentAsync(request, grantedConsent);
 
             // redirect back to authorization endpoint
             if (request.IsNativeClient())
@@ -129,14 +118,14 @@ public class Index : PageModel
     {
         ArgumentNullException.ThrowIfNull(returnUrl);
 
-        var request = await _interaction.GetAuthorizationContextAsync(returnUrl);
+        var request = await interaction.GetAuthorizationContextAsync(returnUrl);
         if (request != null)
         {
             View = CreateConsentViewModel(request);
             return true;
         }
 
-        _logger.NoConsentMatchingRequest(returnUrl);
+        logger.NoConsentMatchingRequest(returnUrl);
         return false;
     }
 

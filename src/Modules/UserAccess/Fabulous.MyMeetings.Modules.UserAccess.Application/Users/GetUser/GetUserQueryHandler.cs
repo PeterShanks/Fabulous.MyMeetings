@@ -4,18 +4,11 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Queries;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.GetUser;
 
-internal class GetUserQueryHandler : IQueryHandler<GetUserQuery, UserDto>
+internal class GetUserQueryHandler(ISqlConnectionFactory sqlConnectionFactory) : IQueryHandler<GetUserQuery, UserDto>
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public GetUserQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public Task<UserDto> Handle(GetUserQuery request, CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
             """

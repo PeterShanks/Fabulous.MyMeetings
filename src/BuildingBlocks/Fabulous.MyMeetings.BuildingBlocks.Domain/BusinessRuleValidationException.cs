@@ -1,14 +1,8 @@
 ﻿namespace Fabulous.MyMeetings.BuildingBlocks.Domain;
 
-internal class BusinessRuleValidationException : Exception
+internal class BusinessRuleValidationException(IBusinessRule brokenRule) : Exception(brokenRule.Message)
 {
-    public BusinessRuleValidationException(IBusinessRule brokenRule)
-        : base(brokenRule.Message)
-    {
-        BrokenRule = brokenRule;
-    }
-
-    public IBusinessRule BrokenRule { get; }
+    public IBusinessRule BrokenRule { get; } = brokenRule;
 
     public override string ToString()
     {

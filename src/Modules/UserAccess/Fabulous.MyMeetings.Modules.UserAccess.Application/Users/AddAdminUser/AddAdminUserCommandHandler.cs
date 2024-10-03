@@ -4,20 +4,11 @@ using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUser;
 
-internal class AddAdminUserCommandHandler : ICommandHandler<AddAdminUserCommand>
+internal class AddAdminUserCommandHandler(IUserRepository userRepository, IPasswordManager passwordManager) : ICommandHandler<AddAdminUserCommand>
 {
-    private readonly IPasswordManager _passwordManager;
-    private readonly IUserRepository _userRepository;
-
-    public AddAdminUserCommandHandler(IUserRepository userRepository, IPasswordManager passwordManager)
-    {
-        _userRepository = userRepository;
-        _passwordManager = passwordManager;
-    }
-
     public Task Handle(AddAdminUserCommand request, CancellationToken cancellationToken)
     {
-        var hashedPassword = _passwordManager.HashPassword(request.Password);
+        var hashedPassword = passwordManager.HashPassword(request.Password);
 
         var user = User.CreateAdmin(
             request.Login,
@@ -28,7 +19,7 @@ internal class AddAdminUserCommandHandler : ICommandHandler<AddAdminUserCommand>
             request.Name
         );
 
-        _userRepository.Add(user);
+        userRepository.Add(user);
 
         return Task.CompletedTask;
     }

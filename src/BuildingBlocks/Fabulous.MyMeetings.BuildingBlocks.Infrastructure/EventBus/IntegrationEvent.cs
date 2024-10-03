@@ -2,14 +2,8 @@
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 
-public abstract class IntegrationEvent : INotification
+public abstract class IntegrationEvent(Guid id, DateTime occurredOn) : INotification
 {
-    protected IntegrationEvent(Guid id, DateTime occurredOn)
-    {
-        OccurredOn = occurredOn;
-        Id = id;
-    }
-
-    public Guid Id { get; }
-    public DateTime OccurredOn { get; }
+    public Guid Id { get; } = id;
+    public DateTime OccurredOn { get; } = occurredOn;
 }

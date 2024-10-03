@@ -2,16 +2,11 @@
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 
-public sealed class InMemoryEventBus : IEventBus
+public sealed class InMemoryEventBus(ILogger<InMemoryEventBus> logger) : IEventBus
 {
-    private readonly Dictionary<string, List<IIntegrationEventHandler>> _handlersDictionary = new();
+    private readonly Dictionary<string, List<IIntegrationEventHandler>> _handlersDictionary = [];
 
-    private readonly ILogger _logger;
-
-    public InMemoryEventBus(ILogger<InMemoryEventBus> logger)
-    {
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
 
     public void Subscribe<T>(IIntegrationEventHandler<T> handler)
         where T : IntegrationEvent
@@ -23,7 +18,7 @@ public sealed class InMemoryEventBus : IEventBus
         if (_handlersDictionary.TryGetValue(eventType, out var handlers))
             handlers.Add(handler);
         else
-            _handlersDictionary.Add(eventType, new List<IIntegrationEventHandler> { handler });
+            _handlersDictionary.Add(eventType, [handler]);
 
         _logger.LogInformation("{HandlerType} was registered as one of {EventType} integration event handlers",
             handler.GetType(), eventType);

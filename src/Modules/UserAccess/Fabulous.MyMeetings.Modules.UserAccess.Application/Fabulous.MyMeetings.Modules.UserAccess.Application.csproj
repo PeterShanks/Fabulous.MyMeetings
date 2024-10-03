@@ -8,17 +8,15 @@
 
   <ItemGroup>
     <PackageReference Include="Dapper" Version="2.1.35" />
-    <PackageReference Include="FluentValidation" Version="11.9.2" />
-    <PackageReference Include="MediatR" Version="12.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.6" />
+    <PackageReference Include="FluentValidation" Version="11.10.0" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="8.0.8" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\BuildingBlocks\Fabulous.MyMeetings.BuildingBlocks.Application\Fabulous.MyMeetings.BuildingBlocks.Application.csproj" />
-    <ProjectReference Include="..\..\..\BuildingBlocks\Fabulous.MyMeetings.BuildingBlocks.Infrastructure\Fabulous.MyMeetings.BuildingBlocks.Infrastructure.csproj" />
     <ProjectReference Include="..\Fabulous.MyMeetings.Modules.UserAccess.Domain\Fabulous.MyMeetings.Modules.UserAccess.Domain.csproj" />
-    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.UserAccess.IntegrationEvents\Fabulous.MyMeetings.Modules.UserAccess.IntegrationEvents.csproj" />
   </ItemGroup>
 
 </Project>

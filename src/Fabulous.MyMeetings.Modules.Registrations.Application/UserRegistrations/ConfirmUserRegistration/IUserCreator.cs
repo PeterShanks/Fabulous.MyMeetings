@@ -1,0 +1,19 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Fabulous.MyMeetings.Modules.Registrations.Application.UserRegistrations.ConfirmUserRegistration
+{
+    public interface IUserCreator
+    {
+        public Task Create(
+            Guid userRegistrationId,
+            string login,
+            string password,
+            string email,
+            string firstName,
+            string lastName);
+    }
+}

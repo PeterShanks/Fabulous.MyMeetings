@@ -1,0 +1,40 @@
+﻿using System.Text.Json;
+using Dapper;
+using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+
+namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.EventBus;
+
+internal class IntegrationEventGenericHandler<T>(ISqlConnectionFactory sqlConnectionFactory) : IIntegrationEventHandler<T>
+    where T : IntegrationEvent
+{
+    public async Task Handle(T @event)
+    {
+        using var connection = sqlConnectionFactory.GetOpenConnection();
+
+        var json = JsonSerializer.Serialize(@event, JsonSerializerOptionsInstance);
+
+        const string sql =
+            """
+            INSERT INTO Users.InboxMessages (
+                Id,
+                OccurredOn,
+                Type,
+                Data
+            ) VALUES (
+                @Id,
+                @OccurredOn,
+                @Type,
+                @Data
+            )
+            """;
+
+        await connection.ExecuteScalarAsync(sql, new
+        {
+            @event.Id,
+            @event.OccurredOn,
+            Type = @event.GetType().FullName,
+            Data = json
+        });
+    }
+}

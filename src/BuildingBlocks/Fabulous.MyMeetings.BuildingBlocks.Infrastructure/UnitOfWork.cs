@@ -3,21 +3,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 
-public class UnitOfWork : IUnitOfWork
+public class UnitOfWork(DbContext context, IDomainEventsDispatcher domainEventsDispatcher) : IUnitOfWork
 {
-    private readonly DbContext _context;
-    private readonly IDomainEventsDispatcher _domainEventsDispatcher;
-
-    public UnitOfWork(DbContext context, IDomainEventsDispatcher domainEventsDispatcher)
-    {
-        _context = context;
-        _domainEventsDispatcher = domainEventsDispatcher;
-    }
-
     public async Task<int> CommitAsync(CancellationToken cancellationToken = default)
     {
-        await _domainEventsDispatcher.DispatchEventsAsync();
+        await domainEventsDispatcher.DispatchEventsAsync();
 
-        return await _context.SaveChangesAsync(cancellationToken);
+        return await context.SaveChangesAsync(cancellationToken);
     }
 }

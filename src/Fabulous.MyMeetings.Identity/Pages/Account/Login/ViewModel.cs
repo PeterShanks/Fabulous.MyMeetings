@@ -18,15 +18,9 @@ public class ViewModel
     public string ExternalLoginScheme =>
         IsExternalLoginOnly ? ExternalProviders?.SingleOrDefault()?.AuthenticationScheme : null;
 
-    public class ExternalProvider
+    public class ExternalProvider(string authenticationScheme, string displayName = null)
     {
-        public ExternalProvider(string authenticationScheme, string displayName = null)
-        {
-            AuthenticationScheme = authenticationScheme;
-            DisplayName = displayName;
-        }
-
-        public string DisplayName { get; set; }
-        public string AuthenticationScheme { get; set; }
+        public string DisplayName { get; set; } = displayName;
+        public string AuthenticationScheme { get; set; } = authenticationScheme;
     }
 }

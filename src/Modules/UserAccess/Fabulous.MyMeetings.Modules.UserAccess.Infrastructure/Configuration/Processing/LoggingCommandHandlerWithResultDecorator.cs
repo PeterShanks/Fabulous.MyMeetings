@@ -5,45 +5,39 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing;
 
-internal class LoggingCommandHandlerWithResultDecorator<TCommand, TResult> : ICommandHandler<TCommand, TResult>
+internal class LoggingCommandHandlerWithResultDecorator<TCommand, TResult>(
+    ILogger logger,
+    IExecutionContextAccessor executionContextAccessor,
+    ICommandHandler<TCommand, TResult> decorated) : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>
 {
-    private readonly ICommandHandler<TCommand, TResult> _decorated;
-    private readonly IExecutionContextAccessor _executionContextAccessor;
-    private readonly ILogger _logger;
-
-    public LoggingCommandHandlerWithResultDecorator(
-        ILogger logger,
-        IExecutionContextAccessor executionContextAccessor,
-        ICommandHandler<TCommand, TResult> decorated)
-    {
-        _logger = logger;
-        _executionContextAccessor = executionContextAccessor;
-        _decorated = decorated;
-    }
-
     public async Task<TResult> Handle(TCommand request, CancellationToken cancellationToken)
     {
-        using (_logger.BeginScope(new List<KeyValuePair<string, object>>
+        if (request is IRecurringCommand)
+        {
+            return await decorated.Handle(request, cancellationToken);
+        }
+
+        using (logger.BeginScope(new List<KeyValuePair<string, object>>
                {
-                   new("CorrelationId", _executionContextAccessor.CorrelationId),
+                   new("CorrelationId", executionContextAccessor.CorrelationId),
                    new("Context", request.Id)
                }))
         {
             try
             {
-                _logger.LogInformation("Executing command {Command}", request.GetType().Name);
+                logger.LogInformation("Executing command {Command}", request.GetType().Name);
 
-                var result = await _decorated.Handle(request, cancellationToken);
+                var result = await decorated.Handle(request, cancellationToken);
 
-                _logger.LogInformation("Command {Command} processed successful, result {Result}",
+                logger.LogInformation("Command {Command} processed successful, result {Result}",
                     request.GetType().Name, result);
 
                 return result;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Command {Command} processing failed", request.GetType().Name);
+                logger.LogError(ex, "Command {Command} processing failed", request.GetType().Name);
                 throw;
             }
         }

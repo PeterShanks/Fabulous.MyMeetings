@@ -5,15 +5,8 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class CommandsScheduler : ICommandsScheduler
+internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory) : ICommandsScheduler
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public Task EnqueueAsync(InternalCommand command)
     {
         return AddToInternalCommands(new
@@ -38,7 +31,7 @@ internal class CommandsScheduler : ICommandsScheduler
 
     private Task AddToInternalCommands(object command)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sqlInsert =
             """

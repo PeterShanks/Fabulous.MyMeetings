@@ -7,26 +7,17 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Queries;
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetAuthenticatedUserPermissions;
 
 internal class
-    GetAuthenticatedUserPermissionsQueryHandler : IQueryHandler<GetAuthenticatedUserPermissionsQuery,
+    GetAuthenticatedUserPermissionsQueryHandler(
+    ISqlConnectionFactory sqlConnectionFactory,
+    IExecutionContextAccessor executionContextAccessor) : IQueryHandler<GetAuthenticatedUserPermissionsQuery,
     List<UserPermissionDto>>
 {
-    private readonly IExecutionContextAccessor _executionContextAccessor;
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public GetAuthenticatedUserPermissionsQueryHandler(
-        ISqlConnectionFactory sqlConnectionFactory,
-        IExecutionContextAccessor executionContextAccessor)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-        _executionContextAccessor = executionContextAccessor;
-    }
-
     public async Task<List<UserPermissionDto>> Handle(GetAuthenticatedUserPermissionsQuery request,
         CancellationToken cancellationToken)
     {
-        if (!_executionContextAccessor.IsAvailable) return new List<UserPermissionDto>();
+        if (!executionContextAccessor.IsAvailable) return [];
 
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
             """
@@ -38,7 +29,7 @@ internal class
 
         var permissions = await connection.QueryAsync<UserPermissionDto>(
             sql,
-            new { _executionContextAccessor.UserId });
+            new { executionContextAccessor.UserId });
 
         return permissions.AsList();
     }

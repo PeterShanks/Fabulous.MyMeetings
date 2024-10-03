@@ -5,19 +5,12 @@ using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventBus;
 
-internal class IntegrationEventGenericHandler<T> : IIntegrationEventHandler<T>
+internal class IntegrationEventGenericHandler<T>(ISqlConnectionFactory sqlConnectionFactory) : IIntegrationEventHandler<T>
     where T : IntegrationEvent
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public IntegrationEventGenericHandler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public async Task Handle(T @event)
     {
-        using var connection = _sqlConnectionFactory.GetOpenConnection();
+        using var connection = sqlConnectionFactory.GetOpenConnection();
 
         var json = JsonSerializer.Serialize(@event, JsonSerializerOptionsInstance);
 

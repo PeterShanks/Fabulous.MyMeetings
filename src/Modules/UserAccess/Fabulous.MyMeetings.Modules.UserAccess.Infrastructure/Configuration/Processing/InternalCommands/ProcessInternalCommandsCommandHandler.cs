@@ -8,24 +8,13 @@ using Polly.Registry;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessInternalCommandsCommand>
+internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlConnectionFactory,
+    IMediator mediator,
+    ResiliencePipelineProvider<string> resiliencePipelineProvider) : ICommandHandler<ProcessInternalCommandsCommand>
 {
-    private readonly IMediator _mediator;
-    private readonly ResiliencePipelineProvider<string> _resiliencePipelineProvider;
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlConnectionFactory,
-        IMediator mediator,
-        ResiliencePipelineProvider<string> resiliencePipelineProvider)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-        _mediator = mediator;
-        _resiliencePipelineProvider = resiliencePipelineProvider;
-    }
-
     public async Task Handle(ProcessInternalCommandsCommand request, CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
             """
@@ -40,7 +29,7 @@ internal class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessIn
 
         var commands = await connection.QueryAsync<InternalCommandDto>(sql);
 
-        var pipeline = _resiliencePipelineProvider.GetPipeline(PollyPolicies.WaitAndRetry);
+        var pipeline = resiliencePipelineProvider.GetPipeline(PollyPolicies.WaitAndRetry);
         var context = ResilienceContextPool.Shared.Get();
 
         foreach (var command in commands)
@@ -78,7 +67,7 @@ internal class ProcessInternalCommandsCommandHandler : ICommandHandler<ProcessIn
         if (command is null)
             throw new InvalidOperationException($"Couldn't deserialize into type {commandDto.Type}");
 
-        return _mediator.Send(command, cancellationToken);
+        return mediator.Send(command, cancellationToken);
     }
 
     private class InternalCommandDto

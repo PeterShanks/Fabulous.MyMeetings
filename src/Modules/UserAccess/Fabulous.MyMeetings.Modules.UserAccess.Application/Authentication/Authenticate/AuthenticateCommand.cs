@@ -2,15 +2,9 @@
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
 
-public class AuthenticateCommand : Command<AuthenticationResult>
+public class AuthenticateCommand(string login, string password) : Command<AuthenticationResult>
 {
-    public AuthenticateCommand(string login, string password)
-    {
-        Login = login;
-        Password = password;
-    }
+    public string Login { get; } = login;
 
-    public string Login { get; }
-
-    public string Password { get; }
+    public string Password { get; } = password;
 }

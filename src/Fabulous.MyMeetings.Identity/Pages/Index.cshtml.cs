@@ -10,18 +10,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 namespace Fabulous.MyMeetings.Identity.Pages;
 
 [AllowAnonymous]
-public class Index : PageModel
+public class Index(IdentityServerLicense license = null) : PageModel
 {
-    public Index(IdentityServerLicense license = null)
-    {
-        License = license;
-    }
-
     public string Version =>
         typeof(IdentityServerMiddleware).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion.Split('+').First()
         ?? "unavailable";
 
-    public IdentityServerLicense License { get; }
+    public IdentityServerLicense License { get; } = license;
 }

@@ -2,21 +2,14 @@
 
 namespace Fabulous.MyMeetings.Api.Configuration.ExecutionContext;
 
-public class ExecutionContextAccessor : IExecutionContextAccessor
+public class ExecutionContextAccessor(IHttpContextAccessor httpContextAccessor) : IExecutionContextAccessor
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public ExecutionContextAccessor(IHttpContextAccessor httpContextAccessor)
-    {
-        _httpContextAccessor = httpContextAccessor;
-    }
-
     /// <exception cref="ApplicationException" accessor="get">User context is not available</exception>
     public Guid UserId
     {
         get
         {
-            var value = _httpContextAccessor
+            var value = httpContextAccessor
                 .HttpContext?
                 .User
                 .Claims
@@ -33,7 +26,7 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
     {
         get
         {
-            if (_httpContextAccessor.HttpContext?.Request
+            if (httpContextAccessor.HttpContext?.Request
                     .Headers.TryGetValue(CorrelationMiddleware.CorrelationHeaderKey, out var correlationId) ?? false)
                 return Guid.Parse(correlationId!);
 
@@ -41,5 +34,5 @@ public class ExecutionContextAccessor : IExecutionContextAccessor
         }
     }
 
-    public bool IsAvailable => _httpContextAccessor.HttpContext != null;
+    public bool IsAvailable => httpContextAccessor.HttpContext != null;
 }

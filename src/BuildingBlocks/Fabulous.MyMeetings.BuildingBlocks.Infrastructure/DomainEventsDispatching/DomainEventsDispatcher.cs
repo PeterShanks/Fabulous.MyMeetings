@@ -6,53 +6,38 @@ using MediatR;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
-public class DomainEventsDispatcher : IDomainEventsDispatcher
+public class DomainEventsDispatcher(
+    IMediator mediator,
+    IOutbox outbox,
+    IDomainEventsAccessor domainEventsAccessor,
+    IDomainNotificationsMapper domainNotificationsMapper,
+    IDomainEventNotificationFactory domainEventNotificationFactory) : IDomainEventsDispatcher
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    private readonly IDomainEventNotificationFactory _domainEventNotificationFactory;
-    private readonly IDomainEventsAccessor _domainEventsAccessor;
-    private readonly IDomainNotificationsMapper _domainNotificationsMapper;
-    private readonly IMediator _mediator;
-    private readonly IOutbox _outbox;
-
-    public DomainEventsDispatcher(
-        IMediator mediator,
-        IOutbox outbox,
-        IDomainEventsAccessor domainEventsAccessor,
-        IDomainNotificationsMapper domainNotificationsMapper,
-        IDomainEventNotificationFactory domainEventNotificationFactory)
-    {
-        _mediator = mediator;
-        _outbox = outbox;
-        _domainEventsAccessor = domainEventsAccessor;
-        _domainNotificationsMapper = domainNotificationsMapper;
-        _domainEventNotificationFactory = domainEventNotificationFactory;
-    }
-
     public async Task DispatchEventsAsync()
     {
-        var domainEvents = _domainEventsAccessor.GetAllDomainEvents();
+        var domainEvents = domainEventsAccessor.GetAllDomainEvents();
 
         var domainEventNotifications = new List<IDomainEventNotification<IDomainEvent>>();
 
         foreach (var domainEvent in domainEvents)
         {
             var domainNotification =
-                _domainEventNotificationFactory.Create(domainEvent);
+                domainEventNotificationFactory.Create(domainEvent);
 
             if (domainNotification != null)
                 domainEventNotifications.Add(domainNotification);
         }
 
-        _domainEventsAccessor.ClearAllDomainEvents();
+        domainEventsAccessor.ClearAllDomainEvents();
 
         foreach (var domainEvent in domainEvents)
-            await _mediator.Publish(domainEvent);
+            await mediator.Publish(domainEvent);
 
         foreach (var domainEventNotification in domainEventNotifications)
         {
-            var typeName = _domainNotificationsMapper.GetName(domainEventNotification.GetType());
+            var typeName = domainNotificationsMapper.GetName(domainEventNotification.GetType());
             var data = JsonSerializer.Serialize(domainEventNotification, JsonOptions);
 
             var outboxMessage = new OutboxMessage(
@@ -62,7 +47,7 @@ public class DomainEventsDispatcher : IDomainEventsDispatcher
                 data
             );
 
-            _outbox.Add(outboxMessage);
+            outbox.Add(outboxMessage);
         }
     }
 }

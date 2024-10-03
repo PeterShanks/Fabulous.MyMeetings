@@ -17,19 +17,8 @@ namespace Fabulous.MyMeetings.Identity.Pages.Account.Logout;
 
 [SecurityHeaders]
 [AllowAnonymous]
-public class Index : PageModel
+public class Index(SignInManager<User> signInManager, IIdentityServerInteractionService interaction, IEventService events) : PageModel
 {
-    private readonly IEventService _events;
-    private readonly IIdentityServerInteractionService _interaction;
-    private readonly SignInManager<User> _signInManager;
-
-    public Index(SignInManager<User> signInManager, IIdentityServerInteractionService interaction, IEventService events)
-    {
-        _signInManager = signInManager;
-        _interaction = interaction;
-        _events = events;
-    }
-
     [BindProperty] public string LogoutId { get; set; }
 
     public async Task<IActionResult> OnGet(string logoutId)
@@ -45,7 +34,7 @@ public class Index : PageModel
         }
         else
         {
-            var context = await _interaction.GetLogoutContextAsync(LogoutId);
+            var context = await interaction.GetLogoutContextAsync(LogoutId);
             if (context?.ShowSignoutPrompt == false)
                 // it's safe to automatically sign-out
                 showLogoutPrompt = false;
@@ -66,16 +55,16 @@ public class Index : PageModel
             // if there's no current logout context, we need to create one
             // this captures necessary info from the current logged in user
             // this can still return null if there is no context needed
-            LogoutId ??= await _interaction.CreateLogoutContextAsync();
+            LogoutId ??= await interaction.CreateLogoutContextAsync();
 
             // delete local authentication cookie
-            await _signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
 
             // see if we need to trigger federated logout
             var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
 
             // raise the logout event
-            await _events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
+            await events.RaiseAsync(new UserLogoutSuccessEvent(User.GetSubjectId(), User.GetDisplayName()));
             Telemetry.Metrics.UserLogout(idp);
 
             // if it's a local login we can ignore this workflow

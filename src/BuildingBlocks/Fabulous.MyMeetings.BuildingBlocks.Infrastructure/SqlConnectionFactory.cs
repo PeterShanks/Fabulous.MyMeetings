@@ -4,16 +4,10 @@ using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 
-public class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
+public class SqlConnectionFactory(string connectionString) : ISqlConnectionFactory, IDisposable
 
 {
-    private readonly string _connectionString;
     private IDbConnection? _connection;
-
-    public SqlConnectionFactory(string connectionString)
-    {
-        _connectionString = connectionString;
-    }
 
     public void Dispose()
     {
@@ -30,7 +24,7 @@ public class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
         if (_connection is not null)
             return _connection;
 
-        _connection = new SqlConnection(_connectionString);
+        _connection = new SqlConnection(connectionString);
         _connection.Open();
 
         return _connection;
@@ -38,7 +32,7 @@ public class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
 
     public IDbConnection CreateNewConnection()
     {
-        var connection = new SqlConnection(_connectionString);
+        var connection = new SqlConnection(connectionString);
         connection.Open();
 
         return connection;
@@ -46,7 +40,7 @@ public class SqlConnectionFactory : ISqlConnectionFactory, IDisposable
 
     public string GetConnectionString()
     {
-        return _connectionString;
+        return connectionString;
     }
 
     protected virtual void Dispose(bool disposing)

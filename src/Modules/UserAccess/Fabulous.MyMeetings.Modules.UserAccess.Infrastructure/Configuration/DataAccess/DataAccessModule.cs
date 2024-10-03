@@ -1,8 +1,6 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
-using Fabulous.MyMeetings.Modules.UserAccess.Domain.UserRegistrations;
 using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
-using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.UserRegistrations;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,7 +17,6 @@ internal static class DataAccessModule
         services.AddDbContext<UserAccessContext>(b =>
             b.UseSqlServer(databaseConnectionString));
 
-        services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<DbContext, UserAccessContext>();
     }

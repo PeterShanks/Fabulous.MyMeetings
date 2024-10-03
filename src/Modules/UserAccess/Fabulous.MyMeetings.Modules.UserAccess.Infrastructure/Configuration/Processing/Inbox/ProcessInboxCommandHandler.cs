@@ -3,27 +3,16 @@ using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Inbox;
 
-internal class ProcessInboxCommandHandler : ICommandHandler<ProcessInboxCommand>
+internal class ProcessInboxCommandHandler(
+    IMediator mediator,
+    ISqlConnectionFactory sqlConnectionFactory) : ICommandHandler<ProcessInboxCommand>
 {
-    private readonly IMediator _mediator;
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public ProcessInboxCommandHandler(
-        IMediator mediator,
-        ISqlConnectionFactory sqlConnectionFactory,
-        ILogger<ProcessInboxCommandHandler> logger)
-    {
-        _mediator = mediator;
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public async Task Handle(ProcessInboxCommand request, CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
             """
@@ -53,7 +42,7 @@ internal class ProcessInboxCommandHandler : ICommandHandler<ProcessInboxCommand>
                 notification)
                 throw new InvalidOperationException("Couldn't create notification object");
 
-            await _mediator.Publish(notification, cancellationToken);
+            await mediator.Publish(notification, cancellationToken);
 
             await connection.ExecuteAsync(updateProcessedDateSql, new
             {

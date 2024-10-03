@@ -5,26 +5,16 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 
-public class EmailSender : IEmailSender
+public class EmailSender(
+    ILogger<EmailSender> logger,
+    EmailsConfiguration configuration,
+    ISqlConnectionFactory sqlConnectionFactory) : IEmailSender
 {
-    private readonly EmailsConfiguration _configuration;
-    private readonly ILogger _logger;
-
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public EmailSender(
-        ILogger<EmailSender> logger,
-        EmailsConfiguration configuration,
-        ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _logger = logger;
-        _configuration = configuration;
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
+    private readonly ILogger _logger = logger;
 
     public async Task SendEmail(EmailMessage message)
     {
-        var sqlConnection = _sqlConnectionFactory.GetOpenConnection();
+        var sqlConnection = sqlConnectionFactory.GetOpenConnection();
 
         await sqlConnection.ExecuteScalarAsync(
             """
@@ -34,7 +24,7 @@ public class EmailSender : IEmailSender
             new
             {
                 Id = Guid.NewGuid(),
-                From = _configuration.FromEmail,
+                From = configuration.FromEmail,
                 message.To,
                 message.Subject,
                 message.Content,
@@ -43,7 +33,7 @@ public class EmailSender : IEmailSender
 
         _logger.LogInformation(
             "Email sent. From: {From}, To: {To}, Subject: {Subject}, Content: {Content}",
-            _configuration.FromEmail,
+            configuration.FromEmail,
             message.To,
             message.Subject,
             message.Content);

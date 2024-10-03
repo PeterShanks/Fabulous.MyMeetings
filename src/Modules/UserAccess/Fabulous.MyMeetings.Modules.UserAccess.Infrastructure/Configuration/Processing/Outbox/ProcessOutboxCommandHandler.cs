@@ -9,27 +9,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox;
 
-internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxCommand>
+internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFactory sqlConnectionFactory,
+    IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger) : ICommandHandler<ProcessOutboxCommand>
 {
-    private readonly IDomainNotificationsMapper _domainNotificationsMapper;
-    private readonly ILogger _logger;
-    private readonly IMediator _mediator;
-
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFactory sqlConnectionFactory,
-        IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger)
-    {
-        _mediator = mediator;
-        _sqlConnectionFactory = sqlConnectionFactory;
-        _domainNotificationsMapper = domainNotificationsMapper;
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
 
     /// <exception cref="InvalidOperationException">When deserialization fails to destination type.</exception>
     public async Task Handle(ProcessOutboxCommand request, CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
         const string sql =
             """
             SELECT
@@ -52,7 +40,7 @@ internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxComman
 
         foreach (var message in messages)
         {
-            var type = _domainNotificationsMapper.GetType(message.Type);
+            var type = domainNotificationsMapper.GetType(message.Type);
             var notification =
                 JsonSerializer.Deserialize(message.Data, type!, JsonSerializerOptionsInstance) as
                     IDomainEventNotification;
@@ -63,7 +51,7 @@ internal class ProcessOutboxCommandHandler : ICommandHandler<ProcessOutboxComman
             using (_logger.BeginScope(new List<KeyValuePair<string, object>>
                        { new("Context", message.Id) }))
             {
-                await _mediator.Publish(notification, cancellationToken);
+                await mediator.Publish(notification, cancellationToken);
                 await connection.ExecuteScalarAsync(updateProcessedDateSql, new
                 {
                     Date = DateTime.UtcNow,

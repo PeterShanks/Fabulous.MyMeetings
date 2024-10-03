@@ -1,0 +1,10 @@
+﻿using Fabulous.MyMeetings.Modules.Registrations.Application.Contracts;
+using MediatR;
+
+namespace Fabulous.MyMeetings.Modules.Registrations.Application.Configuration.Queries;
+
+public interface IQueryHandler<in TQuery, TResult> :
+    IRequestHandler<TQuery, TResult>
+    where TQuery : IQuery<TResult>
+{
+}

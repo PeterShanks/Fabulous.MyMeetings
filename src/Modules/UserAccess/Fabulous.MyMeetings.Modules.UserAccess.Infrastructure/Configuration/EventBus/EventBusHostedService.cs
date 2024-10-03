@@ -4,20 +4,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventBus;
 
-internal class EventBusHostedService : BackgroundService
+internal class EventBusHostedService(IEventBus eventBus, ILogger logger) : BackgroundService
 {
-    private readonly IEventBus _eventBus;
-    private readonly ILogger _logger;
-
-    public EventBusHostedService(IEventBus eventBus, ILogger logger)
-    {
-        _eventBus = eventBus;
-        _logger = logger;
-    }
+    private readonly IEventBus _eventBus = eventBus;
 
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Starting event bus hosting service");
+        logger.LogInformation("Starting event bus hosting service");
         return Task.CompletedTask;
     }
 

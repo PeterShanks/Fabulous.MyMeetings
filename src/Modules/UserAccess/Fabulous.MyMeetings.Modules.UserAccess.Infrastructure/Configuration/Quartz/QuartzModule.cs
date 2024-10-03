@@ -8,7 +8,7 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Qu
 
 internal static class QuartzModule
 {
-    public static void AddQuartz(this IServiceCollection services, string connectionString,
+    public static void AddQuartz(this IServiceCollection services,
         long? internalProcessingPoolingInterval = null)
     {
         services.Configure<QuartzOptions>(opts =>
@@ -97,20 +97,20 @@ internal static class QuartzModule
                     .WithCronSchedule("0/2 * * ? * *")
                 );
 
-            q.UseJobAutoInterrupt(cfg => cfg.DefaultMaxRunTime = TimeSpan.FromHours(3));
+            //q.UseJobAutoInterrupt(cfg => cfg.DefaultMaxRunTime = TimeSpan.FromHours(3));
 
-            q.UsePersistentStore(store =>
-            {
-                store.PerformSchemaValidation = true;
-                store.UseProperties = true;
-                store.UseClustering();
-                store.UseSqlServer(cfg =>
-                {
-                    cfg.ConnectionString = connectionString;
-                    cfg.TablePrefix = "Users.QRTZ_";
-                });
-                store.UseNewtonsoftJsonSerializer();
-            });
+            //q.UsePersistentStore(store =>
+            //{
+            //    store.PerformSchemaValidation = true;
+            //    store.UseProperties = true;
+            //    store.UseClustering();
+            //    store.UseSqlServer(cfg =>
+            //    {
+            //        cfg.ConnectionString = connectionString;
+            //        cfg.TablePrefix = "Users.QRTZ_";
+            //    });
+            //    store.UseSystemTextJsonSerializer();
+            //});
         });
 
         services.AddQuartzHostedService(opts => { opts.WaitForJobsToComplete = false; });

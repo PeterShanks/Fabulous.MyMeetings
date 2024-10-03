@@ -3,18 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
-public class DomainEventsAccessor : IDomainEventsAccessor
+public class DomainEventsAccessor(DbContext dbContext) : IDomainEventsAccessor
 {
-    private readonly DbContext _dbContext;
-
-    public DomainEventsAccessor(DbContext dbContext)
-    {
-        _dbContext = dbContext;
-    }
-
     public IReadOnlyCollection<IDomainEvent> GetAllDomainEvents()
     {
-        var domainEntities = _dbContext
+        var domainEntities = dbContext
             .ChangeTracker
             .Entries<Entity>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
@@ -26,7 +19,7 @@ public class DomainEventsAccessor : IDomainEventsAccessor
 
     public void ClearAllDomainEvents()
     {
-        var domainEntities = _dbContext.ChangeTracker
+        var domainEntities = dbContext.ChangeTracker
             .Entries<Entity>()
             .Where(x => x.Entity.DomainEvents != null && x.Entity.DomainEvents.Any()).ToList();
 

@@ -1,11 +1,6 @@
 ﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Domain.Users.Events;
 
-public class UserCreatedDomainEvent : DomainEvent
+public class UserCreatedDomainEvent(UserId id) : DomainEvent
 {
-    public UserCreatedDomainEvent(UserId id)
-    {
-        Id = id;
-    }
-
-    public new UserId Id { get; }
+    public new UserId Id { get; } = id;
 }

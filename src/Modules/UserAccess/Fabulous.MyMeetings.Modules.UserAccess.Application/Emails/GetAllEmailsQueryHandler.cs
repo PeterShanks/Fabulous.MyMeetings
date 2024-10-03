@@ -4,18 +4,11 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Queries;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Emails;
 
-internal class GetAllEmailsQueryHandler : IQueryHandler<GetAllEmailsQuery, List<EmailDto>>
+internal class GetAllEmailsQueryHandler(ISqlConnectionFactory sqlConnectionFactory) : IQueryHandler<GetAllEmailsQuery, List<EmailDto>>
 {
-    private readonly ISqlConnectionFactory _sqlConnectionFactory;
-
-    public GetAllEmailsQueryHandler(ISqlConnectionFactory sqlConnectionFactory)
-    {
-        _sqlConnectionFactory = sqlConnectionFactory;
-    }
-
     public async Task<List<EmailDto>> Handle(GetAllEmailsQuery request, CancellationToken cancellationToken)
     {
-        var connection = _sqlConnectionFactory.GetOpenConnection();
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
         var emailsEnumerable = await connection.QueryAsync<EmailDto>(
             """
