@@ -1,11 +1,11 @@
-﻿using System.Text.Json;
-using Dapper;
+﻿using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 using Fabulous.MyMeetings.Modules.Registrations.Application.Configuration.Commands;
 using MediatR;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Processing.Outbox;
 

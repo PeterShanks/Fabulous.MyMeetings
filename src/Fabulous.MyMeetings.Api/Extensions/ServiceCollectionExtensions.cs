@@ -1,5 +1,7 @@
-﻿using System.Reflection;
+﻿using Fabulous.MyMeetings.Api.Modules;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using System.Reflection;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
 
@@ -11,6 +13,11 @@ public static class ServiceCollectionExtensions
         services.AddControllers();
         services.AddHttpContextAccessor();
         services.AddSwagger();
+        services.AddHostedService<ModuleBackgroundServices>();
+        services.AddSerilog(cfg => cfg
+            .Enrich.With<ModuleEnricher>()
+            .ReadFrom.Configuration(builder.Configuration)
+        );
 
         return builder;
     }

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 using Fabulous.MyMeetings.Modules.Registrations.Domain.UserRegistrations;
 using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Domain.UserRegistrations;
@@ -23,6 +18,7 @@ namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration
                 b.UseSqlServer(databaseConnectionString));
 
             services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
+            services.AddScoped<DbContext, RegistrationsContext>();
         }
     }
 }

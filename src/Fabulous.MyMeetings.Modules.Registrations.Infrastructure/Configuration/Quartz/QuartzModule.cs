@@ -2,6 +2,7 @@
 using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Processing.InternalCommands;
 using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Processing.Outbox;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Quartz;
 
 namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Quartz;
@@ -9,6 +10,7 @@ namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration
 internal static class QuartzModule
 {
     public static void AddQuartz(this IServiceCollection services,
+        IHostApplicationLifetime hostApplicationLifetime,
         long? internalProcessingPoolingInterval = null)
     {
         services.Configure<QuartzOptions>(opts =>
@@ -96,23 +98,9 @@ internal static class QuartzModule
                     .ForJob(processInternalCommandsJobKey)
                     .WithCronSchedule("0/2 * * ? * *")
                 );
-
-            //q.UseJobAutoInterrupt(cfg => cfg.DefaultMaxRunTime = TimeSpan.FromHours(3));
-
-            //q.UsePersistentStore(store =>
-            //{
-            //    store.PerformSchemaValidation = true;
-            //    store.UseProperties = true;
-            //    store.UseClustering();
-            //    store.UseSqlServer(cfg =>
-            //    {
-            //        cfg.ConnectionString = connectionString;
-            //        cfg.TablePrefix = "Users.QRTZ_";
-            //    });
-            //    store.UseSystemTextJsonSerializer();
-            //});
         });
 
+        services.AddSingleton(hostApplicationLifetime);
         services.AddQuartzHostedService(opts => { opts.WaitForJobsToComplete = false; });
     }
 }

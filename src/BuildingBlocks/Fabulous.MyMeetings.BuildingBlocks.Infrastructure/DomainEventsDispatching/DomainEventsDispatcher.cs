@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
 using Fabulous.MyMeetings.BuildingBlocks.Domain;
 using MediatR;
+using System.Text.Json;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 

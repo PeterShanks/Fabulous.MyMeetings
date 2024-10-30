@@ -1,8 +1,8 @@
-﻿using System.Text.Json;
-using Dapper;
+﻿using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using MediatR;
+using System.Text.Json;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Inbox;
 

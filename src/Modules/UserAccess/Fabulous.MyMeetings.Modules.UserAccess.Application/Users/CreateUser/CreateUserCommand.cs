@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
+﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.CreateUser
 {

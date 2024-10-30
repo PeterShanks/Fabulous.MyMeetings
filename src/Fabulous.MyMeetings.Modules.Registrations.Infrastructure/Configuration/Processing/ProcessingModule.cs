@@ -37,15 +37,15 @@ internal static class ProcessingModule
         });
         services.AddScoped<ICommandsScheduler, CommandsScheduler>();
         services.Scan(scan => scan
-            .FromAssemblyDependencies(typeof(ProcessingModule).Assembly)
+            .FromAssemblies(Assemblies)
             .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
-            .AsSelfWithInterfaces()
+            .AsImplementedInterfaces()
             .WithScopedLifetime()
             .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
-            .AsSelfWithInterfaces()
+            .AsImplementedInterfaces()
             .WithScopedLifetime()
             .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>)))
-            .AsSelfWithInterfaces()
+            .AsImplementedInterfaces()
             .WithScopedLifetime()
         );
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
@@ -57,8 +57,7 @@ internal static class ProcessingModule
         services.Decorate(typeof(ICommandHandler<>), typeof(LoggingCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));
 
-        // TODO: Is this of any use?
-        services.Decorate(typeof(INotificationHandler<>), typeof(DomainEventsDispatcherNotificationHandlerDecorator<>));
+        services.TryDecorate(typeof(INotificationHandler<>), typeof(DomainEventsDispatcherNotificationHandlerDecorator<>));
     }
 
     private static void CheckMappings(BiDictionary<string, Type> domainNotificationsMap)

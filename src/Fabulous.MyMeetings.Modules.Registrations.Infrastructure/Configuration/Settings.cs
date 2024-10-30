@@ -12,6 +12,8 @@ public static class Settings
         () => typeof(Settings)
             .Assembly
             .GetReferencedAssemblies()
+            .Where(assemblyName => assemblyName.Name!.StartsWith("Fabulous.MyMeetings.Modules.Registrations") ||
+                                   assemblyName.Name.StartsWith("Fabulous.MyMeetings.BuildingBlocks"))
             .Select(assemblyName => Assembly.Load(assemblyName))
             .Concat(new[] { typeof(Settings).Assembly })
             .ToList()

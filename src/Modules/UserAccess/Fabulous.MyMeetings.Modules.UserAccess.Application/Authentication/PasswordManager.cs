@@ -1,7 +1,7 @@
-﻿using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Options;
+using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
 

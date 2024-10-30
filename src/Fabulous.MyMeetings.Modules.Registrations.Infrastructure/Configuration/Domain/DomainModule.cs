@@ -1,12 +1,9 @@
 ﻿using Fabulous.MyMeetings.Modules.Registrations.Application.UserRegistrations;
-using Fabulous.MyMeetings.Modules.Registrations.Domain.UserRegistrations;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Fabulous.MyMeetings.Modules.Registrations.Application.UserRegistrations.ConfirmUserRegistration;
 using Fabulous.MyMeetings.Modules.Registrations.Application.UserRegistrations.RegisterNewUser;
+using Fabulous.MyMeetings.Modules.Registrations.Domain.UserRegistrations;
+using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Users;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Domain
 {
@@ -16,6 +13,7 @@ namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration
         {
             services.AddScoped<IUsersCounter, UsersCounter>();
             services.AddScoped<IPasswordManager, PasswordManager>();
+            services.AddScoped<IUserCreator, UserAccessGateway>();
         }
     }
 }

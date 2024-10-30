@@ -1,17 +1,17 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.ExecutionContext;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
+using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
-using Microsoft.Extensions.Options;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
 
 public static class WebApplicationExtensions
 {
-    public static async Task<WebApplication> Configure(this WebApplicationBuilder webAppBuilder)
+    public static WebApplication Configure(this WebApplicationBuilder webAppBuilder)
     {
         var app = webAppBuilder.Build();
 
-        await app.InitializeModules();
+        app.InitializeModules();
 
         app.UseHttpsRedirection();
 
@@ -24,7 +24,6 @@ public static class WebApplicationExtensions
 
         if (!app.Environment.IsDevelopment())
             app.UseHsts();
-
 
         app.UseSwaggerDocumentation();
 
@@ -47,20 +46,25 @@ public static class WebApplicationExtensions
         return app;
     }
 
-    private static async Task<WebApplication> InitializeModules(this WebApplication app)
+    private static WebApplication InitializeModules(this WebApplication app)
     {
         var configuration = app.Configuration;
         var serviceProvider = app.Services;
 
-        await UserAccessStartup.Initialize(
-            configuration,
+        UserAccessStartup.Initialize(
             configuration.GetConnectionString("MyMeetings")!,
             new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
             serviceProvider.GetRequiredService<ILoggerFactory>(),
-            serviceProvider.GetRequiredService<IConfigureOptions<LoggerFilterOptions>>(),
             new EmailsConfiguration { FromEmail = configuration["EmailsConfiguration:FromEmail"]! },
-            null,
-            null
+            serviceProvider.GetRequiredService<IHostApplicationLifetime>()
+        );
+
+        RegistrationsStartup.Initialize(
+            configuration.GetConnectionString("MyMeetings")!,
+            new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
+            serviceProvider.GetRequiredService<ILoggerFactory>(),
+            new EmailsConfiguration { FromEmail = configuration["EmailsConfiguration:FromEmail"]! },
+            serviceProvider.GetRequiredService<IHostApplicationLifetime>()
         );
 
         return app;

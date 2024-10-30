@@ -5,26 +5,35 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure;
 
-internal class UserAccessModule : IUserAccessModule
+public class UserAccessModule : IUserAccessModule
 {
     public Task<TResult> ExecuteCommandAsync<TResult>(ICommand<TResult> command)
     {
-        using var scope = CompositionRoot.BeginScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        return mediator.Send(command);
+        using (UserAccessStartup.BeginLoggerScope())
+        using (var scope = UserAccessStartup.BeginScope())
+        {
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            return mediator.Send(command);
+        }
     }
 
     public Task ExecuteCommandAsync(ICommand command)
     {
-        using var scope = CompositionRoot.BeginScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        return mediator.Send(command);
+        using (UserAccessStartup.BeginLoggerScope())
+        using (var scope = UserAccessStartup.BeginScope())
+        {
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            return mediator.Send(command);
+        }
     }
 
     public Task<TResult> ExecuteQueryAsync<TResult>(IQuery<TResult> query)
     {
-        using var scope = CompositionRoot.BeginScope();
-        var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
-        return mediator.Send(query);
+        using (UserAccessStartup.BeginLoggerScope())
+        using (var scope = UserAccessStartup.BeginScope())
+        {
+            var mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
+            return mediator.Send(query);
+        }
     }
 }

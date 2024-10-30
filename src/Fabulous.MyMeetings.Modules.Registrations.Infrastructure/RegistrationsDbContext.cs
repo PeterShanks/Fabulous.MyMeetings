@@ -1,7 +1,7 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 using Fabulous.MyMeetings.Modules.Registrations.Domain.UserRegistrations;
 using Microsoft.EntityFrameworkCore;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 
 namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure
 {

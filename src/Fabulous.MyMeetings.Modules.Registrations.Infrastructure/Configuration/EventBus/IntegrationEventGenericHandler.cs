@@ -1,7 +1,7 @@
-﻿using System.Text.Json;
-using Dapper;
+﻿using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+using System.Text.Json;
 
 namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.EventBus;
 

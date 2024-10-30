@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Dapper;
+﻿using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;

@@ -14,52 +14,82 @@ using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Med
 using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Processing;
 using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Processing.Outbox;
 using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.Quartz;
-using Microsoft.Extensions.Configuration;
+using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration.UserAccess;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 
 namespace Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration
 {
-    public static class RegistrationsStartup
+    public class RegistrationsStartup
     {
-        public static Task Initialize(
-            IConfiguration configuration,
+        private static IServiceProvider _serviceProvider = null!;
+        private static readonly IEnumerable<KeyValuePair<string, object>> ModuleState = [new("Module", "Registrations")];
+
+        public static void Initialize(
             string connectionString,
             IExecutionContextAccessor executionContextAccessor,
             ILoggerFactory loggerFactory,
-            IConfigureOptions<LoggerFilterOptions> loggerFilterOptions,
             EmailsConfiguration emailsConfiguration,
-            IEmailSender? emailSender,
-            IEventBus? eventBus,
+            IHostApplicationLifetime hostApplicationLifetime,
+            IEmailSender? emailSender = null,
+            IEventBus? eventBus = null,
             long? internalProcessingPoolingInterval = null)
         {
-            var host = new HostBuilder()
-                .ConfigureHostConfiguration(c => c.AddConfiguration(configuration))
-                .ConfigureAppConfiguration(cfg => cfg.AddConfiguration(configuration))
-                .ConfigureServices(services =>
-                {
-                    var domainNotificationMap = new BiDictionary<string, Type>();
-                    domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
-                    domainNotificationMap.Add("UserRegistrationConfirmedNotification", typeof(UserRegistrationConfirmedNotification));
+            var services = new ServiceCollection();
 
-                    services.AddLogging(loggerFactory, loggerFilterOptions);
-                    services.AddDataAccess(connectionString);
-                    services.AddDomainServices();
-                    services.AddMediator();
-                    services.AddProcessing(domainNotificationMap);
-                    services.AddEventBus(eventBus);
-                    services.AddOutbox();
-                    services.AddQuartz(internalProcessingPoolingInterval);
-                    services.AddEmail(emailsConfiguration, emailSender);
-                    services.AddSingleton(executionContextAccessor);
-                })
-                .Build();
+            var domainNotificationMap = new BiDictionary<string, Type>();
+            domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
+            domainNotificationMap.Add("UserRegistrationConfirmedNotification", typeof(UserRegistrationConfirmedNotification));
 
-            CompositionRoot.SetContainer(host.Services);
+            services.AddLogging(loggerFactory);
+            services.AddDataAccess(connectionString);
+            services.AddDomainServices();
+            services.AddMediator();
+            services.AddProcessing(domainNotificationMap);
+            services.AddEventBus(eventBus);
+            services.AddOutbox();
+            services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
+            services.AddEmail(emailsConfiguration, emailSender);
+            services.AddSingleton(executionContextAccessor);
+            services.AddUserAccess();
 
-            return host.StartAsync();
+            _serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions()
+            {
+                ValidateOnBuild = true,
+                ValidateScopes = true
+            });
+        }
+
+        public static async Task StartBackgroundServices()
+        {
+            if (_serviceProvider is null)
+                throw new InvalidOperationException("RegistrationsStartup has not been initialized!");
+
+            using var scope = BeginLoggerScope();
+            foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
+            {
+                await hostedService.StartAsync(default);
+            }
+        }
+
+        public static async Task StopBackgroundServices()
+        {
+            if (_serviceProvider is null)
+                throw new InvalidOperationException("RegistrationsStartup has not been initialized!");
+
+            using var scope = BeginLoggerScope();
+            foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
+            {
+                await hostedService.StopAsync(default);
+            }
+        }
+
+        internal static AsyncServiceScope BeginScope() => _serviceProvider!.CreateAsyncScope();
+
+        internal static IDisposable? BeginLoggerScope()
+        {
+            return _serviceProvider.GetRequiredService<ILogger<RegistrationsStartup>>().BeginScope(ModuleState);
         }
     }
 }
