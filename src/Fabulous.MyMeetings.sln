@@ -41,9 +41,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabulous.MyMeetings.Modules
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabulous.MyMeetings.Modules.Registrations.Application", "Fabulous.MyMeetings.Modules.Registrations.Application\Fabulous.MyMeetings.Modules.Registrations.Application.csproj", "{3032DD4B-BF10-40E9-9296-8D18288BD8DB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabulous.MyMeetings.Modules.Registrations.IntegrationEvents", "Fabulous.MyMeetings.Modules.Registrations.IntegrationEvents\Fabulous.MyMeetings.Modules.Registrations.IntegrationEvents.csproj", "{3AEAF7DF-3ABF-48A0-A774-BA55F911326B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabulous.MyMeetings.Modules.Registrations.IntegrationEvents", "Fabulous.MyMeetings.Modules.Registrations.IntegrationEvents\Fabulous.MyMeetings.Modules.Registrations.IntegrationEvents.csproj", "{3AEAF7DF-3ABF-48A0-A774-BA55F911326B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Fabulous.MyMeetings.Modules.Registrations.Infrastructure", "Fabulous.MyMeetings.Modules.Registrations.Infrastructure\Fabulous.MyMeetings.Modules.Registrations.Infrastructure.csproj", "{8C9A634C-187A-4959-842C-7BDD66363BA7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fabulous.MyMeetings.Modules.Registrations.Infrastructure", "Fabulous.MyMeetings.Modules.Registrations.Infrastructure\Fabulous.MyMeetings.Modules.Registrations.Infrastructure.csproj", "{8C9A634C-187A-4959-842C-7BDD66363BA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DatabaseScriptCreator", "DatabaseSriptCreator\DatabaseScriptCreator.csproj", "{0B60D3C3-4C84-46E0-BE32-43E70DA8ECBB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -114,6 +116,10 @@ Global
 		{8C9A634C-187A-4959-842C-7BDD66363BA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C9A634C-187A-4959-842C-7BDD66363BA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8C9A634C-187A-4959-842C-7BDD66363BA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B60D3C3-4C84-46E0-BE32-43E70DA8ECBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B60D3C3-4C84-46E0-BE32-43E70DA8ECBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B60D3C3-4C84-46E0-BE32-43E70DA8ECBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B60D3C3-4C84-46E0-BE32-43E70DA8ECBB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -134,6 +140,7 @@ Global
 		{3032DD4B-BF10-40E9-9296-8D18288BD8DB} = {7571EF58-18A6-4C08-970A-F581112DD247}
 		{3AEAF7DF-3ABF-48A0-A774-BA55F911326B} = {7571EF58-18A6-4C08-970A-F581112DD247}
 		{8C9A634C-187A-4959-842C-7BDD66363BA7} = {7571EF58-18A6-4C08-970A-F581112DD247}
+		{0B60D3C3-4C84-46E0-BE32-43E70DA8ECBB} = {7B206CBE-AAD5-42E5-98C8-428DCCBFE992}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E6B5FA62-B2BD-4FDE-ADCB-6465060FD880}

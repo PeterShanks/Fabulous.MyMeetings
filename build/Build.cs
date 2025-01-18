@@ -1,12 +1,11 @@
+using System;
 using Microsoft.Extensions.Configuration;
 using Nuke.Common;
 using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
-using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
-using System;
-using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 
 public class Build : NukeBuild
 {
@@ -19,31 +18,25 @@ public class Build : NukeBuild
         .AddUserSecrets(typeof(Build).Assembly)
         .Build();
 
+    public Project GetProject(string projectName) => Solution.GetAllProjects(projectName).First();
+
     [Parameter("Configuration to build - Default is 'Debug' (local) or 'Release' (server)")]
     readonly Configuration Configuration = IsLocalBuild ? Configuration.Debug : Configuration.Release;
 
+    [Parameter("Connection string")] 
+    readonly string ConnectionString = Settings.GetConnectionString("MyMeetings");
+
     [Solution] readonly Solution Solution;
 
-    AbsolutePath WorkingDirectory => RootDirectory / ".nuke-working-directory";
-
-    AbsolutePath OutputDirectory => WorkingDirectory / "output";
-
-    AbsolutePath OutputDbUpMigratorBuildDirectory => OutputDirectory / "dbUpMigrator";
-
-    AbsolutePath InputFilesDirectory => WorkingDirectory / "input-files";
-
-    AbsolutePath DatabaseDirectory => RootDirectory / "src" / "Database" / "Fabulous.MyMeetings.Database" / "Scripts";
-    AbsolutePath DbUpMigratorPath => OutputDbUpMigratorBuildDirectory / "DatabaseMigrator.dll";
-
-    public static int Main() => Execute<Build>(x => x.MigrateDatabase);
-
-
-    #region Main
+    public static int Main() => Execute<Build>(t => t.MigrateDatabase);
 
     Target Clean => _ => _
         .Executes(() =>
         {
-            WorkingDirectory.CreateOrCleanDirectory();
+            foreach (var directoryToClean in SolutionRootFolder.GlobDirectories("**/bin"))
+            {
+                directoryToClean.DeleteDirectory();
+            }
         });
 
     Target Compile => _ => _
@@ -52,77 +45,56 @@ public class Build : NukeBuild
         {
             DotNetTasks.DotNetBuild(s => s
                 .SetProjectFile(Solution)
-                .SetConfiguration(Configuration));
+                .SetConfiguration(Configuration)
+            );
         });
 
-    Target UnitTests => _ => _
+    [Parameter("Migration script name", Name = "name")] 
+    [CanBeNull] 
+    readonly string MigrationScriptName;
+
+    Target AddMigration => _ => _
+        .Requires(() => ConnectionString)
+        .Requires(() => MigrationScriptName)
+        .DependsOn(MigrateDatabase)
+        .Executes(() =>
+        {
+            var scriptCreatorProject = GetProject(Projects.DatabaseScriptCreator);
+
+            var scriptName =
+                $"{DateTime.UtcNow:yyyyMMddHHmmss}{(string.IsNullOrWhiteSpace(MigrationScriptName) ? string.Empty : $"_{MigrationScriptName}")}.sql";
+
+            var databaseBuildProject = GetProject(Projects.DatabaseBuildProjectName);
+
+            var dacpacPath = databaseBuildProject.Directory / "bin" / Configuration 
+                             / databaseBuildProject.GetTargetFramework()
+                             / $"{databaseBuildProject.Name}.dacpac";
+
+            DotNetTasks.DotNetRun(s =>
+                    s.SetProjectFile(scriptCreatorProject.Path)
+                        .AddApplicationArguments(
+                            $"--connection-string",
+                            ConnectionString,
+                            $"--dacpac-path",
+                            dacpacPath,
+                            $"--output-script-path",
+                            Database.SourceProject.Migrations / scriptName)
+            );
+        });
+
+    Target MigrateDatabase => _ => _
+        .Requires(() => !string.IsNullOrWhiteSpace(ConnectionString))
         .DependsOn(Compile)
         .Executes(() =>
         {
-            DotNetTasks.DotNetTest(s => s
-                .SetProjectFile(Solution)
-                .SetFilter("UnitTests")
-                .SetConfiguration(Configuration)
+            if (!Database.SourceProject.Migrations.DirectoryExists())
+                Database.SourceProject.Migrations.CreateDirectory();
+
+            var dbUpMigratorProject = GetProject(Projects.DatabaseMigrator);
+
+            DotNetTasks.DotNetRun(s =>
+                s.SetProjectFile(dbUpMigratorProject.Path)
+                    .SetApplicationArguments(ConnectionString, Database.SourceProject.Migrations)
             );
         });
-
-    Target ArchitectureTests => _ => _
-        .DependsOn(UnitTests)
-        .Executes(() =>
-        {
-            DotNetTasks.DotNetTest(s => s
-                .SetProjectFile(Solution)
-                .SetFilter("ArchTests")
-                .SetConfiguration(Configuration)
-            );
-        });
-
-    Target BuildAndUnitTests => _ => _
-        .Triggers(ArchitectureTests)
-        .Executes(() =>
-        {
-        });
-
-    #endregion
-
-    #region Database
-
-    Target CompileDbUpMigrator => _ => _
-        .Executes(() =>
-        {
-            var dbUpMigratorProject = Solution.GetAllProjects("DatabaseMigrator").FirstOrDefault();
-
-            DotNetTasks.DotNetBuild(s => s
-                .SetProjectFile(dbUpMigratorProject)
-                .SetConfiguration(Configuration)
-                .SetOutputDirectory(OutputDbUpMigratorBuildDirectory)
-            );
-        });
-
-    [Parameter("Connection string")] readonly string ConnectionString = Settings.GetConnectionString("MyMeetings");
-
-    Target MigrateDatabase => _ => _
-        .Requires(() => ConnectionString != null)
-        .DependsOn(CompileDbUpMigrator)
-        .Executes(() =>
-        {
-            var migrationsPath = DatabaseDirectory / "Migrations";
-
-            DotNetTasksExtensions.DotNet($@"""{DbUpMigratorPath}"" ""{ConnectionString}"" ""{migrationsPath}""");
-        });
-
-    #endregion
-}
-
-public static class DotNetTasksExtensions
-{
-    public static IReadOnlyCollection<Output> DotNet(string command, string workingDirectory = null,
-        IReadOnlyDictionary<string, string> environmentVariables = null, int? timeout = null, bool? logOutput = null,
-        bool? logInvocation = null, Action<OutputType, string> logger = null, Action<IProcess> exitHandler = null)
-    {
-        using var process = ProcessTasks.StartProcess(DotNetTasks.DotNetPath, command, workingDirectory,
-            environmentVariables, timeout, logOutput, logInvocation, logger ?? DotNetTasks.DotNetLogger);
-        (exitHandler ?? (p => DotNetTasks.DotNetExitHandler.Invoke(null, p))).Invoke(process.AssertWaitForExit());
-        return process.Output;
-    }
 }

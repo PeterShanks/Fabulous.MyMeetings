@@ -15,7 +15,7 @@ logger.Information("Logger configured. Starting migration...");
 
 if (args.Length != 2)
 {
-    logger.Error("Invalid arguments. Execution: DatabaseMigrator [connectionString] [pathToScripts].");
+    logger.Error("Invalid arguments. Execution: DatabaseMigrator [connectionString] [pathToScripts]");
 
     logger.Information("Migration stopped");
 
@@ -28,7 +28,7 @@ var scriptsPath = args[1];
 
 if (!Directory.Exists(scriptsPath))
 {
-    logger.Information($"Directory {scriptsPath} does not exist");
+    logger.Information("Directory {ScriptsPath} does not exist", scriptsPath);
 
     return -1;
 }

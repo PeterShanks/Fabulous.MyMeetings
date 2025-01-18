@@ -1,8 +1,8 @@
-<Project Sdk="MSBuild.Sdk.SqlProj/2.9.1">
+﻿<Project Sdk="MSBuild.Sdk.SqlProj/3.0.0">
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <SqlServerVersion>Sql160</SqlServerVersion>
-    <GenerateCreateScript>True</GenerateCreateScript>
+    <GenerateCreateScript>False</GenerateCreateScript>
     <!-- For additional properties that can be set here, please refer to https://github.com/rr-wfm/MSBuild.Sdk.SqlProj#model-properties -->
   </PropertyGroup>
 
