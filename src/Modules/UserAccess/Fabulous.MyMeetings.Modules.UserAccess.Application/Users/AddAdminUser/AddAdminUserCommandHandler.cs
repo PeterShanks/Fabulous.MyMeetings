@@ -11,7 +11,6 @@ internal class AddAdminUserCommandHandler(IUserRepository userRepository, IPassw
         var hashedPassword = passwordManager.HashPassword(request.Password);
 
         var user = User.CreateAdmin(
-            request.Login,
             hashedPassword,
             request.Email,
             request.FirstName,

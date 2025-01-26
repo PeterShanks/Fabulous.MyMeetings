@@ -43,7 +43,7 @@ public class UserAccessStartup
         services.AddProcessing(domainNotificationMap);
         services.AddEventBus(eventBus);
         services.AddOutbox();
-        services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
+        //services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
         services.AddEmail(emailsConfiguration, emailSender);
         services.AddSingleton(executionContextAccessor);
 

@@ -13,14 +13,14 @@ namespace Fabulous.MyMeetings.Identity.Pages.Grants;
 
 [SecurityHeaders]
 [Authorize]
-public class Index(IIdentityServerInteractionService interaction,
+public class Index(
+    IIdentityServerInteractionService interaction,
     IClientStore clients,
     IResourceStore resources,
-    IEventService events) : PageModel
+    IEventService events)
+    : PageModel
 {
     public ViewModel View { get; set; } = default!;
-
-    [BindProperty] public string ClientId { get; set; }
 
     public async Task OnGet()
     {
@@ -34,7 +34,7 @@ public class Index(IIdentityServerInteractionService interaction,
             {
                 var resources1 = await resources.FindResourcesByScopeAsync(grant.Scopes);
 
-                var item = new GrantViewModel
+                var item = new GrantViewModel()
                 {
                     ClientId = client.ClientId,
                     ClientName = client.ClientName ?? client.ClientId,
@@ -56,6 +56,9 @@ public class Index(IIdentityServerInteractionService interaction,
             Grants = list
         };
     }
+
+    [BindProperty]
+    public string? ClientId { get; set; }
 
     public async Task<IActionResult> OnPost()
     {

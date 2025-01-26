@@ -1,10 +1,10 @@
 // Copyright (c) Duende Software. All rights reserved.
 // See LICENSE in the project root for license information.
 
+using Duende.IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using System.Text;
 using System.Text.Json;
-using Duende.IdentityModel;
 
 namespace Fabulous.MyMeetings.Identity.Pages.Diagnostics;
 
@@ -15,6 +15,7 @@ public class ViewModel
         AuthenticateResult = result;
 
         if (result?.Properties?.Items.TryGetValue("client_list", out var encoded) == true)
+        {
             if (encoded != null)
             {
                 var bytes = Base64Url.Decode(encoded);
@@ -22,7 +23,7 @@ public class ViewModel
                 Clients = JsonSerializer.Deserialize<string[]>(value) ?? Enumerable.Empty<string>();
                 return;
             }
-
+        }
         Clients = Enumerable.Empty<string>();
     }
 

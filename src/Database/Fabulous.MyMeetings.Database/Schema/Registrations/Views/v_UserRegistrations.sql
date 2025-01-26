@@ -1,12 +1,11 @@
-﻿CREATE VIEW [Registrations].[v_UserRegistrations]
+﻿CREATE VIEW [UserRegistrations].[v_UserRegistrations]
 AS
 SELECT
     [UserRegistration].[Id],
-    [UserRegistration].[Login],
     [UserRegistration].[Email],
     [UserRegistration].[FirstName],
     [UserRegistration].[LastName],
     [UserRegistration].[Name],
     [UserRegistration].[StatusCode]
-FROM [Registrations].[UserRegistrations] AS [UserRegistration]
+FROM [UserRegistrations].[UserRegistrations] AS [UserRegistration]
 GO

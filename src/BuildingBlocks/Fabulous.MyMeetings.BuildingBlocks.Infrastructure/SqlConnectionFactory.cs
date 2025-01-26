@@ -1,6 +1,6 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 

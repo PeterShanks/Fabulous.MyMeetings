@@ -55,8 +55,6 @@ public class SqlScriptManipulator()
         batches = batches.SkipWhile(b => !b.StartsWith($"use [{databaseName}]", StringComparison.OrdinalIgnoreCase))
             .ToArray();
 
-        return batches.Length == 2 
-            ? string.Empty
-            : string.Join($"{Environment.NewLine}GO{Environment.NewLine}{Environment.NewLine}", batches);
+        return string.Join($"{Environment.NewLine}GO{Environment.NewLine}{Environment.NewLine}", batches);
     }
 }

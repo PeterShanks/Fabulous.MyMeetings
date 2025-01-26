@@ -2,14 +2,11 @@
 // See LICENSE in the project root for license information.
 
 using Duende.IdentityModel;
-using Duende.IdentityServer;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Services;
-using Fabulous.MyMeetings.Identity.Models;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -17,11 +14,13 @@ namespace Fabulous.MyMeetings.Identity.Pages.Account.Logout;
 
 [SecurityHeaders]
 [AllowAnonymous]
-public class Index(SignInManager<User> signInManager, IIdentityServerInteractionService interaction, IEventService events) : PageModel
+public class Index(IIdentityServerInteractionService interaction, IEventService events)
+    : PageModel
 {
-    [BindProperty] public string LogoutId { get; set; }
+    [BindProperty]
+    public string? LogoutId { get; set; }
 
-    public async Task<IActionResult> OnGet(string logoutId)
+    public async Task<IActionResult> OnGet(string? logoutId)
     {
         LogoutId = logoutId;
 
@@ -36,14 +35,18 @@ public class Index(SignInManager<User> signInManager, IIdentityServerInteraction
         {
             var context = await interaction.GetLogoutContextAsync(LogoutId);
             if (context?.ShowSignoutPrompt == false)
+            {
                 // it's safe to automatically sign-out
                 showLogoutPrompt = false;
+            }
         }
 
         if (showLogoutPrompt == false)
+        {
             // if the request for logout was properly authenticated from IdentityServer, then
             // we don't need to show the prompt and can just log the user out directly.
             return await OnPost();
+        }
 
         return Page();
     }
@@ -58,7 +61,7 @@ public class Index(SignInManager<User> signInManager, IIdentityServerInteraction
             LogoutId ??= await interaction.CreateLogoutContextAsync();
 
             // delete local authentication cookie
-            await signInManager.SignOutAsync();
+            await HttpContext.SignOutAsync();
 
             // see if we need to trigger federated logout
             var idp = User.FindFirst(JwtClaimTypes.IdentityProvider)?.Value;
@@ -68,7 +71,8 @@ public class Index(SignInManager<User> signInManager, IIdentityServerInteraction
             Telemetry.Metrics.UserLogout(idp);
 
             // if it's a local login we can ignore this workflow
-            if (idp != null && idp != IdentityServerConstants.LocalIdentityProvider)
+            if (idp != null && idp != Duende.IdentityServer.IdentityServerConstants.LocalIdentityProvider)
+            {
                 // we need to see if the provider supports external logout
                 if (await HttpContext.GetSchemeSupportsSignOutAsync(idp))
                 {
@@ -80,6 +84,7 @@ public class Index(SignInManager<User> signInManager, IIdentityServerInteraction
                     // this triggers a redirect to the external provider for sign-out
                     return SignOut(new AuthenticationProperties { RedirectUri = url }, idp);
                 }
+            }
         }
 
         return RedirectToPage("/Account/Logout/LoggedOut", new { logoutId = LogoutId });

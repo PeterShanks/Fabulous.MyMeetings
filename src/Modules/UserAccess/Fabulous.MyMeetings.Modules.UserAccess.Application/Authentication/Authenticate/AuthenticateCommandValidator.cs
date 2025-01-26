@@ -6,7 +6,7 @@ internal class AuthenticateCommandValidator : AbstractValidator<AuthenticateComm
 {
     public AuthenticateCommandValidator()
     {
-        RuleFor(x => x.Login).NotEmpty().WithMessage("Login cannot be empty");
+        RuleFor(x => x.Email).NotEmpty().WithMessage("Login cannot be empty");
         RuleFor(x => x.Password).NotEmpty().WithMessage("Password cannot be empty");
     }
 }

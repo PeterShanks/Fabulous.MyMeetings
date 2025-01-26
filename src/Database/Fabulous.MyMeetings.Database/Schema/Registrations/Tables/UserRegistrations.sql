@@ -1,8 +1,7 @@
-﻿CREATE TABLE [Registrations].[UserRegistrations]
+﻿CREATE TABLE [UserRegistrations].[UserRegistrations]
 (
 	[ClusterKey] INT IDENTITY(1, 1) NOT NULL,
 	[Id] UNIQUEIDENTIFIER NOT NULL,
-	[Login] NVARCHAR(100) NOT NULL,
 	[Email] NVARCHAR (255) NOT NULL,
 	[Password] NVARCHAR(255) NOT NULL,
 	[FirstName] NVARCHAR(50) NOT NULL,
@@ -15,4 +14,4 @@
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Registrations_UserRegistrations_ClusterKey ON Registrations.UserRegistrations(ClusterKey);
+CREATE UNIQUE CLUSTERED INDEX IX_Registrations_UserRegistrations_ClusterKey ON UserRegistrations.UserRegistrations(ClusterKey);

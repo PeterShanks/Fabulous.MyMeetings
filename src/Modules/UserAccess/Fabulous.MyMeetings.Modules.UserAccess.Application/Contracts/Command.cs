@@ -2,20 +2,10 @@
 
 public abstract class Command : ICommand
 {
-    protected Command()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 }
 
 public abstract class Command<TResult> : ICommand<TResult>
 {
-    protected Command()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 }

@@ -1,13 +1,14 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.ExecutionContext;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
-using Fabulous.MyMeetings.Modules.Registrations.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
+using Hellang.Middleware.ProblemDetails;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
 
 public static class WebApplicationExtensions
 {
-    public static WebApplication Configure(this WebApplicationBuilder webAppBuilder)
+    public static WebApplication ConfigurePipeline(this WebApplicationBuilder webAppBuilder)
     {
         var app = webAppBuilder.Build();
 
@@ -25,7 +26,11 @@ public static class WebApplicationExtensions
         if (!app.Environment.IsDevelopment())
             app.UseHsts();
 
+        app.UseProblemDetails();
+
         app.UseSwaggerDocumentation();
+
+        app.UseAuthentication();
 
         app.UseAuthorization();
 
@@ -59,7 +64,7 @@ public static class WebApplicationExtensions
             serviceProvider.GetRequiredService<IHostApplicationLifetime>()
         );
 
-        RegistrationsStartup.Initialize(
+        UserRegistrationsStartup.Initialize(
             configuration.GetConnectionString("MyMeetings")!,
             new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
             serviceProvider.GetRequiredService<ILoggerFactory>(),

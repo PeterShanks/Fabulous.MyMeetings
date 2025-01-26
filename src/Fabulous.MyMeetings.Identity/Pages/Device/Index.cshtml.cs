@@ -1,7 +1,6 @@
 // Copyright (c) Duende Software. All rights reserved.
 // See LICENSE in the project root for license information.
 
-using Duende.IdentityServer;
 using Duende.IdentityServer.Configuration;
 using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Extensions;
@@ -22,18 +21,23 @@ public class Index(
     IDeviceFlowInteractionService interaction,
     IEventService eventService,
     IOptions<IdentityServerOptions> options,
-    ILogger<Index> logger) : PageModel
+    ILogger<Index> logger)
+    : PageModel
 {
-    private readonly ILogger<Index> _logger = logger;
     private readonly IOptions<IdentityServerOptions> _options = options;
+    private readonly ILogger<Index> _logger = logger;
 
     public ViewModel View { get; set; } = default!;
 
-    [BindProperty] public InputModel Input { get; set; } = default!;
+    [BindProperty]
+    public InputModel Input { get; set; } = default!;
 
-    public async Task<IActionResult> OnGet(string userCode)
+    public async Task<IActionResult> OnGet(string? userCode)
     {
-        if (string.IsNullOrWhiteSpace(userCode)) return Page();
+        if (String.IsNullOrWhiteSpace(userCode))
+        {
+            return Page();
+        }
 
         if (!await SetViewModelAsync(userCode))
         {
@@ -43,7 +47,7 @@ public class Index(
 
         Input = new InputModel
         {
-            UserCode = userCode
+            UserCode = userCode,
         };
 
         return Page();
@@ -51,12 +55,10 @@ public class Index(
 
     public async Task<IActionResult> OnPost()
     {
-        var request =
-            await interaction.GetAuthorizationContextAsync(Input.UserCode ??
-                                                            throw new ArgumentNullException(nameof(Input.UserCode)));
+        var request = await interaction.GetAuthorizationContextAsync(Input.UserCode ?? throw new ArgumentNullException(nameof(Input.UserCode)));
         if (request == null) return RedirectToPage("/Home/Error/Index");
 
-        ConsentResponse grantedConsent = null;
+        ConsentResponse? grantedConsent = null;
 
         // user clicked 'no' - send back the standard 'access_denied' response
         if (Input.Button == "no")
@@ -67,10 +69,8 @@ public class Index(
             };
 
             // emit event
-            await eventService.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId,
-                request.ValidatedResources.RawScopeValues));
-            Telemetry.Metrics.ConsentDenied(request.Client.ClientId,
-                request.ValidatedResources.ParsedScopes.Select(s => s.ParsedName));
+            await eventService.RaiseAsync(new ConsentDeniedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
+            Telemetry.Metrics.ConsentDenied(request.Client.ClientId, request.ValidatedResources.ParsedScopes.Select(s => s.ParsedName));
         }
         // user clicked 'yes' - validate the data
         else if (Input.Button == "yes")
@@ -80,7 +80,9 @@ public class Index(
             {
                 var scopes = Input.ScopesConsented;
                 if (ConsentOptions.EnableOfflineAccess == false)
-                    scopes = scopes.Where(x => x != IdentityServerConstants.StandardScopes.OfflineAccess);
+                {
+                    scopes = scopes.Where(x => x != Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess);
+                }
 
                 grantedConsent = new ConsentResponse
                 {
@@ -90,13 +92,9 @@ public class Index(
                 };
 
                 // emit event
-                await eventService.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId,
-                    request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented,
-                    grantedConsent.RememberConsent));
-                Telemetry.Metrics.ConsentGranted(request.Client.ClientId, grantedConsent.ScopesValuesConsented,
-                    grantedConsent.RememberConsent);
-                var denied = request.ValidatedResources.ParsedScopes.Select(s => s.ParsedName)
-                    .Except(grantedConsent.ScopesValuesConsented);
+                await eventService.RaiseAsync(new ConsentGrantedEvent(User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                Telemetry.Metrics.ConsentGranted(request.Client.ClientId, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent);
+                var denied = request.ValidatedResources.ParsedScopes.Select(s => s.ParsedName).Except(grantedConsent.ScopesValuesConsented);
                 Telemetry.Metrics.ConsentDenied(request.Client.ClientId, denied);
             }
             else
@@ -119,7 +117,10 @@ public class Index(
         }
 
         // we need to redisplay the consent UI
-        if (!await SetViewModelAsync(Input.UserCode)) return RedirectToPage("/Home/Error/Index");
+        if (!await SetViewModelAsync(Input.UserCode))
+        {
+            return RedirectToPage("/Home/Error/Index");
+        }
         return Page();
     }
 
@@ -132,9 +133,11 @@ public class Index(
             View = CreateConsentViewModel(request);
             return true;
         }
-
-        View = new ViewModel();
-        return false;
+        else
+        {
+            View = new ViewModel();
+            return false;
+        }
     }
 
     private ViewModel CreateConsentViewModel(DeviceFlowAuthorizationRequest request)
@@ -147,8 +150,7 @@ public class Index(
             AllowRememberConsent = request.Client.AllowRememberConsent
         };
 
-        vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x =>
-            CreateScopeViewModel(x, Input == null || Input.ScopesConsented.Contains(x.Name))).ToArray();
+        vm.IdentityScopes = request.ValidatedResources.Resources.IdentityResources.Select(x => CreateScopeViewModel(x, Input == null || Input.ScopesConsented.Contains(x.Name))).ToArray();
 
         var apiScopes = new List<ScopeViewModel>();
         foreach (var parsedScope in request.ValidatedResources.ParsedScopes)
@@ -156,16 +158,14 @@ public class Index(
             var apiScope = request.ValidatedResources.Resources.FindApiScope(parsedScope.ParsedName);
             if (apiScope != null)
             {
-                var scopeVm = CreateScopeViewModel(parsedScope, apiScope,
-                    Input == null || Input.ScopesConsented.Contains(parsedScope.RawValue));
+                var scopeVm = CreateScopeViewModel(parsedScope, apiScope, Input == null || Input.ScopesConsented.Contains(parsedScope.RawValue));
                 apiScopes.Add(scopeVm);
             }
         }
-
         if (DeviceOptions.EnableOfflineAccess && request.ValidatedResources.Resources.OfflineAccess)
-            apiScopes.Add(GetOfflineAccessScope(Input == null ||
-                                                Input.ScopesConsented.Contains(IdentityServerConstants.StandardScopes
-                                                    .OfflineAccess)));
+        {
+            apiScopes.Add(GetOfflineAccessScope(Input == null || Input.ScopesConsented.Contains(Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess)));
+        }
         vm.ApiScopes = apiScopes;
 
         return vm;
@@ -202,7 +202,7 @@ public class Index(
     {
         return new ScopeViewModel
         {
-            Value = IdentityServerConstants.StandardScopes.OfflineAccess,
+            Value = Duende.IdentityServer.IdentityServerConstants.StandardScopes.OfflineAccess,
             DisplayName = DeviceOptions.OfflineAccessDisplayName,
             Description = DeviceOptions.OfflineAccessDescription,
             Emphasize = true,

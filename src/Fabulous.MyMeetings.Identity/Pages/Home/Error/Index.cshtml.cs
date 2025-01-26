@@ -9,11 +9,12 @@ namespace Fabulous.MyMeetings.Identity.Pages.Home.Error;
 
 [AllowAnonymous]
 [SecurityHeaders]
-public class Index(IIdentityServerInteractionService interaction, IWebHostEnvironment environment) : PageModel
+public class Index(IIdentityServerInteractionService interaction, IWebHostEnvironment environment)
+    : PageModel
 {
     public ViewModel View { get; set; } = new();
 
-    public async Task OnGet(string errorId)
+    public async Task OnGet(string? errorId)
     {
         // retrieve error details from identityserver
         var message = await interaction.GetErrorContextAsync(errorId);
@@ -22,8 +23,10 @@ public class Index(IIdentityServerInteractionService interaction, IWebHostEnviro
             View.Error = message;
 
             if (!environment.IsDevelopment())
+            {
                 // only show in development
                 message.ErrorDescription = null;
+            }
         }
     }
 }

@@ -2,7 +2,6 @@
 (
     [ClusterKey] INT IDENTITY(1, 1) NOT NULL,
     [Id] UNIQUEIDENTIFIER NOT NULL,
-    [Login] NVARCHAR(100) NOT NULL,
     [Email] NVARCHAR (255) NOT NULL,
     [Password] NVARCHAR(255) NOT NULL,
     [IsActive] BIT NOT NULL,

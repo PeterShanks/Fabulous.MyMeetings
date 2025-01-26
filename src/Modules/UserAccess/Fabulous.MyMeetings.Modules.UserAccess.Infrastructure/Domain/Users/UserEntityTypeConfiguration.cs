@@ -17,9 +17,6 @@ internal class UserEntityTypeConfiguration : IEntityTypeConfiguration<User>
             .HasConversion<TypedIdValueConverter<UserId>>()
             .ValueGeneratedNever();
 
-        builder.Property(p => p.Login)
-            .HasColumnName("Login");
-
         builder.Property(p => p.Email)
             .HasColumnName("Email");
 

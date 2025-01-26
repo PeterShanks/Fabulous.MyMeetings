@@ -4,20 +4,10 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Comma
 
 public abstract class InternalCommand : ICommand
 {
-    protected InternalCommand()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 }
 
 public abstract class InternalCommand<TResult> : ICommand<TResult>
 {
-    protected InternalCommand()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 }

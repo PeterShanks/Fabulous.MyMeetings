@@ -1,5 +1,5 @@
 ﻿CREATE SCHEMA [Users] AUTHORIZATION [dbo];
 GO
 
-CREATE SCHEMA registrations AUTHORIZATION dbo
+CREATE SCHEMA [UserRegistrations] AUTHORIZATION dbo
 GO

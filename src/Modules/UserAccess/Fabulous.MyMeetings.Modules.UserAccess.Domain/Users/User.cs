@@ -15,7 +15,6 @@ public class User : Entity, IAggregateRoot
 
     private User(
         Guid id,
-        string login,
         string password,
         string email,
         string firstName,
@@ -24,7 +23,6 @@ public class User : Entity, IAggregateRoot
         UserRole role)
     {
         Id = new UserId(id);
-        Login = login;
         Password = password;
         Email = email;
         FirstName = firstName;
@@ -42,8 +40,6 @@ public class User : Entity, IAggregateRoot
     }
 
     public UserId Id { get; }
-    public string Login { get; }
-
     public string Password { get; }
 
     public string Email { get; }
@@ -58,7 +54,6 @@ public class User : Entity, IAggregateRoot
     public IReadOnlyCollection<UserRole> Roles => _roles.AsReadOnly();
 
     public static User CreateAdmin(
-        string login,
         string password,
         string email,
         string firstName,
@@ -67,7 +62,6 @@ public class User : Entity, IAggregateRoot
     {
         return new User(
             Guid.NewGuid(),
-            login,
             password,
             email,
             firstName,
@@ -78,7 +72,6 @@ public class User : Entity, IAggregateRoot
 
     public static User CreateUser(
         Guid userId,
-        string login,
         string password,
         string email,
         string firstName,
@@ -86,7 +79,6 @@ public class User : Entity, IAggregateRoot
     {
         return new User(
             userId,
-            login,
             password,
             email,
             firstName,

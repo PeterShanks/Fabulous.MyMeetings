@@ -70,12 +70,6 @@ static void CreateMigrationScript(string connectionString, string dacpacPath, st
     var scriptManipulator = new SqlScriptManipulator();
     string transformedScript = scriptManipulator.Transform(deployScript, targetDatabaseName);
 
-    if (string.IsNullOrWhiteSpace(transformedScript))
-    {
-        Console.WriteLine("No updates needed thus, No script generated");
-        return;
-    }
-
     // Save the generated script to a file
     File.WriteAllText(outputScriptPath, transformedScript);
     Console.WriteLine($"Script generated successfully at: {outputScriptPath}");

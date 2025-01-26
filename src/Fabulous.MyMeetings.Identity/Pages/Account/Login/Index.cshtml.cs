@@ -6,10 +6,10 @@ using Duende.IdentityServer.Events;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Stores;
-using Fabulous.MyMeetings.Identity.Models;
+using Duende.IdentityServer.Test;
+using Fabulous.MyMeetings.Identity.UserManagement;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -22,20 +22,25 @@ public class Index(
     IAuthenticationSchemeProvider schemeProvider,
     IIdentityProviderStore identityProviderStore,
     IEventService events,
-    UserManager<User> userManager,
-    SignInManager<User> signInManager) : PageModel
+    UserManagementService userManagementService)
+    : PageModel
 {
     public ViewModel View { get; set; } = default!;
 
-    [BindProperty] public InputModel Input { get; set; } = default!;
+    [BindProperty]
+    public InputModel Input { get; set; } = default!;
 
-    public async Task<IActionResult> OnGet(string returnUrl)
+    // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
+
+    public async Task<IActionResult> OnGet(string? returnUrl)
     {
         await BuildModelAsync(returnUrl);
 
         if (View.IsExternalLoginOnly)
+        {
             // we only have one option for logging in and it's an external provider
             return RedirectToPage("/ExternalLogin/Challenge", new { scheme = View.ExternalLoginScheme, returnUrl });
+        }
 
         return Page();
     }
@@ -60,27 +65,50 @@ public class Index(
 
                 // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                 if (context.IsNativeClient())
+                {
                     // The client is native, so this change in how to
                     // return the response is for better UX for the end user.
                     return this.LoadingPage(Input.ReturnUrl);
+                }
 
                 return Redirect(Input.ReturnUrl ?? "~/");
             }
-
-            // since we don't have a valid context, then we just go back to the home page
-            return Redirect("~/");
+            else
+            {
+                // since we don't have a valid context, then we just go back to the home page
+                return Redirect("~/");
+            }
         }
 
         if (ModelState.IsValid)
         {
-            var result =
-                await signInManager.PasswordSignInAsync(Input.Username!, Input.Password!, Input.RememberLogin, true);
-            if (result.Succeeded)
+            var authenticationResult = await userManagementService.AuthenticateUserAsync(
+                new AuthenticateRequest(Input.Username, Input.Password)
+            );
+
+            // validate username/password against in-memory store
+            if (authenticationResult.IsAuthenticated)
             {
-                var user = await userManager.FindByNameAsync(Input.Username!);
-                await events.RaiseAsync(new UserLoginSuccessEvent(user!.UserName, user.Id, user.UserName,
-                    clientId: context?.Client.ClientId));
+                var user = await userManagementService.GetUserAsync(authenticationResult.UserId!.Value);
+                await events.RaiseAsync(new UserLoginSuccessEvent(user.Email, user.Id.ToString(), user.Name, clientId: context?.Client.ClientId));
                 Telemetry.Metrics.UserLogin(context?.Client.ClientId, IdentityServerConstants.LocalIdentityProvider);
+
+                // only set explicit expiration here if user chooses "remember me". 
+                // otherwise we rely upon expiration configured in cookie middleware.
+                var props = new AuthenticationProperties();
+                if (LoginOptions.AllowRememberLogin && Input.RememberLogin)
+                {
+                    props.IsPersistent = true;
+                    props.ExpiresUtc = DateTimeOffset.UtcNow.Add(LoginOptions.RememberMeLoginDuration);
+                };
+
+                // issue authentication cookie with subject ID and username
+                var isuser = new IdentityServerUser(user.Id.ToString())
+                {
+                    DisplayName = user.Name
+                };
+
+                await HttpContext.SignInAsync(isuser, props);
 
                 if (context != null)
                 {
@@ -88,9 +116,11 @@ public class Index(
                     ArgumentNullException.ThrowIfNull(Input.ReturnUrl, nameof(Input.ReturnUrl));
 
                     if (context.IsNativeClient())
+                    {
                         // The client is native, so this change in how to
                         // return the response is for better UX for the end user.
                         return this.LoadingPage(Input.ReturnUrl);
+                    }
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
                     return Redirect(Input.ReturnUrl ?? "~/");
@@ -98,18 +128,23 @@ public class Index(
 
                 // request for a local page
                 if (Url.IsLocalUrl(Input.ReturnUrl))
+                {
                     return Redirect(Input.ReturnUrl);
-                if (string.IsNullOrEmpty(Input.ReturnUrl))
+                }
+                else if (string.IsNullOrEmpty(Input.ReturnUrl))
+                {
                     return Redirect("~/");
-                // user might have clicked on a malicious link - should be logged
-                throw new ArgumentException("invalid return URL");
+                }
+                else
+                {
+                    // user might have clicked on a malicious link - should be logged
+                    throw new ArgumentException("invalid return URL");
+                }
             }
 
             const string error = "invalid credentials";
-            await events.RaiseAsync(new UserLoginFailureEvent(Input.Username, error,
-                clientId: context?.Client.ClientId));
-            Telemetry.Metrics.UserLoginFailure(context?.Client.ClientId, IdentityServerConstants.LocalIdentityProvider,
-                error);
+            await events.RaiseAsync(new UserLoginFailureEvent(Input.Username, error, clientId: context?.Client.ClientId));
+            Telemetry.Metrics.UserLoginFailure(context?.Client.ClientId, IdentityServerConstants.LocalIdentityProvider, error);
             ModelState.AddModelError(string.Empty, LoginOptions.InvalidCredentialsErrorMessage);
         }
 
@@ -118,7 +153,7 @@ public class Index(
         return Page();
     }
 
-    private async Task BuildModelAsync(string returnUrl)
+    private async Task BuildModelAsync(string? returnUrl)
     {
         Input = new InputModel
         {
@@ -133,12 +168,15 @@ public class Index(
             // this is meant to short circuit the UI and only trigger the one external IdP
             View = new ViewModel
             {
-                EnableLocalLogin = local
+                EnableLocalLogin = local,
             };
 
             Input.Username = context.LoginHint;
 
-            if (!local) View.ExternalProviders = new[] { new ViewModel.ExternalProvider(context.IdP) };
+            if (!local)
+            {
+                View.ExternalProviders = new[] { new ViewModel.ExternalProvider(authenticationScheme: context.IdP) };
+            }
 
             return;
         }
@@ -149,16 +187,16 @@ public class Index(
             .Where(x => x.DisplayName != null)
             .Select(x => new ViewModel.ExternalProvider
             (
-                x.Name,
-                x.DisplayName ?? x.Name
+                authenticationScheme: x.Name,
+                displayName: x.DisplayName ?? x.Name
             )).ToList();
 
         var dynamicSchemes = (await identityProviderStore.GetAllSchemeNamesAsync())
             .Where(x => x.Enabled)
             .Select(x => new ViewModel.ExternalProvider
             (
-                x.Scheme,
-                x.DisplayName ?? x.Scheme
+                authenticationScheme: x.Scheme,
+                displayName: x.DisplayName ?? x.Scheme
             ));
         providers.AddRange(dynamicSchemes);
 
@@ -169,8 +207,9 @@ public class Index(
         {
             allowLocal = client.EnableLocalLogin;
             if (client.IdentityProviderRestrictions != null && client.IdentityProviderRestrictions.Count != 0)
-                providers = providers.Where(provider =>
-                    client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+            {
+                providers = providers.Where(provider => client.IdentityProviderRestrictions.Contains(provider.AuthenticationScheme)).ToList();
+            }
         }
 
         View = new ViewModel

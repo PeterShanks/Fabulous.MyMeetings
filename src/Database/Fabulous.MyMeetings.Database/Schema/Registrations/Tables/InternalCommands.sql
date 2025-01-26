@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Registrations].InternalCommands
+﻿CREATE TABLE [UserRegistrations].InternalCommands
 (
 	[ClusterKey] INT IDENTITY(1, 1) NOT NULL,
 	[Id] UNIQUEIDENTIFIER NOT NULL,
@@ -11,9 +11,9 @@
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Registrations_InternalCommands_EnqueueDate_ClusterKey ON Registrations.InternalCommands(EnqueueDate, ClusterKey);
+CREATE UNIQUE CLUSTERED INDEX IX_Registrations_InternalCommands_EnqueueDate_ClusterKey ON UserRegistrations.InternalCommands(EnqueueDate, ClusterKey);
 GO
 
 CREATE NONCLUSTERED INDEX IX_Registrations_InternalCommands_ProcessedDate
-	ON Registrations.InternalCommands(ProcessedDate)
+	ON UserRegistrations.InternalCommands(ProcessedDate)
 	WHERE ProcessedDate IS NULL

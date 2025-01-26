@@ -13,7 +13,7 @@ public class LoggedOut(IIdentityServerInteractionService interactionService) : P
 {
     public LoggedOutViewModel View { get; set; } = default!;
 
-    public async Task OnGet(string logoutId)
+    public async Task OnGet(string? logoutId)
     {
         // get context information (client name, post logout redirect URI and iframe for federated signout)
         var logout = await interactionService.GetLogoutContextAsync(logoutId);
@@ -22,7 +22,7 @@ public class LoggedOut(IIdentityServerInteractionService interactionService) : P
         {
             AutomaticRedirectAfterSignOut = LogoutOptions.AutomaticRedirectAfterSignOut,
             PostLogoutRedirectUri = logout?.PostLogoutRedirectUri,
-            ClientName = string.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
+            ClientName = String.IsNullOrEmpty(logout?.ClientName) ? logout?.ClientId : logout?.ClientName,
             SignOutIframeUrl = logout?.SignOutIFrameUrl
         };
     }

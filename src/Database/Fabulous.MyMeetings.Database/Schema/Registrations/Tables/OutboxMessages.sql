@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Registrations].OutboxMessages
+﻿CREATE TABLE [UserRegistrations].OutboxMessages
 (
 	[ClusterKey] INT IDENTITY(1, 1) NOT NULL,
 	[Id] UNIQUEIDENTIFIER NOT NULL,
@@ -10,9 +10,9 @@
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Registrations_OutboxMessages_OccurredOn_ClusterKey ON Registrations.OutboxMessages(OccurredOn,ClusterKey);
+CREATE UNIQUE CLUSTERED INDEX IX_Registrations_OutboxMessages_OccurredOn_ClusterKey ON UserRegistrations.OutboxMessages(OccurredOn,ClusterKey);
 GO
 
 CREATE NONCLUSTERED INDEX IX_Registrations_OutboxMessages_ProcessedDate
-	ON Registrations.OutboxMessages(ProcessedDate)
+	ON UserRegistrations.OutboxMessages(ProcessedDate)
 	WHERE ProcessedDate IS NULL

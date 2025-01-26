@@ -16,7 +16,6 @@ internal class GetAuthenticatedUserQueryHandler(ISqlConnectionFactory sqlConnect
         const string sql = "SELECT" +
                            "[User].[Id], " +
                            "[User].[IsActive], " +
-                           "[User].[Login], " +
                            "[User].[Email], " +
                            "[User].[Name] " +
                            "FROM [users].[v_Users] AS [User] " +

@@ -1,9 +1,12 @@
+using Fabulous.MyMeetings.Api.Configuration.Authorization;
 using Fabulous.MyMeetings.Api.Extensions;
+
+AuthorizationChecker.CheckAllEndpoints();
 
 var builder = WebApplication.CreateBuilder(args);
 
 var app = builder
     .ConfigureServices()
-    .Configure();
+    .ConfigurePipeline();
 
 await app.RunAsync();

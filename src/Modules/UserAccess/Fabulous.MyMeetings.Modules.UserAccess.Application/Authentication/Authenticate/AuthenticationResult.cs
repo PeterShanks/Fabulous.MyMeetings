@@ -2,28 +2,25 @@
 
 public class AuthenticationResult
 {
-    public AuthenticationResult(string authenticationError)
+    private AuthenticationResult(string authenticationError)
     {
         IsAuthenticated = false;
         AuthenticationError = authenticationError;
     }
 
-    public AuthenticationResult(UserDto user)
+    private AuthenticationResult(Guid userId)
     {
         IsAuthenticated = true;
-        User = user;
+        UserId = userId;
     }
 
     public bool IsAuthenticated { get; }
 
     public string? AuthenticationError { get; }
 
-    public UserDto? User { get; }
+    public Guid? UserId { get; }
 
-    public static AuthenticationResult Success(UserDto user)
-    {
-        return new AuthenticationResult(user);
-    }
+    public static AuthenticationResult Success(Guid userId) => new AuthenticationResult(userId);
 
     public static AuthenticationResult Failure(string error)
     {

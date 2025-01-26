@@ -11,8 +11,10 @@ namespace Fabulous.MyMeetings.Identity.Pages.Ciba;
 
 [AllowAnonymous]
 [SecurityHeaders]
-public class IndexModel(IBackchannelAuthenticationInteractionService backchannelAuthenticationInteractionService,
-    ILogger<IndexModel> logger) : PageModel
+public class IndexModel(
+    IBackchannelAuthenticationInteractionService backchannelAuthenticationInteractionService,
+    ILogger<IndexModel> logger)
+    : PageModel
 {
     public BackchannelUserLoginRequest LoginRequest { get; set; } = default!;
 
@@ -24,8 +26,10 @@ public class IndexModel(IBackchannelAuthenticationInteractionService backchannel
             logger.InvalidBackchannelLoginId(id);
             return RedirectToPage("/Home/Error/Index");
         }
-
-        LoginRequest = result;
+        else
+        {
+            LoginRequest = result;
+        }
 
         return Page();
     }

@@ -2,10 +2,5 @@
 
 public abstract class Query<TResult> : IQuery<TResult>
 {
-    protected Query()
-    {
-        Id = Guid.NewGuid();
-    }
-
-    public Guid Id { get; }
+    public Guid Id { get; } = Guid.NewGuid();
 }

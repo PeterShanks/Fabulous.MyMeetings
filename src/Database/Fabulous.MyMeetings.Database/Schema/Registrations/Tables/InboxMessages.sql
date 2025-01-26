@@ -1,4 +1,4 @@
-﻿CREATE TABLE [Registrations].InboxMessages
+﻿CREATE TABLE [UserRegistrations].InboxMessages
 (
 	[ClusterKey] INT IDENTITY(1, 1) NOT NULL,
 	[Id] UNIQUEIDENTIFIER NOT NULL,
@@ -10,9 +10,9 @@
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Registrations_InboxMessages_OccurredOn_ClusterKey ON Registrations.InboxMessages(OccurredOn, ClusterKey);
+CREATE UNIQUE CLUSTERED INDEX IX_Registrations_InboxMessages_OccurredOn_ClusterKey ON UserRegistrations.InboxMessages(OccurredOn, ClusterKey);
 GO
 
 CREATE NONCLUSTERED INDEX IX_Registrations_InboxMessages_ProcessedDate
-	ON Registrations.InboxMessages(ProcessedDate)
+	ON UserRegistrations.InboxMessages(ProcessedDate)
 	WHERE ProcessedDate IS NULL

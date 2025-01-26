@@ -4,18 +4,21 @@
 		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<UserSecretsId>a946cc77-adb3-4948-aaf3-fa6c8108ab22</UserSecretsId>
-	</PropertyGroup>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Duende.IdentityServer" Version="7.1.0" />
-		<PackageReference Include="Duende.IdentityServer.AspNetIdentity" Version="7.1.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.1">
+		<PackageReference Include="Duende.AccessTokenManagement" Version="3.1.1" />
+		<PackageReference Include="Duende.IdentityServer.EntityFramework" Version="7.1.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.1">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
 		<PackageReference Include="Serilog.AspNetCore" Version="9.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Fabulous.MyMeetings.Scopes\Fabulous.MyMeetings.Scopes.csproj" />
 	</ItemGroup>
 </Project>

@@ -3,7 +3,6 @@ AS
 SELECT
     [User].[Id],
     [User].[IsActive],
-    [User].[Login],
     [User].[Password],
     [User].[Email],
     [User].[Name]

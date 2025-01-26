@@ -2,7 +2,6 @@
 // See LICENSE in the project root for license information.
 
 using Duende.IdentityServer;
-using Duende.IdentityServer.Hosting;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection;
@@ -10,13 +9,14 @@ using System.Reflection;
 namespace Fabulous.MyMeetings.Identity.Pages;
 
 [AllowAnonymous]
-public class Index(IdentityServerLicense license = null) : PageModel
+public class Index(IdentityServerLicense? license = null) : PageModel
 {
-    public string Version =>
-        typeof(IdentityServerMiddleware).Assembly
+    public string Version
+    {
+        get => typeof(Duende.IdentityServer.Hosting.IdentityServerMiddleware).Assembly
             .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
             ?.InformationalVersion.Split('+').First()
-        ?? "unavailable";
-
-    public IdentityServerLicense License { get; } = license;
+            ?? "unavailable";
+    }
+    public IdentityServerLicense? License { get; } = license;
 }

@@ -3,15 +3,12 @@
 namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.AddAdminUser;
 
 public class AddAdminUserCommand(
-    string login,
     string password,
     string firstName,
     string lastName,
     string name,
     string email) : Command
 {
-    public string Login { get; } = login;
-
     public string FirstName { get; } = firstName;
 
     public string LastName { get; } = lastName;

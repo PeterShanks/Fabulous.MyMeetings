@@ -35,16 +35,20 @@ internal static class ProcessingModule
                     .Handle<Exception>()
             });
         });
+
+        var x = typeof(ProcessingModule).Assembly
+            .GetReferencedAssemblies();
+
         services.AddScoped<ICommandsScheduler, CommandsScheduler>();
         services.Scan(scan => scan
-            .FromAssemblyDependencies(typeof(ProcessingModule).Assembly)
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)))
+            .FromAssemblies(Assemblies)
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>)))
+            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
         );

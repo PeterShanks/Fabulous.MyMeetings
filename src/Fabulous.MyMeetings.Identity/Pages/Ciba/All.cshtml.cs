@@ -10,7 +10,8 @@ namespace Fabulous.MyMeetings.Identity.Pages.Ciba;
 
 [SecurityHeaders]
 [Authorize]
-public class AllModel(IBackchannelAuthenticationInteractionService backchannelAuthenticationInteractionService) : PageModel
+public class AllModel(IBackchannelAuthenticationInteractionService backchannelAuthenticationInteractionService)
+    : PageModel
 {
     public IEnumerable<BackchannelUserLoginRequest> Logins { get; set; } = default!;
 

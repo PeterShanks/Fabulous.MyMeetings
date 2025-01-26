@@ -4,7 +4,6 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.CreateUser
 {
     public class CreateUserCommand(
         Guid userId,
-        string login,
         string email,
         string firstName,
         string lastName,
@@ -12,8 +11,6 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Users.CreateUser
         : Command
     {
         public Guid UserId { get; } = userId;
-
-        public string Login { get; } = login;
 
         public string Email { get; } = email;
 

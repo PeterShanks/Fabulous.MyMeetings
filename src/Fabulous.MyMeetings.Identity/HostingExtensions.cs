@@ -1,5 +1,7 @@
-using Fabulous.MyMeetings.Identity.Models;
-using Microsoft.AspNetCore.Identity;
+using Duende.IdentityServer.Services;
+using Duende.IdentityServer.Validation;
+using Fabulous.MyMeetings.Identity.UserManagement;
+using Fabulous.MyMeetings.Scopes;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -11,25 +13,49 @@ internal static class HostingExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
+        var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
 
         services.AddRazorPages();
 
-        services.AddDbContext<ApplicationDbContext>(opts =>
-            opts.UseSqlServer(configuration.GetConnectionString("IdentityServerDb")));
-
-        services.AddIdentity<User, IdentityRole>()
-            .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
-
-        services.AddIdentityServer(options =>
+        services.AddIdentityServer()
+            .AddConfigurationStore(opts =>
             {
-                // https://docs.duendesoftware.com/identityserver/v6/fundamentals/resources/api_scopes#authorization-based-on-scopes
-                options.EmitStaticAudienceClaim = true;
+                opts.ConfigureDbContext = b => b
+                    .UseSqlServer(
+                        configuration.GetConnectionString("IdentityServerDb"),
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
             })
-            .AddInMemoryIdentityResources(Config.IdentityResources)
-            .AddInMemoryApiScopes(Config.ApiScopes)
-            .AddInMemoryClients(Config.Clients)
-            .AddAspNetIdentity<User>();
+            .AddOperationalStore(opts =>
+            {
+                opts.ConfigureDbContext = b => b
+                    .UseSqlServer(configuration.GetConnectionString("IdentityServerDb"),
+                        sql => sql.MigrationsAssembly(migrationsAssembly));
+
+                opts.EnableTokenCleanup = true;
+            })
+            .AddConfigurationStoreCache();
+
+        services.AddScoped<UserManagementService>();
+        services.Configure<UserManagementServiceSettings>(configuration.GetSection("UserManagement"));
+
+        services.AddClientCredentialsTokenManagement()
+            .AddClient("user-access.api", client =>
+            {
+                client.TokenEndpoint = $"{configuration["IdentityServer:HostUrl"]}/connect/token";
+                client.ClientId = configuration["IdentityServer:ClientId"];
+                client.ClientSecret = configuration["IdentityServer:Secret"];
+                client.Scope = Scope.User.Authenticate;
+            });
+
+        services.AddHttpClient<UserManagementService>(client =>
+        {
+            client.BaseAddress =
+                new Uri(configuration["UserManagement:BaseUrl"] ?? throw new InvalidOperationException());
+        })
+        .AddClientCredentialsTokenHandler("user-access.api");
+
+        services.AddTransient<IResourceOwnerPasswordValidator, UserManagementResourceOwnerPasswordValidator>();
+        services.AddScoped<IProfileService, UserManagementProfileService>();
 
         return builder.Build();
     }

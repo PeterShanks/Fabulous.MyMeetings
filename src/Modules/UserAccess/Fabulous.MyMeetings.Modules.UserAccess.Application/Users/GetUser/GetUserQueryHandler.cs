@@ -15,7 +15,6 @@ internal class GetUserQueryHandler(ISqlConnectionFactory sqlConnectionFactory) :
             SELECT
                 Id,
                 IsActive,
-                Login,
                 Email,
                 Name
                 FROM Users.v_Users

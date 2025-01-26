@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Cryptography.KeyDerivation" Version="9.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Fabulous.MyMeetings.BuildingBlocks.Application\Fabulous.MyMeetings.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.UserRegistrations.Domain\Fabulous.MyMeetings.Modules.UserRegistrations.Domain.csproj" />
+    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.UserRegistrations.IntegrationEvents\Fabulous.MyMeetings.Modules.UserRegistrations.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>
