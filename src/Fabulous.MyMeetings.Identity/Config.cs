@@ -1,4 +1,5 @@
-﻿using Duende.IdentityServer.Models;
+﻿using Duende.IdentityServer;
+using Duende.IdentityServer.Models;
 using Fabulous.MyMeetings.Scopes;
 
 namespace Fabulous.MyMeetings.Identity;
@@ -60,12 +61,19 @@ public static class Config
             ClientName = "Fabulous Web",
             ClientId = "6d7163de-af9d-4b5a-8624-afb2d8215778",
             ClientSecrets = [new Secret("vNfOrJkJIh7bsWkNO2qSXKg0Kwo00QLC".Sha512())],
-            AllowedGrantTypes = GrantTypes.ClientCredentials,
+            AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
             AllowedScopes =
             [
                 Scope.User.Read,
-                Scope.User.Write
-            ]
+                Scope.User.Write,
+                IdentityServerConstants.StandardScopes.OpenId,
+                IdentityServerConstants.StandardScopes.Profile,
+                IdentityServerConstants.StandardScopes.Email
+            ],
+            RedirectUris = { "https://localhost:5002/signin-oidc" },
+
+            // where to redirect to after logout
+            PostLogoutRedirectUris = { "https://localhost:5002/signout-callback-oidc" },
         }
     ];
 }

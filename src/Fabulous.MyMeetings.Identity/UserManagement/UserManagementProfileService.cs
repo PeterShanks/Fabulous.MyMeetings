@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Duende.IdentityServer;
 using Duende.IdentityServer.Extensions;
 using Duende.IdentityServer.Models;
 using Duende.IdentityServer.Services;
@@ -15,7 +16,7 @@ namespace Fabulous.MyMeetings.Identity.UserManagement
 
             var user = await service.GetUserAsync(useId);
 
-            var claims = GetSupportedClaims(user, requestClaims);
+            var claims = GetSupportedClaims(user, context.RequestedResources.Resources.IdentityResources);
 
             if (requestClaims.Contains(Constants.CustomClaims.Permissions))
             {
@@ -35,17 +36,17 @@ namespace Fabulous.MyMeetings.Identity.UserManagement
             context.IsActive = user.IsActive;
         }
 
-        private List<Claim> GetSupportedClaims(UserResponse user, List<string> requestedClaimTypes)
+        private List<Claim> GetSupportedClaims(UserResponse user, ICollection<IdentityResource> identityResources)
         {
             var claims = new List<Claim>();
 
-            if (requestedClaimTypes.Any())
+            if (identityResources.Any())
             {
-                if (requestedClaimTypes.Contains(ClaimTypes.Name))
+                if (identityResources.Any(r => r.Name == IdentityServerConstants.StandardScopes.OpenId))
                 {
                     claims.Add(new Claim(ClaimTypes.Name, user.Name));
                 }
-                if (requestedClaimTypes.Contains(ClaimTypes.Email))
+                if (identityResources.Any(r => r.Name == IdentityServerConstants.StandardScopes.Email))
                 {
                     claims.Add(new Claim(ClaimTypes.Email, user.Email));
                 }
