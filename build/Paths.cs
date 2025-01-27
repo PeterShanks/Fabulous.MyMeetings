@@ -1,5 +1,4 @@
 ﻿using Nuke.Common.IO;
-using static NuGet.Packaging.PackagingConstants;
 using static Nuke.Common.NukeBuild;
 
 namespace _build

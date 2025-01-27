@@ -24,10 +24,11 @@ namespace Fabulous.MyMeetings.Api.Configuration.Authorization
                 .ToList();
 
             var scopeUnprotectedMethods = GetUnprotectedActionMethods<HasScopeAttribute>(controllerMethods);
+            var noScopeUnprotectedMethods = GetUnprotectedActionMethods<NoScopeRequired>(scopeUnprotectedMethods);
             var permissionUnprotectedMethods = GetUnprotectedActionMethods<HasPermissionAttribute>(controllerMethods);
             var methodsWithNoPermissionAttributes = GetUnprotectedActionMethods<NoPermissionRequiredAttribute>(permissionUnprotectedMethods);
 
-            Throw(scopeUnprotectedMethods.Concat(methodsWithNoPermissionAttributes).ToList());
+            Throw(noScopeUnprotectedMethods.Concat(methodsWithNoPermissionAttributes).ToList());
         }
 
         private static List<ControllerMethod> GetUnprotectedActionMethods<T>(List<ControllerMethod> controllerMethods)
@@ -37,7 +38,6 @@ namespace Fabulous.MyMeetings.Api.Configuration.Authorization
 
             foreach (var controllerMethod in controllerMethods)
             {
-
                 var attribute = controllerMethod.Controller.GetCustomAttribute<T>()
                                 ?? controllerMethod.Method.GetCustomAttribute<T>();
 

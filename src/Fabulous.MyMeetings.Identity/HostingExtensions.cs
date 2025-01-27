@@ -2,7 +2,6 @@ using Duende.IdentityServer.Services;
 using Duende.IdentityServer.Validation;
 using Fabulous.MyMeetings.Identity.UserManagement;
 using Fabulous.MyMeetings.Scopes;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace Fabulous.MyMeetings.Identity;
@@ -13,27 +12,16 @@ internal static class HostingExtensions
     {
         var services = builder.Services;
         var configuration = builder.Configuration;
-        var migrationsAssembly = typeof(Program).Assembly.GetName().Name;
 
         services.AddRazorPages();
 
-        services.AddIdentityServer()
-            .AddConfigurationStore(opts =>
+        services.AddIdentityServer(options =>
             {
-                opts.ConfigureDbContext = b => b
-                    .UseSqlServer(
-                        configuration.GetConnectionString("IdentityServerDb"),
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
+                options.EmitScopesAsSpaceDelimitedStringInJwt = true;
             })
-            .AddOperationalStore(opts =>
-            {
-                opts.ConfigureDbContext = b => b
-                    .UseSqlServer(configuration.GetConnectionString("IdentityServerDb"),
-                        sql => sql.MigrationsAssembly(migrationsAssembly));
-
-                opts.EnableTokenCleanup = true;
-            })
-            .AddConfigurationStoreCache();
+            .AddInMemoryApiScopes(Config.ApiScopes)
+            .AddInMemoryIdentityResources(Config.IdentityResources)
+            .AddInMemoryClients(Config.Clients);
 
         services.AddScoped<UserManagementService>();
         services.Configure<UserManagementServiceSettings>(configuration.GetSection("UserManagement"));
@@ -44,7 +32,7 @@ internal static class HostingExtensions
                 client.TokenEndpoint = $"{configuration["IdentityServer:HostUrl"]}/connect/token";
                 client.ClientId = configuration["IdentityServer:ClientId"];
                 client.ClientSecret = configuration["IdentityServer:Secret"];
-                client.Scope = Scope.User.Authenticate;
+                client.Scope = $"{Scope.User.Authenticate} {Scope.User.Read}";
             });
 
         services.AddHttpClient<UserManagementService>(client =>

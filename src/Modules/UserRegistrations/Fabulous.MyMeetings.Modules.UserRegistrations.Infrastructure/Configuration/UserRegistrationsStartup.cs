@@ -13,7 +13,6 @@ using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Mediation;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.Outbox;
-using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Quartz;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.UserAccess;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;

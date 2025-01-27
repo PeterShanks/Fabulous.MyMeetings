@@ -4,35 +4,58 @@ using Fabulous.MyMeetings.Api.Modules.UserAccess.Models;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Users.GetUser;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Contracts;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ConfirmUserRegistration;
 using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabulous.MyMeetings.Api.Modules.UserAccess
 {
     [ApiController]
-    [HasScope(Scope.User.Authenticate)]
-    [Route("api/user-access/[controller]")]
-    public class AccountController(IUserAccessModule module): ControllerBase
+    [Route("api/[controller]")]
+    public class AccountController(
+        IUserAccessModule userAccessModule,
+        IUserRegistrationsModule userRegistrationsModule): ControllerBase
     {
-        [HttpPost("authenticate")]
         [NoPermissionRequired]
+        [HasScope(Scope.User.Authenticate)]
+        [HttpPost("authenticate")]
         public async Task<IActionResult> Authenticate(AuthenticateUserRequest request)
         {
-            return Ok(await module.ExecuteCommandAsync(request.ToCommand()));
+            return Ok(await userAccessModule.ExecuteCommandAsync(request.ToCommand()));
         }
 
-        [HttpGet("{userId:guid}/permissions")]
         [NoPermissionRequired]
+        [HasScope(Scope.User.Authenticate)]
+        [HttpGet("{userId:guid}/permissions")]
         public async Task<IActionResult> GetPermissions(Guid userId)
         {
-            return Ok(await module.ExecuteQueryAsync(new GetUserPermissionsQuery(userId)));
+            return Ok(await userAccessModule.ExecuteQueryAsync(new GetUserPermissionsQuery(userId)));
         }
 
-        [HttpGet("{userId:guid}")]
         [NoPermissionRequired]
+        [HasScope(Scope.User.Read)]
+        [HttpGet("{userId:guid}")]
         public async Task<IActionResult> GetUser(Guid userId)
         {
-            return Ok(await module.ExecuteQueryAsync(new GetUserQuery(userId)));
+            return Ok(await userAccessModule.ExecuteQueryAsync(new GetUserQuery(userId)));
+        }
+
+        [NoPermissionRequired]
+        [NoScopeRequired]
+        [HttpPost]
+        public async Task<IActionResult> RegisterNewUser(RegisterNewUserRequest request)
+        {
+            return Ok(await userRegistrationsModule.ExecuteCommandAsync(request.ToCommand()));
+        }
+
+        [NoPermissionRequired]
+        [NoScopeRequired]
+        [HttpPatch("{userRegistrationId:guid}/confirm")]
+        public async Task<IActionResult> ConfirmUserRegistration(Guid userRegistrationId)
+        {
+            await userRegistrationsModule.ExecuteCommandAsync(new ConfirmUserRegistrationCommand(userRegistrationId));
+            return Ok();
         }
     }
 }

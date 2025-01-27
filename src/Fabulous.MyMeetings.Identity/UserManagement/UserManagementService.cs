@@ -3,7 +3,7 @@ using Microsoft.Extensions.Options;
 
 namespace Fabulous.MyMeetings.Identity.UserManagement
 {
-    public class UserManagementService(HttpClient httpClient, IOptions<UserManagementServiceSettings> options, IClientCredentialsTokenManagementService _tokenManagementService)
+    public class UserManagementService(HttpClient httpClient, IOptions<UserManagementServiceSettings> options)
     {
         public async Task<AuthenticationResult> AuthenticateUserAsync(AuthenticateRequest request)
         {

@@ -25,16 +25,6 @@ public static class Config
         new(Scope.User.Authenticate)
     ];
 
-    public static IEnumerable<ApiResource> ApiResources =>
-    [
-        new("user-api")
-        {
-            Scopes = { Scope.User.Read, Scope.User.Write, Scope.User.Authenticate },
-            RequireResourceIndicator = true,
-            UserClaims = ["openId", "profile", "email", "permissions"]
-        }
-    ];
-
     public static IEnumerable<Client> Clients =>
     [
         new ()
@@ -46,6 +36,7 @@ public static class Config
             AllowedScopes =
             [
                 Scope.User.Authenticate,
+                Scope.User.Read,
             ]
         },
         new ()

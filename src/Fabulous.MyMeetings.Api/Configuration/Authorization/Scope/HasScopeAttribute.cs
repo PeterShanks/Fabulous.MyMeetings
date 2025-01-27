@@ -2,7 +2,7 @@
 
 namespace Fabulous.MyMeetings.Api.Configuration.Authorization.Scope
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
     public class HasScopeAttribute(string scope) : AuthorizeAttribute(HasScopePolicyName)
     {
         internal const string HasScopePolicyName = "HasScope";
