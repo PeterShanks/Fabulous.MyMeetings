@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
+namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
 
 internal class AuthenticateCommandValidator : AbstractValidator<AuthenticateCommand>
 {

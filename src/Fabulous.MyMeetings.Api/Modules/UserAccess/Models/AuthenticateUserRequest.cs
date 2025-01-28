@@ -1,4 +1,4 @@
-﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
+﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
 
 namespace Fabulous.MyMeetings.Api.Modules.UserAccess.Models
 {

@@ -1,6 +1,6 @@
 ﻿using System.Security.Cryptography;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
+namespace Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 
 public class PasswordHasherOptions
 {

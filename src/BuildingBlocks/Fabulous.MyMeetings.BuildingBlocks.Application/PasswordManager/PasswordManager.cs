@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.Extensions.Options;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.Extensions.Options;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
+namespace Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 
 public class PasswordManager : IPasswordManager
 {
@@ -46,7 +46,6 @@ public class PasswordManager : IPasswordManager
             _ => throw new InvalidOperationException("Invalid Password Hasher Compatibility Mode")
         };
     }
-
     public virtual PasswordVerificationResult VerifyHashedPassword(string hashedPassword, string providedPassword)
     {
         ArgumentNullException.ThrowIfNull(hashedPassword);
@@ -72,7 +71,6 @@ public class PasswordManager : IPasswordManager
             _ => PasswordVerificationResult.Failed
         };
     }
-
 
     private static byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
     {
@@ -195,4 +193,5 @@ public class PasswordManager : IPasswordManager
                | ((uint)buffer[offset + 2] << 8)
                | buffer[offset + 3];
     }
+
 }

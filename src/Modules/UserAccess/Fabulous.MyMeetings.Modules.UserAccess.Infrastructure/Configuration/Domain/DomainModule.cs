@@ -1,4 +1,4 @@
-﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Domain;

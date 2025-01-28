@@ -1,6 +1,6 @@
 ﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
+namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
 
 public class AuthenticateCommand(string email, string password) : Command<AuthenticationResult>
 {

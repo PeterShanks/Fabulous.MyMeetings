@@ -1,8 +1,9 @@
 ﻿using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
+using Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 
-namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
+namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
 
 internal class AuthenticateCommandHandler(ISqlConnectionFactory sqlConnectionFactory, IPasswordManager passwordManager) : ICommandHandler<AuthenticateCommand, AuthenticationResult>
 {

@@ -1,5 +1,4 @@
-﻿using Duende.AccessTokenManagement;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 
 namespace Fabulous.MyMeetings.Identity.UserManagement
 {

@@ -1,4 +1,4 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
+﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 
 public interface IPasswordManager
 {

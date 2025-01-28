@@ -1,4 +1,4 @@
-﻿using Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
 

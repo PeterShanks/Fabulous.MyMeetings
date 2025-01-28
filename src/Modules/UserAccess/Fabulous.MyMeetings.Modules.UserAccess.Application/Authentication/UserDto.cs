@@ -1,4 +1,4 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication.Authenticate;
+﻿namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authentication;
 
 public class UserDto
 {
