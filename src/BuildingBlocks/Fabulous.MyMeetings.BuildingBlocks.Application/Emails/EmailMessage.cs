@@ -1,11 +1,14 @@
 ﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 
 public struct EmailMessage(
-    string to,
+    string toAddress,
+    string toName,
     string subject,
     string content)
 {
-    public string To { get; } = to;
+    public string ToAddress { get; } = toAddress;
+
+    public string ToName { get; } = toName;
 
     public string Subject { get; } = subject;
 

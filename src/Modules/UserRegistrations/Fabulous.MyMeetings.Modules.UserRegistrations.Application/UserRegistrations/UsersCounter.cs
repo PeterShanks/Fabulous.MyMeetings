@@ -13,7 +13,7 @@ public class UsersCounter(ISqlConnectionFactory sqlConnectionFactory) : IUsersCo
         const string sql =
             """
             SELECT COUNT(*)
-            FROM [Registrations].[v_Users] AS U
+            FROM [UserRegistrations].[v_UserRegistrations] AS U
             WHERE U.Email = @email
             """;
 

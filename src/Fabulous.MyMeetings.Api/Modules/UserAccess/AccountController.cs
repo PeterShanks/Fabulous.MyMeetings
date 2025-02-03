@@ -52,9 +52,11 @@ namespace Fabulous.MyMeetings.Api.Modules.UserAccess
         [NoPermissionRequired]
         [NoScopeRequired]
         [HttpPatch("{userRegistrationId:guid}/confirm")]
-        public async Task<IActionResult> ConfirmUserRegistration(Guid userRegistrationId)
+        public async Task<IActionResult> ConfirmUserRegistration([FromRoute] Guid userRegistrationId, string token)
         {
-            await userRegistrationsModule.ExecuteCommandAsync(new ConfirmUserRegistrationCommand(userRegistrationId));
+            await userRegistrationsModule.ExecuteCommandAsync(
+                new ConfirmUserRegistrationCommand(userRegistrationId, token)
+            );
             return Ok();
         }
     }

@@ -1,9 +1,10 @@
-﻿using FluentValidation;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
+using FluentValidation;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
+// ReSharper disable once CheckNamespace
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
@@ -24,7 +25,7 @@ public static class ServiceCollectionExtensions
         return services;
     }
 
-    public static OptionsBuilder<TOptions> ValidateUsingFluentValidation<TOptions>(
+    private static OptionsBuilder<TOptions> ValidateUsingFluentValidation<TOptions>(
         this OptionsBuilder<TOptions> optionsBuilder)
         where TOptions : class
     {

@@ -2,7 +2,6 @@
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.RegisterNewUser;
 
-// TODO: We need to remove the login and the confirm link from the command
 public class RegisterNewUserCommand(
     string password,
     string email,

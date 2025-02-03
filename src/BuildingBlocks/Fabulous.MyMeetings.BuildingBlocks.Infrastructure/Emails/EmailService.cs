@@ -5,10 +5,10 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 
-public class EmailSender(
-    ILogger<EmailSender> logger,
+public class EmailService(
+    ILogger<EmailService> logger,
     EmailsConfiguration configuration,
-    ISqlConnectionFactory sqlConnectionFactory) : IEmailSender
+    ISqlConnectionFactory sqlConnectionFactory) : IEmailService
 {
     private readonly ILogger _logger = logger;
 
@@ -25,7 +25,7 @@ public class EmailSender(
             {
                 Id = Guid.NewGuid(),
                 From = configuration.FromEmail,
-                message.To,
+                message.ToAddress,
                 message.Subject,
                 message.Content,
                 Date = DateTime.UtcNow
@@ -34,7 +34,7 @@ public class EmailSender(
         _logger.LogInformation(
             "Email sent. From: {From}, To: {To}, Subject: {Subject}, Content: {Content}",
             configuration.FromEmail,
-            message.To,
+            message.ToAddress,
             message.Subject,
             message.Content);
     }

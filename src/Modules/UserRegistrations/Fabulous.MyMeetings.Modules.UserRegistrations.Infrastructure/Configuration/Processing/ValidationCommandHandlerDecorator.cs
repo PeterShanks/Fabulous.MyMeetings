@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 
-internal class ValidationCommandHandlerDecorator<T>(IList<IValidator<T>> validators, ICommandHandler<T> decorated) : ICommandHandler<T>
+internal class ValidationCommandHandlerDecorator<T>(IEnumerable<IValidator<T>> validators, ICommandHandler<T> decorated) : ICommandHandler<T>
     where T : ICommand
 {
     public Task Handle(T request, CancellationToken cancellationToken)

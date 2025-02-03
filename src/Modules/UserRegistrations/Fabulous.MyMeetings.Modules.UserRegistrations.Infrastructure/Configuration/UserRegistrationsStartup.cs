@@ -13,6 +13,7 @@ using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Mediation;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.Outbox;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Quartz;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.UserAccess;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,7 +32,8 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
             ILoggerFactory loggerFactory,
             EmailsConfiguration emailsConfiguration,
             IHostApplicationLifetime hostApplicationLifetime,
-            IEmailSender? emailSender = null,
+            SiteSettings siteSettings,
+            IEmailService? emailSender = null,
             IEventBus? eventBus = null,
             long? internalProcessingPoolingInterval = null)
         {
@@ -43,12 +45,12 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
 
             services.AddLogging(loggerFactory);
             services.AddDataAccess(connectionString);
-            services.AddDomainServices();
+            services.AddDomainServices(siteSettings);
             services.AddMediator();
             services.AddProcessing(domainNotificationMap);
             services.AddEventBus(eventBus);
             services.AddOutbox();
-            //services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
+            services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
             services.AddEmail(emailsConfiguration, emailSender);
             services.AddSingleton(executionContextAccessor);
             services.AddUserAccess();

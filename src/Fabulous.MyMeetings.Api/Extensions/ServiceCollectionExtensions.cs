@@ -14,6 +14,8 @@ using Fabulous.MyMeetings.Api.Configuration.Middlewares;
 using Fabulous.MyMeetings.Api.Configuration.Validation;
 using Fabulous.MyMeetings.BuildingBlocks.Application;
 using Fabulous.MyMeetings.BuildingBlocks.Domain;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
+using Fabulous.MyMeetings.Email.MailKit;
 using Hellang.Middleware.ProblemDetails;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
@@ -34,6 +36,7 @@ public static class ServiceCollectionExtensions
         services.AddProblemDetails(opts =>
         {
             opts.IncludeExceptionDetails = (context, exception) => builder.Environment.IsDevelopment();
+            opts.IncludeExceptionDetails = (_, _) => false;
             opts.Map<InvalidCommandException>(ex => new InvalidCommandProblemDetails(ex));
             opts.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
             opts.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
@@ -70,6 +73,9 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUserRegistrationsModule, UserRegistrationsModule>();
 
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthorizationMiddlewareResultHandler>();
+
+        services.AddMailKit(builder.Configuration.GetSection("SmtpSettings"));
+        services.AddOptionsWithValidation<EmailsConfiguration, EmailsConfigurationValidator>(builder.Configuration.GetSection("EmailsConfiguration"));
 
         return builder;
     }

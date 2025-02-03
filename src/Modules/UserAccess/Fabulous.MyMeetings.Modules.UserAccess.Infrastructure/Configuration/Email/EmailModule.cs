@@ -7,16 +7,16 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Em
 internal static class EmailModule
 {
     public static void AddEmail(this IServiceCollection services, EmailsConfiguration configuration,
-        IEmailSender? emailSender)
+        IEmailService? emailSender)
     {
         if (emailSender is not null)
         {
-            services.AddSingleton<IEmailSender>(_ => emailSender);
+            services.AddSingleton<IEmailService>(_ => emailSender);
         }
         else
         {
             services.AddSingleton(configuration);
-            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<IEmailService, EmailService>();
         }
     }
 }

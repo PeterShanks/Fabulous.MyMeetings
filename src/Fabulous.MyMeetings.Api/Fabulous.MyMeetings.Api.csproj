@@ -26,6 +26,7 @@
     <ProjectReference Include="..\Modules\UserRegistrations\Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure\Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.csproj" />
     <ProjectReference Include="..\Fabulous.MyMeetings.Scopes\Fabulous.MyMeetings.Scopes.csproj" />
     <ProjectReference Include="..\Modules\UserAccess\Fabulous.MyMeetings.Modules.UserAccess.Infrastructure\Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.csproj" />
+    <ProjectReference Include="..\Services\Fabulous.MyMeetings.Email.MailKit\Fabulous.MyMeetings.Email.MailKit.csproj" />
   </ItemGroup>
 
 </Project>

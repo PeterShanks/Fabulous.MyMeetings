@@ -8,7 +8,7 @@ internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration
 {
     public void Configure(EntityTypeBuilder<InternalCommand> builder)
     {
-        builder.ToTable("InternalCommands", "Registrations");
+        builder.ToTable("InternalCommands", DatabaseSchema.UserRegistrations);
 
         builder.HasKey(b => b.Id);
         builder.Property(b => b.Id).ValueGeneratedNever();

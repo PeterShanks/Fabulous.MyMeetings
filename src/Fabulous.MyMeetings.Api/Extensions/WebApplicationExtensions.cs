@@ -1,4 +1,7 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.ExecutionContext;
+using Fabulous.MyMeetings.BuildingBlocks.Application;
+using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
@@ -56,20 +59,27 @@ public static class WebApplicationExtensions
         var configuration = app.Configuration;
         var serviceProvider = app.Services;
 
+        var siteSettings = configuration
+            .GetSection("SiteSettings")
+            .GetWithValidation<SiteSettings, SiteSettingsValidator>();
+
         UserAccessStartup.Initialize(
             configuration.GetConnectionString("MyMeetings")!,
             new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
             serviceProvider.GetRequiredService<ILoggerFactory>(),
-            new EmailsConfiguration { FromEmail = configuration["EmailsConfiguration:FromEmail"]! },
-            serviceProvider.GetRequiredService<IHostApplicationLifetime>()
+            serviceProvider.GetRequiredService<EmailsConfiguration>(),
+            serviceProvider.GetRequiredService<IHostApplicationLifetime>(),
+            serviceProvider.GetRequiredService<IEmailService>()
         );
 
         UserRegistrationsStartup.Initialize(
             configuration.GetConnectionString("MyMeetings")!,
             new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
             serviceProvider.GetRequiredService<ILoggerFactory>(),
-            new EmailsConfiguration { FromEmail = configuration["EmailsConfiguration:FromEmail"]! },
-            serviceProvider.GetRequiredService<IHostApplicationLifetime>()
+            serviceProvider.GetRequiredService<EmailsConfiguration>(),
+            serviceProvider.GetRequiredService<IHostApplicationLifetime>(),
+            siteSettings,
+            serviceProvider.GetRequiredService<IEmailService>()
         );
 
         return app;

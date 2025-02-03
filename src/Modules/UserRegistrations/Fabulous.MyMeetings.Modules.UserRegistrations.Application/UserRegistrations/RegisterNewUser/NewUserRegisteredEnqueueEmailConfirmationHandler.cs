@@ -10,6 +10,7 @@ internal class NewUserRegisteredEnqueueEmailConfirmationHandler(ICommandsSchedul
     {
         return commandsScheduler.EnqueueAsync(new SendUserRegistrationConfirmationEmailCommand(
             notification.DomainEvent.UserRegistrationId,
-            notification.DomainEvent.Email));
+            notification.DomainEvent.Email,
+            notification.DomainEvent.FirstName));
     }
 }

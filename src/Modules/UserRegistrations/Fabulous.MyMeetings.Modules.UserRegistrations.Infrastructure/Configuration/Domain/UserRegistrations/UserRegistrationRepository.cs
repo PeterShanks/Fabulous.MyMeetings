@@ -3,15 +3,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Domain.UserRegistrations;
 
-internal class UserRegistrationRepository(RegistrationsContext registrationsContext) : IUserRegistrationRepository
+internal class UserRegistrationRepository(UserRegistrationsContext userRegistrationsContext) : IUserRegistrationRepository
 {
     public void Add(UserRegistration userRegistration)
     {
-        registrationsContext.Add(userRegistration);
+        userRegistrationsContext.Add(userRegistration);
     }
 
     public Task<UserRegistration?> GetByIdAsync(UserRegistrationId userRegistrationId)
     {
-        return registrationsContext.UserRegistrations.FirstOrDefaultAsync(x => x.Id == userRegistrationId);
+        return userRegistrationsContext.UserRegistrations.FirstOrDefaultAsync(x => x.Id == userRegistrationId);
     }
 }

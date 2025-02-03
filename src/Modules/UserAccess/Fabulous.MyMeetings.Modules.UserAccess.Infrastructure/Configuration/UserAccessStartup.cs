@@ -11,6 +11,7 @@ using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Loggin
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Mediation;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox;
+using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Quartz;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -27,7 +28,7 @@ public class UserAccessStartup
         ILoggerFactory loggerFactory,
         EmailsConfiguration emailsConfiguration,
         IHostApplicationLifetime hostApplicationLifetime,
-        IEmailSender? emailSender = null,
+        IEmailService? emailSender = null,
         IEventBus? eventBus = null,
         long? internalProcessingPoolingInterval = null)
     {
@@ -42,7 +43,7 @@ public class UserAccessStartup
         services.AddProcessing(domainNotificationMap);
         services.AddEventBus(eventBus);
         services.AddOutbox();
-        //services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
+        services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
         services.AddEmail(emailsConfiguration, emailSender);
         services.AddSingleton(executionContextAccessor);
 
@@ -61,7 +62,7 @@ public class UserAccessStartup
         using var scope = BeginLoggerScope();
         foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
         {
-            await hostedService.StartAsync(default);
+            await hostedService.StartAsync(CancellationToken.None);
         }
     }
 
@@ -73,11 +74,11 @@ public class UserAccessStartup
         using var scope = BeginLoggerScope();
         foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
         {
-            await hostedService.StopAsync(default);
+            await hostedService.StopAsync(CancellationToken.None);
         }
     }
 
-    internal static AsyncServiceScope BeginScope() => _serviceProvider!.CreateAsyncScope();
+    internal static AsyncServiceScope BeginScope() => _serviceProvider.CreateAsyncScope();
 
     internal static IDisposable? BeginLoggerScope()
     {

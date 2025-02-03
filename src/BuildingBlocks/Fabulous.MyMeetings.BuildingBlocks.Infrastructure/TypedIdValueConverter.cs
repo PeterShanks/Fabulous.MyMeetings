@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 
-public class TypedIdValueConverter<T>(ConverterMappingHints? mappingHints = null) : ValueConverter<T, Guid>(id => id.Value, value => Create(value), mappingHints)
+public class TypedIdValueConverter<T>() : ValueConverter<T, Guid>(id => id.Value, value => Create(value), null)
     where T : TypedId
 {
     private static T Create(Guid id)

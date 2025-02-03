@@ -44,18 +44,22 @@ internal static class ProcessingModule
             .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
-            .AddClasses(classes => classes.AssignableTo(typeof(INotificationHandler<>)), publicOnly: false)
-            .AsImplementedInterfaces()
-            .WithScopedLifetime()
         );
+
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
+        services.Decorate(typeof(IRequestHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
+        services.Decorate(typeof(IRequestHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
 
         services.Decorate(typeof(ICommandHandler<>), typeof(ValidationCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandlerWithResultDecorator<,>));
+        services.Decorate(typeof(IRequestHandler<>), typeof(ValidationCommandHandlerDecorator<>));
+        services.Decorate(typeof(IRequestHandler<,>), typeof(ValidationCommandHandlerWithResultDecorator<,>));
 
         services.Decorate(typeof(ICommandHandler<>), typeof(LoggingCommandHandlerDecorator<>));
-        services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));
+        services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));       
+        services.Decorate(typeof(IRequestHandler<>), typeof(LoggingCommandHandlerDecorator<>));
+        services.Decorate(typeof(IRequestHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));
 
         services.TryDecorate(typeof(INotificationHandler<>), typeof(DomainEventsDispatcherNotificationHandlerDecorator<>));
     }

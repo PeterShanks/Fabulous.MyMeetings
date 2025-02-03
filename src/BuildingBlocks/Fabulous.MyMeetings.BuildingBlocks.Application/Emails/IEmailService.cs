@@ -1,6 +1,6 @@
 ﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 
-public interface IEmailSender
+public interface IEmailService
 {
     Task SendEmail(EmailMessage message);
 }

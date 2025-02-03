@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 
 internal class UnitOfWorkCommandHandlerDecorator<T>(ICommandHandler<T> decorated, IUnitOfWork unitOfWork,
-    RegistrationsContext context) : ICommandHandler<T>
+    UserRegistrationsContext context) : ICommandHandler<T>
     where T : ICommand
 {
     public async Task Handle(T request, CancellationToken cancellationToken)

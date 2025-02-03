@@ -9,7 +9,7 @@ internal class UserRegistrationEntityTypeConfiguration : IEntityTypeConfiguratio
 {
     public void Configure(EntityTypeBuilder<UserRegistration> builder)
     {
-        builder.ToTable("UserRegistrations", "UserRegistrations");
+        builder.ToTable("UserRegistrations", DatabaseSchema.UserRegistrations);
         builder.HasKey(t => t.Id);
 
         builder.Property(p => p.Id)

@@ -2,11 +2,11 @@
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Outbox;
 
-internal class OutboxAccessor(RegistrationsContext registrationsContext) : IOutbox
+internal class OutboxAccessor(UserRegistrationsContext userRegistrationsContext) : IOutbox
 {
     public void Add(OutboxMessage message)
     {
-        registrationsContext.OutboxMessages.Add(message);
+        userRegistrationsContext.OutboxMessages.Add(message);
     }
 
     public Task Save()

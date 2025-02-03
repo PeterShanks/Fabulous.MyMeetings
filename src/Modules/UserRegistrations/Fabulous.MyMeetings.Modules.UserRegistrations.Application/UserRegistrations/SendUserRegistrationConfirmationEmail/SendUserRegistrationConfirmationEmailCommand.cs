@@ -5,9 +5,11 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistra
 
 public class SendUserRegistrationConfirmationEmailCommand(
     UserRegistrationId userRegistrationId,
-    string email) : InternalCommand
+    string email,
+    string firstName) : InternalCommand
 {
     internal UserRegistrationId UserRegistrationId { get; } = userRegistrationId;
 
     internal string Email { get; } = email;
+    public string FirstName { get; } = firstName;
 }

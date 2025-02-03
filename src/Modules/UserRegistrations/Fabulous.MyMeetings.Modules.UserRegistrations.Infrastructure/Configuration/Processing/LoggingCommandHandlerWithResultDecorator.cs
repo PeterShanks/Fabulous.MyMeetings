@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 
 internal class LoggingCommandHandlerWithResultDecorator<TCommand, TResult>(
-    ILogger logger,
+    ILogger<LoggingCommandHandlerWithResultDecorator<TCommand, TResult>> logger,
     IExecutionContextAccessor executionContextAccessor,
     ICommandHandler<TCommand, TResult> decorated) : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>
