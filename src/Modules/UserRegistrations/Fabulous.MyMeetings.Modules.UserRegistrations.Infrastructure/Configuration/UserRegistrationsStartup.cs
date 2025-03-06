@@ -1,8 +1,8 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Tokens.CreateEmailConfirmationToken;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ConfirmUserRegistration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.RegisterNewUser;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.DataAccess;
@@ -30,11 +30,10 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
             string connectionString,
             IExecutionContextAccessor executionContextAccessor,
             ILoggerFactory loggerFactory,
-            EmailsConfiguration emailsConfiguration,
             IHostApplicationLifetime hostApplicationLifetime,
             SiteSettings siteSettings,
-            IEmailService? emailSender = null,
-            IEventBus? eventBus = null,
+            IEmailService emailSender,
+            IEventBus eventBus,
             long? internalProcessingPoolingInterval = null)
         {
             var services = new ServiceCollection();
@@ -42,6 +41,7 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
             var domainNotificationMap = new BiDictionary<string, Type>();
             domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
             domainNotificationMap.Add("UserRegistrationConfirmedNotification", typeof(UserRegistrationConfirmedNotification));
+            domainNotificationMap.Add("TokenCreatedDomainNotification", typeof(TokenCreatedDomainNotification));
 
             services.AddLogging(loggerFactory);
             services.AddDataAccess(connectionString);
@@ -51,7 +51,7 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
             services.AddEventBus(eventBus);
             services.AddOutbox();
             services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
-            services.AddEmail(emailsConfiguration, emailSender);
+            services.AddEmail(emailSender);
             services.AddSingleton(executionContextAccessor);
             services.AddUserAccess();
 

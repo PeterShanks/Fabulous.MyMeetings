@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
+using MediatR;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
+[SkipAutoRegistration]
 public class DomainEventsDispatcherNotificationHandlerDecorator<T>(INotificationHandler<T> decorated,
     IDomainEventsDispatcher domainEventsDispatcher) : INotificationHandler<T>
     where T : INotification

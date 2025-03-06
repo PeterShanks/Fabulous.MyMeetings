@@ -8,7 +8,8 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
 
 internal class ProcessInboxCommandHandler(
     IMediator mediator,
-    ISqlConnectionFactory sqlConnectionFactory) : ICommandHandler<ProcessInboxCommand>
+    ISqlConnectionFactory sqlConnectionFactory,
+    TimeProvider timeProvider) : ICommandHandler<ProcessInboxCommand>
 {
     public async Task Handle(ProcessInboxCommand request, CancellationToken cancellationToken)
     {
@@ -20,7 +21,7 @@ internal class ProcessInboxCommandHandler(
                 Id,
                 Type,
                 Data
-            FROM Users.InboxMessages
+            FROM UserRegistrations.InboxMessages
             WHERE ProcessedDate IS NULL
             ORDER BY OccurredOn
             """;
@@ -29,7 +30,7 @@ internal class ProcessInboxCommandHandler(
 
         const string updateProcessedDateSql =
             """
-            UPDATE Users.InboxMessages
+            UPDATE UserRegistrations.InboxMessages
                 SET ProcessedDate = @Date
             WHERE Id = @Id
             """;
@@ -46,7 +47,7 @@ internal class ProcessInboxCommandHandler(
 
             await connection.ExecuteAsync(updateProcessedDateSql, new
             {
-                Date = DateTime.UtcNow,
+                Date = timeProvider.GetUtcNow().UtcDateTime,
                 message.Id
             });
         }

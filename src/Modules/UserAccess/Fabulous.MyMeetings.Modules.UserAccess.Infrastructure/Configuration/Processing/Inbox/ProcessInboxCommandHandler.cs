@@ -8,7 +8,8 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Pr
 
 internal class ProcessInboxCommandHandler(
     IMediator mediator,
-    ISqlConnectionFactory sqlConnectionFactory) : ICommandHandler<ProcessInboxCommand>
+    ISqlConnectionFactory sqlConnectionFactory,
+    TimeProvider timeProvider) : ICommandHandler<ProcessInboxCommand>
 {
     public async Task Handle(ProcessInboxCommand request, CancellationToken cancellationToken)
     {
@@ -46,7 +47,7 @@ internal class ProcessInboxCommandHandler(
 
             await connection.ExecuteAsync(updateProcessedDateSql, new
             {
-                Date = DateTime.UtcNow,
+                Date = timeProvider.GetUtcNow().UtcDateTime,
                 message.Id
             });
         }

@@ -16,6 +16,7 @@ internal class AuthenticateCommandHandler(ISqlConnectionFactory sqlConnectionFac
             SELECT
                 *
             FROM Users.v_Users
+            WHERE Email = @Email
             """;
 
         var user = await connection.QuerySingleOrDefaultAsync<UserDto>(

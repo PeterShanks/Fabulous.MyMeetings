@@ -1,12 +1,21 @@
-﻿using System.Reflection;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Serialization;
+using System.Reflection;
 using System.Text.Json;
+using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure;
 
 public static class Settings
 {
     private static readonly Lazy<JsonSerializerOptions> LazyJsonSerializerOptions =
-        new(() => new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        new(() => new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+            Converters = {
+                new PolymorphicJsonConverterFactory(
+                typeof(InternalCommand),
+                typeof(InternalCommand<>)),
+            }
+        });
 
     private static readonly Lazy<IReadOnlyCollection<Assembly>> AssembliesLazy = new(
         () => typeof(Settings)
@@ -14,8 +23,8 @@ public static class Settings
             .GetReferencedAssemblies()
             .Where(assemblyName => assemblyName.Name!.StartsWith("Fabulous.MyMeetings.Modules.UserAccess") ||
                                    assemblyName.Name.StartsWith("Fabulous.MyMeetings.BuildingBlocks"))
-            .Select(assemblyName => Assembly.Load(assemblyName))
-            .Concat(new[] { typeof(Settings).Assembly })
+            .Select(Assembly.Load)
+            .Concat([typeof(Settings).Assembly])
             .ToList()
             .AsReadOnly());
 

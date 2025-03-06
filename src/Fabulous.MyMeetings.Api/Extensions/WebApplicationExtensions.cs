@@ -2,7 +2,7 @@
 using Fabulous.MyMeetings.BuildingBlocks.Application;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
 using Hellang.Middleware.ProblemDetails;
@@ -67,19 +67,19 @@ public static class WebApplicationExtensions
             configuration.GetConnectionString("MyMeetings")!,
             new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
             serviceProvider.GetRequiredService<ILoggerFactory>(),
-            serviceProvider.GetRequiredService<EmailsConfiguration>(),
             serviceProvider.GetRequiredService<IHostApplicationLifetime>(),
-            serviceProvider.GetRequiredService<IEmailService>()
+            serviceProvider.GetRequiredService<IEmailService>(),
+            serviceProvider.GetRequiredService<IEventBus>()
         );
 
         UserRegistrationsStartup.Initialize(
             configuration.GetConnectionString("MyMeetings")!,
             new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
             serviceProvider.GetRequiredService<ILoggerFactory>(),
-            serviceProvider.GetRequiredService<EmailsConfiguration>(),
             serviceProvider.GetRequiredService<IHostApplicationLifetime>(),
             siteSettings,
-            serviceProvider.GetRequiredService<IEmailService>()
+            serviceProvider.GetRequiredService<IEmailService>(),
+            serviceProvider.GetRequiredService<IEventBus>()
         );
 
         return app;

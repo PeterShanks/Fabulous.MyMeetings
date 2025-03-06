@@ -5,11 +5,8 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
 
 internal static class EventBusModule
 {
-    public static void AddEventBus(this IServiceCollection services, IEventBus? eventBus)
+    public static void AddEventBus(this IServiceCollection services, IEventBus eventBus)
     {
-        if (eventBus is not null)
-            services.AddScoped<IEventBus>(_ => eventBus);
-        else
-            services.AddScoped<IEventBus, InMemoryEventBus>();
+        services.AddScoped<IEventBus>(_ => eventBus);
     }
 }

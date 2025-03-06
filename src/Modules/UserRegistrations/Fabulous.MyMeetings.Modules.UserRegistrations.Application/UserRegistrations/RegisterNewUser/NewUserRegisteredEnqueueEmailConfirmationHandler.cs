@@ -1,5 +1,5 @@
 ﻿using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
-using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.SendUserRegistrationConfirmationEmail;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Tokens.CreateEmailConfirmationToken;
 using MediatR;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.RegisterNewUser;
@@ -8,9 +8,8 @@ internal class NewUserRegisteredEnqueueEmailConfirmationHandler(ICommandsSchedul
 {
     public Task Handle(NewUserRegisteredNotification notification, CancellationToken cancellationToken)
     {
-        return commandsScheduler.EnqueueAsync(new SendUserRegistrationConfirmationEmailCommand(
-            notification.DomainEvent.UserRegistrationId,
-            notification.DomainEvent.Email,
-            notification.DomainEvent.FirstName));
+        return commandsScheduler.EnqueueAsync(new CreateEmailConfirmationTokenCommand(
+            Guid.NewGuid(),
+            notification.DomainEvent.UserRegistrationId));
     }
 }

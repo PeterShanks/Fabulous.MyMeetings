@@ -8,10 +8,4 @@ internal class OutboxAccessor(UserRegistrationsContext userRegistrationsContext)
     {
         userRegistrationsContext.OutboxMessages.Add(message);
     }
-
-    public Task Save()
-    {
-        return
-            Task.CompletedTask; // Save is done automatically using EF Core Change Tracking mechanism during SaveChanges.
-    }
 }

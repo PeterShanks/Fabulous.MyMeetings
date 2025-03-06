@@ -2,6 +2,7 @@
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.IntegrationEvents;
 
+// TODO: This should be subscribed to from within other modules
 public class NewUserRegisteredIntegrationEvent(Guid id, DateTime occurredOn, Guid userId, string email,
     string firstName, string lastName, string name) : IntegrationEvent(id, occurredOn)
 {

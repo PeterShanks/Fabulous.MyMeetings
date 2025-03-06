@@ -1,7 +1,6 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Domain;
@@ -26,10 +25,9 @@ public class UserAccessStartup
         string connectionString,
         IExecutionContextAccessor executionContextAccessor,
         ILoggerFactory loggerFactory,
-        EmailsConfiguration emailsConfiguration,
         IHostApplicationLifetime hostApplicationLifetime,
-        IEmailService? emailSender = null,
-        IEventBus? eventBus = null,
+        IEmailService emailSender,
+        IEventBus eventBus,
         long? internalProcessingPoolingInterval = null)
     {
         var services = new ServiceCollection();
@@ -44,7 +42,7 @@ public class UserAccessStartup
         services.AddEventBus(eventBus);
         services.AddOutbox();
         services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
-        services.AddEmail(emailsConfiguration, emailSender);
+        services.AddEmail(emailSender);
         services.AddSingleton(executionContextAccessor);
 
         _serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions()

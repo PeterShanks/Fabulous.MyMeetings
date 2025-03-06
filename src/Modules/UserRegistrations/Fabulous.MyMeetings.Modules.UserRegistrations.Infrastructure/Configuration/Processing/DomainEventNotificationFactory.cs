@@ -6,7 +6,7 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
 
 public class DomainEventNotificationFactory : IDomainEventNotificationFactory
 {
-    private static readonly Type DomainNotificationOpenGenericType = typeof(IDomainEventNotification<>);
+    private static readonly Type DomainNotificationOpenGenericType = typeof(DomainEventNotification<>);
 
     public IDomainEventNotification<TDomainEvent>? Create<TDomainEvent>(
         TDomainEvent domainEvent) where TDomainEvent : IDomainEvent
@@ -15,8 +15,7 @@ public class DomainEventNotificationFactory : IDomainEventNotificationFactory
 
         var type = AllTypes.SingleOrDefault(t =>
             t.IsClass &&
-            t is { IsAbstract: false, BaseType: not null } &&
-            t.BaseType.IsGenericType &&
+            t is { IsAbstract: false, BaseType.IsGenericType: true } &&
             t.BaseType.GetGenericTypeDefinition() == DomainNotificationOpenGenericType &&
             t.BaseType.GenericTypeArguments[0] == domainEventType);
 

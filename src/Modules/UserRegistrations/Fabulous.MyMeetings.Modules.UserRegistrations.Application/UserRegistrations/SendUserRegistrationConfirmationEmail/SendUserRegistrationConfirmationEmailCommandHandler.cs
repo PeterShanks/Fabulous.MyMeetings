@@ -1,6 +1,7 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
+﻿using Dapper;
+using Fabulous.MyMeetings.BuildingBlocks.Application;
+using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
-using Fabulous.MyMeetings.BuildingBlocks.Domain.Tokens;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.SendUserRegistrationConfirmationEmail;
@@ -8,14 +9,23 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistra
 internal class
     SendUserRegistrationConfirmationEmailCommandHandler(
         IEmailService emailService,
-        ITokenService tokenService,
+        ISqlConnectionFactory sqlConnectionFactory,
         SiteSettings siteSettings) : ICommandHandler<SendUserRegistrationConfirmationEmailCommand>
 {
     public async Task Handle(SendUserRegistrationConfirmationEmailCommand request, CancellationToken cancellationToken)
     {
-        var token = await tokenService.CreateAsync(request.UserRegistrationId, TokenTypeId.ConfirmEmail);
+        var connection = sqlConnectionFactory.GetOpenConnection();
 
-        var url = $"{siteSettings.SiteUrl}/api/account/{request.UserRegistrationId.Value}/confirm?token={token}";
+        var user = await connection.QuerySingleAsync<UserDto>(
+            """
+            SELECT Id,
+                Email,
+                FirstName
+            FROM [UserRegistrations].[v_UserRegistrations]
+            WHERE Id = @UserRegistrationId
+            """, new { request.UserRegistrationId });
+
+        var url = $"{siteSettings.SiteUrl}/api/account/{request.UserRegistrationId}/confirm?token={request.Token}";
 
         var content = $$"""
                       <!DOCTYPE html>
@@ -76,7 +86,7 @@ internal class
                               <div class="header">MyMeetings</div>
                               <div class="content">
                                   <h2>Welcome to MyMeetings!</h2>
-                                  <p>Hi {{request.FirstName}}</p>
+                                  <p>Hi {{user.FirstName}}</p>
                                   <p>Thank you for signing up. Please confirm your email address to start using your account.</p>
                                   <a href="{{url}}" class="button">Confirm Your Email</a>
                               </div>
@@ -90,11 +100,18 @@ internal class
                       """;
 
         var emailMessage = new EmailMessage(
-            request.Email,
-            request.FirstName,
+            user.Email,
+            user.FirstName,
             "MyMeetings - Please confirm your registration",
             content);
 
         await emailService.SendEmail(emailMessage);
+    }
+
+    private class UserDto
+    {
+        public Guid Id { get; set; }
+        public required string Email { get; set; }
+        public required string FirstName { get; set; }
     }
 }

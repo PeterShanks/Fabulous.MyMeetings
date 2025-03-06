@@ -1,0 +1,485 @@
+{
+	"info": {
+		"_postman_id": "51220950-4af6-4e19-b117-c9e5784c2783",
+		"name": "MyMeetings",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "4962691"
+	},
+	"item": [
+		{
+			"name": "Act As IdentityServer",
+			"item": [
+				{
+					"name": "Authenticate",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"Peteremadfayek@gmail.com\",\r\n    \"password\":\"P@ssw0rd\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://localhost:7273/api/user-access/account/authenticate",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "7273",
+							"path": [
+								"api",
+								"user-access",
+								"account",
+								"authenticate"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "scope",
+						"value": "user:authenticate user:read",
+						"type": "string"
+					},
+					{
+						"key": "clientSecret",
+						"value": "be88b96b-9c47-415b-af14-72adb9f39691",
+						"type": "string"
+					},
+					{
+						"key": "clientId",
+						"value": "95a1971b-4ec5-45f6-a57d-85dafafba8eb",
+						"type": "string"
+					},
+					{
+						"key": "accessTokenUrl",
+						"value": "https://localhost:5001/connect/token",
+						"type": "string"
+					},
+					{
+						"key": "tokenName",
+						"value": "IdentityServer",
+						"type": "string"
+					},
+					{
+						"key": "refreshRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "tokenRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "authRequestParams",
+						"value": [],
+						"type": "any"
+					},
+					{
+						"key": "challengeAlgorithm",
+						"value": "S256",
+						"type": "string"
+					},
+					{
+						"key": "useBrowser",
+						"value": true,
+						"type": "boolean"
+					},
+					{
+						"key": "redirect_uri",
+						"value": " ",
+						"type": "string"
+					},
+					{
+						"key": "grant_type",
+						"value": "client_credentials",
+						"type": "string"
+					},
+					{
+						"key": "authUrl",
+						"value": "https://login.microsoftonline.com/30de4516-3341-403d-bf73-3489ae7a8e59/oauth2/authorize",
+						"type": "string"
+					},
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					},
+					{
+						"key": "client_authentication",
+						"value": "header",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Act As Frontend",
+			"item": [
+				{
+					"name": "Authorize",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/connect/authorize?client_id=6d7163de-af9d-4b5a-8624-afb2d8215778&response_type=code&redirect_uri=https://localhost:5002/signin-oidc&scope=user:read user:write openid profile email&code_challenge=I7FYdahjrdx4kFGLUmow7NL_0sTS6HcIHBzIZ7cpacA&code_challenge_method=S256",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"connect",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "6d7163de-af9d-4b5a-8624-afb2d8215778"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://localhost:5002/signin-oidc"
+								},
+								{
+									"key": "scope",
+									"value": "user:read user:write openid profile email"
+								},
+								{
+									"key": "code_challenge",
+									"value": "I7FYdahjrdx4kFGLUmow7NL_0sTS6HcIHBzIZ7cpacA"
+								},
+								{
+									"key": "code_challenge_method",
+									"value": "S256"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exchange code",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "6d7163de-af9d-4b5a-8624-afb2d8215778",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "vNfOrJkJIh7bsWkNO2qSXKg0Kwo00QLC",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "2937FB61B537568DCDB9F481940D80946FD045501B587CA4D3DE72E58B370C02-1",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://localhost:5002/signin-oidc",
+									"type": "text"
+								},
+								{
+									"key": "code_verifier",
+									"value": "1tJITrSSpgsxFrzY4XFGMsSR43yEBBwcKDQnU84lu3A",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://localhost:5001/connect/token",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"connect",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"auth": {
+				"type": "oauth2",
+				"oauth2": [
+					{
+						"key": "addTokenTo",
+						"value": "header",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "Account",
+			"item": [
+				{
+					"name": "Create new user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"Peteremadfayek1@gmail.com\",\r\n    \"password\":\"P@ssw0rd\",\r\n    \"firstName\": \"Peter\",\r\n    \"lastName\": \"Emad\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/api/account",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Confirm Email",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/account/:userId/confirm?token=CfDJ8Bm5km1f8xRHq2dh9%2FwKAlBPXoFS8tglc1R4xvYvDWYicncx3Y6wRQGEkKSV%2BYqd8r712dohXL2%2Bs0yKTyYzEPJ1t7CA%2FgKJIEBl4hW8izz%2FELRks3WGrUuF80VkXG0DJPZPLnG8QhvpqaBnI2irBW2%2FhSm4Tt0%2FPAOfiN4UMjyRT52L29kKKvnV76ba8kBjIw%3D%3D",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								":userId",
+								"confirm"
+							],
+							"query": [
+								{
+									"key": "token",
+									"value": "CfDJ8Bm5km1f8xRHq2dh9%2FwKAlBPXoFS8tglc1R4xvYvDWYicncx3Y6wRQGEkKSV%2BYqd8r712dohXL2%2Bs0yKTyYzEPJ1t7CA%2FgKJIEBl4hW8izz%2FELRks3WGrUuF80VkXG0DJPZPLnG8QhvpqaBnI2irBW2%2FhSm4Tt0%2FPAOfiN4UMjyRT52L29kKKvnV76ba8kBjIw%3D%3D"
+								}
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "d3ce00d8-b419-4fd7-918a-bd4b3ec1f289"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Resend email confirmation",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/account/:email/resend-email-confirmation",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"account",
+								":email",
+								"resend-email-confirmation"
+							],
+							"variable": [
+								{
+									"key": "email",
+									"value": "Peteremadfayek1%40gmail.com"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "clientSecret",
+				"value": "be88b96b-9c47-415b-af14-72adb9f39691",
+				"type": "string"
+			},
+			{
+				"key": "scope",
+				"value": "user:authenticate",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "95a1971b-4ec5-45f6-a57d-85dafafba8eb",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://localhost:5001/connect/token",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "IdentityServer",
+				"type": "string"
+			},
+			{
+				"key": "refreshRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "tokenRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "authRequestParams",
+				"value": [],
+				"type": "any"
+			},
+			{
+				"key": "challengeAlgorithm",
+				"value": "S256",
+				"type": "string"
+			},
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "redirect_uri",
+				"value": " ",
+				"type": "string"
+			},
+			{
+				"key": "grant_type",
+				"value": "client_credentials",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://login.microsoftonline.com/30de4516-3341-403d-bf73-3489ae7a8e59/oauth2/authorize",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			},
+			{
+				"key": "client_authentication",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://localhost:7273",
+			"type": "string"
+		}
+	]
+}

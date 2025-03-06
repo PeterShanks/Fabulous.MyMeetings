@@ -16,6 +16,14 @@ internal class UserRegistrationEntityTypeConfiguration : IEntityTypeConfiguratio
             .HasConversion<TypedIdValueConverter<UserRegistrationId>>()
             .ValueGeneratedNever();
 
+        builder.Property(p => p.Password);
+        builder.Property(p => p.Email);
+        builder.Property(p => p.FirstName);
+        builder.Property(p => p.LastName);
+        builder.Property(p => p.Name);
+        builder.Property(p => p.RegisterDate);
+        builder.Property(p => p.ConfirmedDate);
+
         builder.ComplexProperty(p => p.Status, b =>
         {
             b.Property(p => p.Value)

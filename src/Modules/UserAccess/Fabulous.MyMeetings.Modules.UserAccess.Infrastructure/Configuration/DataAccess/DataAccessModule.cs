@@ -14,10 +14,16 @@ internal static class DataAccessModule
         services.AddScoped<ISqlConnectionFactory, SqlConnectionFactory>(_ =>
             new SqlConnectionFactory(databaseConnectionString));
 
-        services.AddDbContext<UserAccessContext>(b =>
-            b.UseSqlServer(databaseConnectionString));
+         services.AddDbContext<UserAccessContext>(b =>
+         {
+             b.UseSqlServer(databaseConnectionString)
+#if DEBUG
+                 .EnableDetailedErrors()
+                 .EnableSensitiveDataLogging();
+#endif
+         });
 
         services.AddScoped<IUserRepository, UserRepository>();
-        services.AddScoped<DbContext, UserAccessContext>();
+        services.AddScoped<DbContext, UserAccessContext>(sp => sp.GetRequiredService<UserAccessContext>());
     }
 }

@@ -1,15 +1,12 @@
 ﻿using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
-using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.UserRegistrations;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.SendUserRegistrationConfirmationEmail;
 
 public class SendUserRegistrationConfirmationEmailCommand(
-    UserRegistrationId userRegistrationId,
-    string email,
-    string firstName) : InternalCommand
+    Guid id,
+    Guid userRegistrationId,
+    string token) : InternalCommand(id)
 {
-    internal UserRegistrationId UserRegistrationId { get; } = userRegistrationId;
-
-    internal string Email { get; } = email;
-    public string FirstName { get; } = firstName;
+    public Guid UserRegistrationId { get; } = userRegistrationId;
+    public string Token { get; } = token;
 }

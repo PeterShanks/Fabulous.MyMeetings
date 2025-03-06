@@ -18,25 +18,33 @@ internal class LoggingCommandHandlerDecorator<TCommand>(ICommandHandler<TCommand
             return;
         }
 
-        using (logger.BeginScope(new List<KeyValuePair<string, object>>
-               {
-                   new("CorrelationId", executionContextAccessor.CorrelationId),
-                   new("Context", request.Id)
-               }))
+
+        using var _ = BeginScope(request.Id);
+
+        try
         {
-            try
-            {
-                logger.LogInformation("Executing command {Command}", request.GetType().Name);
+            logger.LogInformation("Executing command {Command}", request.GetType().Name);
 
-                await decorated.Handle(request, cancellationToken);
+            await decorated.Handle(request, cancellationToken);
 
-                logger.LogInformation("Command {Command} processed successful", request.GetType().Name);
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "Command {Command} processing failed", request.GetType().Name);
-                throw;
-            }
+            logger.LogInformation("Command {Command} processed successful", request.GetType().Name);
         }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Command {Command} processing failed", request.GetType().Name);
+            throw;
+        }
+    }
+
+    private IDisposable BeginScope(Guid contextId)
+    {
+        var state = new List<KeyValuePair<string, object>> { new("Context", contextId) };
+
+        if (executionContextAccessor.IsAvailable)
+        {
+            state.Add(new KeyValuePair<string, object>("CorrelationId", executionContextAccessor.CorrelationId));
+        }
+
+        return logger.BeginScope(state)!;
     }
 }

@@ -1,10 +1,12 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Exceptions;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 using FluentValidation;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing;
 
+[SkipAutoRegistration]
 internal class ValidationCommandHandlerWithResultDecorator<TCommand, TResult>(IEnumerable<IValidator<TCommand>> validators,
     ICommandHandler<TCommand, TResult> decorated) : ICommandHandler<TCommand, TResult>
     where TCommand : ICommand<TResult>

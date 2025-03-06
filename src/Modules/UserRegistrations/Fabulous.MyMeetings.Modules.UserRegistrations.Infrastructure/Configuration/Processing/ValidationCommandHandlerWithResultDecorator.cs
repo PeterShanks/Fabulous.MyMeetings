@@ -1,4 +1,4 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Exceptions;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Contracts;
 using FluentValidation;

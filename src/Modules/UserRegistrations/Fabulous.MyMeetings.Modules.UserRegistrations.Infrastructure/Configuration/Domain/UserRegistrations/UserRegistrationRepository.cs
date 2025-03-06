@@ -7,11 +7,16 @@ internal class UserRegistrationRepository(UserRegistrationsContext userRegistrat
 {
     public void Add(UserRegistration userRegistration)
     {
-        userRegistrationsContext.Add(userRegistration);
+        userRegistrationsContext.UserRegistrations.Add(userRegistration);
     }
 
     public Task<UserRegistration?> GetByIdAsync(UserRegistrationId userRegistrationId)
     {
         return userRegistrationsContext.UserRegistrations.FirstOrDefaultAsync(x => x.Id == userRegistrationId);
+    }
+
+    public Task<UserRegistration?> GetByIdEmail(string email)
+    {
+        return userRegistrationsContext.UserRegistrations.FirstOrDefaultAsync(x => x.Email == email);
     }
 }

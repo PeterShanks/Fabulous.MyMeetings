@@ -11,7 +11,7 @@ internal class NewUserRegisteredPublishEventHandler(IEventBus eventBus) : INotif
         return eventBus.Publish(new NewUserRegisteredIntegrationEvent(
             notification.DomainEvent.Id,
             notification.DomainEvent.OccurredOn,
-            notification.DomainEvent.UserRegistrationId.Value,
+            notification.DomainEvent.UserRegistrationId,
             notification.DomainEvent.Email,
             notification.DomainEvent.FirstName,
             notification.DomainEvent.LastName,

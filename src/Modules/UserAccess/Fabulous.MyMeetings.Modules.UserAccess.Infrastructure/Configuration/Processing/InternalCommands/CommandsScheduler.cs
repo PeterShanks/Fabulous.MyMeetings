@@ -5,14 +5,16 @@ using System.Text.Json;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory) : ICommandsScheduler
+internal class CommandsScheduler(
+    ISqlConnectionFactory sqlConnectionFactory,
+    TimeProvider timeProvider) : ICommandsScheduler
 {
     public Task EnqueueAsync(InternalCommand command)
     {
         return AddToInternalCommands(new
         {
             command.Id,
-            EnqueueDate = DateTime.UtcNow,
+            EnqueueDate = timeProvider.GetUtcNow().UtcDateTime,
             Type = command.GetType().FullName,
             Data = JsonSerializer.Serialize(command, JsonSerializerOptionsInstance)
         });
@@ -23,7 +25,7 @@ internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory) : I
         return AddToInternalCommands(new
         {
             command.Id,
-            EnqueueDate = DateTime.UtcNow,
+            EnqueueDate = timeProvider.GetUtcNow().UtcDateTime,
             Type = command.GetType().FullName,
             Data = JsonSerializer.Serialize(command, JsonSerializerOptionsInstance)
         });

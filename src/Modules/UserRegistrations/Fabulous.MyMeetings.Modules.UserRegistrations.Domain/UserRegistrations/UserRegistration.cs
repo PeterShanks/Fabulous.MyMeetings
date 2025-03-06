@@ -54,7 +54,7 @@ public class UserRegistration : Entity, IAggregateRoot
 
     public UserRegistrationStatus Status { get; private set; }
 
-    public DateTime? ConfirmedDate { get; }
+    public DateTime? ConfirmedDate { get; private set; }
 
     public static UserRegistration RegisterNewUser(
         string password,
@@ -69,19 +69,10 @@ public class UserRegistration : Entity, IAggregateRoot
     public void Confirm()
     {
         CheckRule(new UserRegistrationCannotBeConfirmedMoreThanOnceRule(Status));
-        CheckRule(new UserRegistrationCannotBeConfirmedAfterExpirationRule(Status));
 
         Status = UserRegistrationStatus.Confirmed;
+        ConfirmedDate = DateTime.UtcNow;
 
         AddDomainEvent(new UserRegistrationConfirmedDomainEvent(Id));
-    }
-
-    public void Expire()
-    {
-        CheckRule(new UserRegistrationCannotBeExpiredMoreThanOnceRule(Status));
-
-        Status = UserRegistrationStatus.Expired;
-
-        AddDomainEvent(new UserRegistrationExpiredDomainEvent(Id));
     }
 }

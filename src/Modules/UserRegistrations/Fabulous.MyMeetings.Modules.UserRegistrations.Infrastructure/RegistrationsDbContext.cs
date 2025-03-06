@@ -1,6 +1,6 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
-using Fabulous.MyMeetings.BuildingBlocks.Domain.Tokens;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.Tokens;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.UserRegistrations;
 using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

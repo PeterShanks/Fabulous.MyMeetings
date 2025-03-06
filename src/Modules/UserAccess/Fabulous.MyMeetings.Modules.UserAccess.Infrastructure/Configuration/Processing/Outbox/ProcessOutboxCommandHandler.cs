@@ -10,7 +10,8 @@ using System.Text.Json;
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox;
 
 internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFactory sqlConnectionFactory,
-    IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger) : ICommandHandler<ProcessOutboxCommand>
+    IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger,
+    TimeProvider timeProvider) : ICommandHandler<ProcessOutboxCommand>
 {
     private readonly ILogger _logger = logger;
 
@@ -54,7 +55,7 @@ internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFac
                 await mediator.Publish(notification, cancellationToken);
                 await connection.ExecuteScalarAsync(updateProcessedDateSql, new
                 {
-                    Date = DateTime.UtcNow,
+                    Date = timeProvider.GetUtcNow().UtcDateTime,
                     message.Id
                 });
             }

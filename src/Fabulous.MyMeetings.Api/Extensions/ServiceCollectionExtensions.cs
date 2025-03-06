@@ -11,12 +11,14 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Fabulous.MyMeetings.Api.Configuration;
 using Fabulous.MyMeetings.Api.Configuration.Middlewares;
-using Fabulous.MyMeetings.Api.Configuration.Validation;
-using Fabulous.MyMeetings.BuildingBlocks.Application;
+using Fabulous.MyMeetings.Api.Configuration.ProblemDetailsMapping;
 using Fabulous.MyMeetings.BuildingBlocks.Domain;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
-using Fabulous.MyMeetings.Email.MailKit;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using Hellang.Middleware.ProblemDetails;
+using Fabulous.MyMeetings.BuildingBlocks.Application.Exceptions;
+using Fabulous.MyMeetings.CommonServices.Email.MailKit;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.Tokens;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
 
@@ -36,9 +38,11 @@ public static class ServiceCollectionExtensions
         services.AddProblemDetails(opts =>
         {
             opts.IncludeExceptionDetails = (context, exception) => builder.Environment.IsDevelopment();
-            opts.IncludeExceptionDetails = (_, _) => false;
             opts.Map<InvalidCommandException>(ex => new InvalidCommandProblemDetails(ex));
             opts.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
+            opts.Map<BusinessException>(ex => new BusinessExceptionProblemDetails(ex));
+            opts.Map<NotFoundException>(ex => new NotFoundProblemDetails(ex));
+            opts.Map<InvalidTokenException>(_ => new InvalidTokenProblemDetails());
             opts.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
         });
 
@@ -74,8 +78,10 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthorizationMiddlewareResultHandler>();
 
-        services.AddMailKit(builder.Configuration.GetSection("SmtpSettings"));
+        services.AddMailKit(settings => builder.Configuration.GetSection("SmtpSettings").Bind(settings));
         services.AddOptionsWithValidation<EmailsConfiguration, EmailsConfigurationValidator>(builder.Configuration.GetSection("EmailsConfiguration"));
+
+        services.AddSingleton<IEventBus, InMemoryEventBus>();
 
         return builder;
     }

@@ -8,7 +8,8 @@ namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Emails;
 public class EmailService(
     ILogger<EmailService> logger,
     EmailsConfiguration configuration,
-    ISqlConnectionFactory sqlConnectionFactory) : IEmailService
+    ISqlConnectionFactory sqlConnectionFactory,
+    TimeProvider timeProvider) : IEmailService
 {
     private readonly ILogger _logger = logger;
 
@@ -28,7 +29,7 @@ public class EmailService(
                 message.ToAddress,
                 message.Subject,
                 message.Content,
-                Date = DateTime.UtcNow
+                Date = timeProvider.GetUtcNow().UtcDateTime
             });
 
         _logger.LogInformation(

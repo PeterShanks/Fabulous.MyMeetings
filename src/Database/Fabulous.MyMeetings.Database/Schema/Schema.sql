@@ -3,5 +3,3 @@ GO
 
 CREATE SCHEMA [UserRegistrations] AUTHORIZATION dbo
 GO
-
-CREATE SCHEMA [App] AUTHORIZATION [dbo];

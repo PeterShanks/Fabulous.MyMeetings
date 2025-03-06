@@ -13,9 +13,6 @@ public class UserRegistrationStatus : ValueObject
 
     public static UserRegistrationStatus Confirmed => new(nameof(Confirmed));
 
-    public static UserRegistrationStatus Expired => new(nameof(Expired));
-
-
     public string Value { get; }
 
     public override string ToString()

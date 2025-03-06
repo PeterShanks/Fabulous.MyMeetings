@@ -10,7 +10,8 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
 
 internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlConnectionFactory,
     IMediator mediator,
-    ResiliencePipelineProvider<string> resiliencePipelineProvider) : ICommandHandler<ProcessInternalCommandsCommand>
+    ResiliencePipelineProvider<string> resiliencePipelineProvider,
+    TimeProvider timeProvider) : ICommandHandler<ProcessInternalCommandsCommand>
 {
     public async Task Handle(ProcessInternalCommandsCommand request, CancellationToken cancellationToken)
     {
@@ -22,7 +23,7 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
                 Id,
                 Type,
                 Data
-            FROM Users.InternalCommands
+            FROM UserRegistrations.InternalCommands
             WHERE ProcessedDate IS NULL
             ORDER BY EnqueueDate
             """;
@@ -30,7 +31,7 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
         var commands = await connection.QueryAsync<InternalCommandDto>(sql);
 
         var pipeline = resiliencePipelineProvider.GetPipeline(PollyPolicies.WaitAndRetry);
-        var context = ResilienceContextPool.Shared.Get();
+        var context = ResilienceContextPool.Shared.Get(cancellationToken);
 
         foreach (var command in commands)
             try
@@ -45,14 +46,14 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
             {
                 await connection.ExecuteScalarAsync(
                     """
-                    UPDATE Registrations.InternalCommands
+                    UPDATE UserRegistrations.InternalCommands
                         SET ProcessedDate = @Date,
                             Error = @Error
                     WHERE Id = @Id
                     """,
                     new
                     {
-                        Date = DateTime.UtcNow,
+                        Date = timeProvider.GetUtcNow().UtcDateTime,
                         Error = e.ToString(),
                         command.Id
                     });
@@ -72,10 +73,10 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
 
     private class InternalCommandDto
     {
-        public required Guid Id { get; set; }
+        public required Guid Id { get; init; }
 
-        public required string Type { get; set; }
+        public required string Type { get; init; }
 
-        public required string Data { get; set; }
+        public required string Data { get; init; }
     }
 }

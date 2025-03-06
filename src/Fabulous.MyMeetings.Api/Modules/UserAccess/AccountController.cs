@@ -6,6 +6,7 @@ using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Users.GetUser;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Contracts;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ConfirmUserRegistration;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ResendUserRegistrationConfirmationEmail;
 using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
@@ -51,11 +52,22 @@ namespace Fabulous.MyMeetings.Api.Modules.UserAccess
 
         [NoPermissionRequired]
         [NoScopeRequired]
-        [HttpPatch("{userRegistrationId:guid}/confirm")]
+        [HttpPut("{userRegistrationId:guid}/confirm")]
         public async Task<IActionResult> ConfirmUserRegistration([FromRoute] Guid userRegistrationId, string token)
         {
             await userRegistrationsModule.ExecuteCommandAsync(
                 new ConfirmUserRegistrationCommand(userRegistrationId, token)
+            );
+            return Ok();
+        }
+
+        [NoPermissionRequired]
+        [NoScopeRequired]
+        [HttpPut("{email}/resend-email-confirmation")]
+        public async Task<IActionResult> ResendEmailConfirmation(string email)
+        {
+            await userRegistrationsModule.ExecuteCommandAsync(
+                new ResendUserRegistrationConfirmationEmailCommand(email)
             );
             return Ok();
         }

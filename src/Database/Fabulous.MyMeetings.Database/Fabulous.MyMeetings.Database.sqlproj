@@ -65,8 +65,6 @@
     <Folder Include="Schema\UserRegistrations" />
     <Folder Include="Schema\UserRegistrations\Tables" />
     <Folder Include="Schema\UserRegistrations\Views" />
-    <Folder Include="Schema\App" />
-    <Folder Include="Schema\App\Tables" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema\Users\Tables\Users.sql" />
@@ -85,9 +83,9 @@
     <Build Include="Schema\UserRegistrations\Tables\InternalCommands.sql" />
     <Build Include="Schema\UserRegistrations\Tables\InboxMessages.sql" />
     <Build Include="Schema\Schema.sql" />
-    <Build Include="Schema\App\Tables\Tokens.sql" />
-    <Build Include="Schema\App\Tables\TokenTypes.sql" />
-    <Build Include="Schema\App\Tables\DataProtectionKeys.sql" />
+    <Build Include="Schema\UserRegistrations\Tables\TokenTypes.sql" />
+    <Build Include="Schema\UserRegistrations\Tables\DataProtectionKeys.sql" />
+    <Build Include="Schema\UserRegistrations\Tables\Tokens.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fabulous.MyMeetings.Database.publish.xml" />

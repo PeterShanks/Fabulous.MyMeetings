@@ -1,12 +1,16 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Queries;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.InternalCommands;
+using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Retry;
+using Scrutor;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 
@@ -18,6 +22,7 @@ internal static class ProcessingModule
         CheckMappings(domainNotificationsMap);
         services.AddSingleton(domainNotificationsMap);
 
+        services.AddSingleton<TimeProvider>(TimeProvider.System);
         services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
         services.AddScoped<IDomainNotificationsMapper, DomainNotificationsMapper>();
         services.AddScoped<IDomainEventsAccessor, DomainEventsAccessor>();
@@ -35,29 +40,49 @@ internal static class ProcessingModule
                     .Handle<Exception>()
             });
         });
+
         services.AddScoped<ICommandsScheduler, CommandsScheduler>();
         services.Scan(scan => scan
             .FromAssemblies(Assemblies)
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<>)), publicOnly: false)
+
+            .AddClasses(classes => 
+                classes.AssignableTo(typeof(ICommandHandler<>))
+                    .WithoutAttribute<SkipAutoRegistrationAttribute>(),
+                publicOnly: false)
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsImplementedInterfaces()
-            .WithScopedLifetime()
-            .AddClasses(classes => classes.AssignableTo(typeof(ICommandHandler<,>)), publicOnly: false)
+            .WithTransientLifetime()
+
+            .AddClasses(classes => 
+                classes.AssignableTo(typeof(ICommandHandler<,>))
+                    .WithoutAttribute<SkipAutoRegistrationAttribute>(),
+                publicOnly: false)
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+
+            .AddClasses(classes =>
+                    classes.AssignableTo(typeof(IQueryHandler<,>))
+                        .WithoutAttribute<SkipAutoRegistrationAttribute>(),
+                publicOnly: false)
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
+            .AsImplementedInterfaces()
+            .WithTransientLifetime()
+
+            .AddClasses(classes => classes.AssignableTo(typeof(IValidator<>)))
+            .UsingRegistrationStrategy(RegistrationStrategy.Skip)
             .AsImplementedInterfaces()
             .WithScopedLifetime()
         );
 
         services.Decorate(typeof(ICommandHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
-        services.Decorate(typeof(IRequestHandler<>), typeof(UnitOfWorkCommandHandlerDecorator<>));
-        services.Decorate(typeof(IRequestHandler<,>), typeof(UnitOfWorkCommandHandlerWithResultDecorator<,>));
 
         services.Decorate(typeof(ICommandHandler<>), typeof(ValidationCommandHandlerDecorator<>));
         services.Decorate(typeof(ICommandHandler<,>), typeof(ValidationCommandHandlerWithResultDecorator<,>));
-        services.Decorate(typeof(IRequestHandler<>), typeof(ValidationCommandHandlerDecorator<>));
-        services.Decorate(typeof(IRequestHandler<,>), typeof(ValidationCommandHandlerWithResultDecorator<,>));
 
         services.Decorate(typeof(ICommandHandler<>), typeof(LoggingCommandHandlerDecorator<>));
-        services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));       
+        services.Decorate(typeof(ICommandHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));
         services.Decorate(typeof(IRequestHandler<>), typeof(LoggingCommandHandlerDecorator<>));
         services.Decorate(typeof(IRequestHandler<,>), typeof(LoggingCommandHandlerWithResultDecorator<,>));
 

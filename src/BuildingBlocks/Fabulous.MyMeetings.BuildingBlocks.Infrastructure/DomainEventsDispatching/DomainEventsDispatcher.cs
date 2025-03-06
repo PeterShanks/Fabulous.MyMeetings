@@ -3,6 +3,7 @@ using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
 using Fabulous.MyMeetings.BuildingBlocks.Domain;
 using MediatR;
 using System.Text.Json;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Serialization;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
@@ -13,7 +14,15 @@ public class DomainEventsDispatcher(
     IDomainNotificationsMapper domainNotificationsMapper,
     IDomainEventNotificationFactory domainEventNotificationFactory) : IDomainEventsDispatcher
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters =
+        {
+            new PolymorphicJsonConverterFactory(
+                typeof(IDomainEventNotification),
+                typeof(IDomainEventNotification<>)),
+        }
+    };
 
     public async Task DispatchEventsAsync()
     {

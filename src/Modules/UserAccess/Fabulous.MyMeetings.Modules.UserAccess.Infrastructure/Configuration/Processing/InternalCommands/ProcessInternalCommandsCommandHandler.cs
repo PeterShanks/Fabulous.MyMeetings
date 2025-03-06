@@ -10,7 +10,8 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Pr
 
 internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlConnectionFactory,
     IMediator mediator,
-    ResiliencePipelineProvider<string> resiliencePipelineProvider) : ICommandHandler<ProcessInternalCommandsCommand>
+    ResiliencePipelineProvider<string> resiliencePipelineProvider,
+    TimeProvider timeProvider) : ICommandHandler<ProcessInternalCommandsCommand>
 {
     public async Task Handle(ProcessInternalCommandsCommand request, CancellationToken cancellationToken)
     {
@@ -52,7 +53,7 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
                     """,
                     new
                     {
-                        Date = DateTime.UtcNow,
+                        Date = timeProvider.GetUtcNow().UtcDateTime,
                         Error = e.ToString(),
                         command.Id
                     });

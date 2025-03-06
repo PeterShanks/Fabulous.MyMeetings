@@ -5,14 +5,14 @@ using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Co
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory) : ICommandsScheduler
+internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory, TimeProvider timeProvider) : ICommandsScheduler
 {
     public Task EnqueueAsync(InternalCommand command)
     {
         return AddToInternalCommands(new
         {
             command.Id,
-            EnqueueDate = DateTime.UtcNow,
+            EnqueueDate = timeProvider.GetUtcNow().UtcDateTime,
             Type = command.GetType().FullName,
             Data = JsonSerializer.Serialize(command, JsonSerializerOptionsInstance)
         });
@@ -23,7 +23,7 @@ internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory) : I
         return AddToInternalCommands(new
         {
             command.Id,
-            EnqueueDate = DateTime.UtcNow,
+            EnqueueDate = timeProvider.GetUtcNow().UtcDateTime,
             Type = command.GetType().FullName,
             Data = JsonSerializer.Serialize(command, JsonSerializerOptionsInstance)
         });
@@ -35,7 +35,7 @@ internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory) : I
 
         const string sqlInsert =
             """
-            INSERT INTO Registrations.InternalCommands (
+            INSERT INTO UserRegistrations.InternalCommands (
                 Id,
                 EnqueueDate,
                 Type,

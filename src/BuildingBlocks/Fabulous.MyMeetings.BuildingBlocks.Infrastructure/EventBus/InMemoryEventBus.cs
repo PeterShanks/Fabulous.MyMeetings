@@ -33,7 +33,8 @@ public sealed class InMemoryEventBus(ILogger<InMemoryEventBus> logger) : IEventB
 
         if (eventType == null) return;
 
-        var handlers = _handlersDictionary[eventType];
+        if (!_handlersDictionary.TryGetValue(eventType, out var handlers))
+            return;
 
         foreach (var integrationEventHandler in handlers)
             if (integrationEventHandler is IIntegrationEventHandler<T> handler)

@@ -1,6 +1,6 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
-using Fabulous.MyMeetings.BuildingBlocks.Domain.Tokens;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.Tokens;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.UserRegistrations;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Domain.Tokens;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Domain.UserRegistrations;
@@ -17,11 +17,16 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
                 new SqlConnectionFactory(databaseConnectionString));
 
             services.AddDbContext<UserRegistrationsContext>(b =>
-                b.UseSqlServer(databaseConnectionString));
+                b.UseSqlServer(databaseConnectionString)
+#if DEBUG
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging()
+#endif
+                );
 
             services.AddScoped<IUserRegistrationRepository, UserRegistrationRepository>();
             services.AddScoped<ITokenRepository, TokenRepository>();
-            services.AddScoped<DbContext, UserRegistrationsContext>();
+            services.AddScoped<DbContext, UserRegistrationsContext>(sp => sp.GetRequiredService<UserRegistrationsContext>());
         }
     }
 }

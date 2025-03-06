@@ -10,7 +10,8 @@ using Microsoft.Extensions.Logging;
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.Outbox;
 
 internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFactory sqlConnectionFactory,
-    IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger) : ICommandHandler<ProcessOutboxCommand>
+    IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger,
+    TimeProvider timeProvider) : ICommandHandler<ProcessOutboxCommand>
 {
     private readonly ILogger _logger = logger;
 
@@ -24,7 +25,7 @@ internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFac
                 Id,
                 Type,
                 Data
-            FROM Users.OutboxMessages
+            FROM UserRegistrations.OutboxMessages
             WHERE ProcessedDate IS NULL
             ORDER BY OccurredOn
             """;
@@ -33,7 +34,7 @@ internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFac
 
         const string updateProcessedDateSql =
             """
-            UPDATE Users.OutboxMessages
+            UPDATE UserRegistrations.OutboxMessages
                 SET ProcessedDate = @Date
             WHERE Id = @Id
             """;
@@ -54,7 +55,7 @@ internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFac
                 await mediator.Publish(notification, cancellationToken);
                 await connection.ExecuteScalarAsync(updateProcessedDateSql, new
                 {
-                    Date = DateTime.UtcNow,
+                    Date = timeProvider.GetUtcNow().UtcDateTime,
                     message.Id
                 });
             }
