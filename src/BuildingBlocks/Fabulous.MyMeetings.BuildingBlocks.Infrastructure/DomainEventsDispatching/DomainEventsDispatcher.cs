@@ -3,7 +3,6 @@ using Fabulous.MyMeetings.BuildingBlocks.Application.Outbox;
 using Fabulous.MyMeetings.BuildingBlocks.Domain;
 using MediatR;
 using System.Text.Json;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Serialization;
 
 namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DomainEventsDispatching;
 
@@ -12,18 +11,9 @@ public class DomainEventsDispatcher(
     IOutbox outbox,
     IDomainEventsAccessor domainEventsAccessor,
     IDomainNotificationsMapper domainNotificationsMapper,
-    IDomainEventNotificationFactory domainEventNotificationFactory) : IDomainEventsDispatcher
+    IDomainEventNotificationFactory domainEventNotificationFactory,
+    JsonSerializerOptions jsonSerializerOptions) : IDomainEventsDispatcher
 {
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        Converters =
-        {
-            new PolymorphicJsonConverterFactory(
-                typeof(IDomainEventNotification),
-                typeof(IDomainEventNotification<>)),
-        }
-    };
-
     public async Task DispatchEventsAsync()
     {
         var domainEvents = domainEventsAccessor.GetAllDomainEvents();
@@ -46,8 +36,12 @@ public class DomainEventsDispatcher(
 
         foreach (var domainEventNotification in domainEventNotifications)
         {
-            var typeName = domainNotificationsMapper.GetName(domainEventNotification.GetType());
-            var data = JsonSerializer.Serialize(domainEventNotification, JsonOptions);
+            var domainEventNotificationType = domainEventNotification.GetType();
+            var typeName = domainNotificationsMapper.GetName(domainEventNotificationType);
+            var data = JsonSerializer.Serialize(
+                domainEventNotification, 
+                domainEventNotificationType, 
+                jsonSerializerOptions);
 
             var outboxMessage = new OutboxMessage(
                 domainEventNotification.Id,

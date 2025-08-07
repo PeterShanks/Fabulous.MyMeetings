@@ -61,7 +61,7 @@ public class User : Entity, IAggregateRoot
         string name)
     {
         return new User(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             password,
             email,
             firstName,

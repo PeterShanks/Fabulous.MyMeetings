@@ -3,6 +3,8 @@ using Fabulous.MyMeetings.BuildingBlocks.Application;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+using Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration;
+using Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
 using Hellang.Middleware.ProblemDetails;
@@ -63,24 +65,48 @@ public static class WebApplicationExtensions
             .GetSection("SiteSettings")
             .GetWithValidation<SiteSettings, SiteSettingsValidator>();
 
+        var connectionString = configuration.GetConnectionString("MyMeetings");
+        ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
+        var executionContextAccessor = new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>());
+        var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
+        var hostApplicationLifetime = serviceProvider.GetRequiredService<IHostApplicationLifetime>();
+        var emailService = serviceProvider.GetRequiredService<IEmailService>();
+        var eventBus = serviceProvider.GetRequiredService<IEventBus>();
+
         UserAccessStartup.Initialize(
-            configuration.GetConnectionString("MyMeetings")!,
-            new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
-            serviceProvider.GetRequiredService<ILoggerFactory>(),
-            serviceProvider.GetRequiredService<IHostApplicationLifetime>(),
-            serviceProvider.GetRequiredService<IEmailService>(),
-            serviceProvider.GetRequiredService<IEventBus>()
+            connectionString,
+            executionContextAccessor,
+            loggerFactory,
+            hostApplicationLifetime,
+            emailService,
+            eventBus
         );
 
         UserRegistrationsStartup.Initialize(
-            configuration.GetConnectionString("MyMeetings")!,
-            new ExecutionContextAccessor(serviceProvider.GetRequiredService<IHttpContextAccessor>()),
-            serviceProvider.GetRequiredService<ILoggerFactory>(),
-            serviceProvider.GetRequiredService<IHostApplicationLifetime>(),
+            connectionString,
+            executionContextAccessor,
+            loggerFactory,
+            hostApplicationLifetime,
             siteSettings,
-            serviceProvider.GetRequiredService<IEmailService>(),
-            serviceProvider.GetRequiredService<IEventBus>()
+            emailService,
+            eventBus
         );
+
+        AdministrationStartup.Initialize(
+            connectionString,
+            executionContextAccessor,
+            loggerFactory,
+            hostApplicationLifetime,
+            eventBus);
+
+        MeetingsStartup.Initialize(
+            connectionString,
+            executionContextAccessor,
+            loggerFactory,
+            hostApplicationLifetime,
+            siteSettings,
+            emailService,
+            eventBus);
 
         return app;
     }

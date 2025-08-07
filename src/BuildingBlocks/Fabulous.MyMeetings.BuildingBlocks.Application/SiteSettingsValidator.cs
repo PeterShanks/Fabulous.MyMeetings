@@ -1,13 +1,12 @@
 ﻿using FluentValidation;
 
-namespace Fabulous.MyMeetings.BuildingBlocks.Application
+namespace Fabulous.MyMeetings.BuildingBlocks.Application;
+
+public class SiteSettingsValidator: AbstractValidator<SiteSettings>
 {
-    public class SiteSettingsValidator: AbstractValidator<SiteSettings>
+    public SiteSettingsValidator()
     {
-        public SiteSettingsValidator()
-        {
-            RuleFor(x => x.SiteUrl)
-                .NotEmpty();
-        }
+        RuleFor(x => x.SiteUrl)
+            .NotEmpty();
     }
 }

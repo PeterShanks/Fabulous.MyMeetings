@@ -5,6 +5,4 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Queri
 
 public interface IQueryHandler<in TQuery, TResult> :
     IRequestHandler<TQuery, TResult>
-    where TQuery : IQuery<TResult>
-{
-}
+    where TQuery : IQuery<TResult>;

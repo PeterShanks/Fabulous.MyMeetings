@@ -1,0 +1,3 @@
+﻿namespace Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.GetAuthenticationMemberMeetingGroups;
+
+public class GetAuthenticationMemberMeetingGroupsQuery: IQuery<IEnumerable<MemberMeetingGroupDto>>;

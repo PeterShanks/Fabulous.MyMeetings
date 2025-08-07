@@ -1,0 +1,9 @@
+﻿CREATE TABLE [Administration].[Members]
+(
+    [Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY CLUSTERED,
+    [Email] NVARCHAR (255) NOT NULL,
+    [FirstName] NVARCHAR(50) NOT NULL,
+    [LastName] NVARCHAR(50) NOT NULL,
+    [Name] NVARCHAR (255) NOT NULL
+)
+GO

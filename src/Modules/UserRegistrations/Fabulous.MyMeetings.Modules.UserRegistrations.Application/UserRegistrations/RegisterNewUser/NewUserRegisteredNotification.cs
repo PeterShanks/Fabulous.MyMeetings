@@ -3,6 +3,4 @@ using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.UserRegistrations.Eve
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.RegisterNewUser;
 
-public class NewUserRegisteredNotification(NewUserRegisteredDomainEvent domainEvent, Guid id) : DomainEventNotification<NewUserRegisteredDomainEvent>(domainEvent, id)
-{
-}
+public class NewUserRegisteredNotification(NewUserRegisteredDomainEvent domainEvent, Guid id) : DomainEventNotification<NewUserRegisteredDomainEvent>(domainEvent, id);

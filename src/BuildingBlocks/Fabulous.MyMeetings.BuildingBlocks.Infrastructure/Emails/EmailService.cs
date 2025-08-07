@@ -24,7 +24,7 @@ public class EmailService(
             """,
             new
             {
-                Id = Guid.NewGuid(),
+                Id = Guid.CreateVersion7(),
                 From = configuration.FromEmail,
                 message.ToAddress,
                 message.Subject,

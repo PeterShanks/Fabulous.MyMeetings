@@ -1,0 +1,6 @@
+﻿CREATE TABLE [Meetings].[MemberSubscriptions]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY CLUSTERED,
+    [ExpirationDate] DATETIME2(7) NOT NULL
+)
+GO

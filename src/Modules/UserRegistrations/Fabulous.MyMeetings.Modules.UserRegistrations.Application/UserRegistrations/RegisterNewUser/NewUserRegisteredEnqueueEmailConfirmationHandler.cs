@@ -9,7 +9,7 @@ internal class NewUserRegisteredEnqueueEmailConfirmationHandler(ICommandsSchedul
     public Task Handle(NewUserRegisteredNotification notification, CancellationToken cancellationToken)
     {
         return commandsScheduler.EnqueueAsync(new CreateEmailConfirmationTokenCommand(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             notification.DomainEvent.UserRegistrationId));
     }
 }

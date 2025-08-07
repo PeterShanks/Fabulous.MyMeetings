@@ -1,0 +1,5 @@
+﻿using Fabulous.MyMeetings.Modules.Administration.Application.MeetingGroupProposals.GetMeetingGroupProposal;
+
+namespace Fabulous.MyMeetings.Modules.Administration.Application.MeetingGroupProposals.GetMeetingGroupProposals;
+
+public class GetMeetingGroupProposalsQuery: Query<IEnumerable<MeetingGroupProposalDto>>;

@@ -1,4 +1,4 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 
 namespace Fabulous.MyMeetings.Api.Configuration.ExecutionContext;
 

@@ -21,7 +21,7 @@ public class
             throw new BusinessException("User email is already confirmed");
 
         await commandsScheduler.EnqueueAsync(new CreateEmailConfirmationTokenCommand(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             userRegistration.Id));
     }
 }

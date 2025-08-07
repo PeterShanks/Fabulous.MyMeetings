@@ -60,11 +60,17 @@ public abstract class ValueObject : IEquatable<ValueObject>
     private IEnumerable<PropertyInfo> GetProperties()
     {
         return GetType()
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
     }
 
     private IEnumerable<FieldInfo> GetFields()
     {
         return GetType().GetFields(BindingFlags.Instance | BindingFlags.Public);
+    }
+
+    protected static void CheckRule(IBusinessRule rule)
+    {
+        if (rule.IsBroken())
+            throw new BusinessRuleValidationException(rule);
     }
 }

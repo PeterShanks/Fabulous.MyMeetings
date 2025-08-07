@@ -1,8 +1,6 @@
 ﻿namespace Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 
-public interface IIntegrationEventHandler
-{
-}
+public interface IIntegrationEventHandler;
 
 public interface IIntegrationEventHandler<in TIntegrationEvent> : IIntegrationEventHandler
     where TIntegrationEvent : IntegrationEvent

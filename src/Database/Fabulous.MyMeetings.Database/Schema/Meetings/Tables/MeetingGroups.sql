@@ -1,0 +1,12 @@
+﻿CREATE TABLE [Meetings].[MeetingGroups]
+(
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY CLUSTERED,
+	[Name] NVARCHAR(255) NOT NULL,
+	[Description] VARCHAR(200) NULL,
+    [LocationCity] NVARCHAR(50) NOT NULL,
+    [LocationCountryCode] NVARCHAR(3) NOT NULL,
+    [CreatorId] UNIQUEIDENTIFIER NOT NULL,
+    [CreateDate] DATETIME2(7) NOT NULL,
+	[PaymentDateTo] DATE NULL
+)
+GO

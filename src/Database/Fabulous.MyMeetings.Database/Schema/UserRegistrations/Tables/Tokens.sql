@@ -1,7 +1,6 @@
 ﻿CREATE TABLE [UserRegistrations].[Tokens]
 (
-	[ClusterKey] INT NOT NULL IDENTITY(1,1),
-	[Id] UNIQUEIDENTIFIER NOT NULL,
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY,
 	[UserId] UNIQUEIDENTIFIER NOT NULL,
 	[Value] NVARCHAR(255) NOT NULL,
 	[TokenTypeId] INT NOT NULL,
@@ -10,13 +9,10 @@
 	[IsUsed] BIT NOT NULL,
 	[UsedAt] DATETIME2(7) NULL,
 	[IsInvalidated] BIT NOT NULL,
-	[InvalidatedAt] DATETIME2(7) NULL,
-	CONSTRAINT [PK_UserRegistrations_Tokens_Id] PRIMARY KEY NONCLUSTERED ([Id] ASC)
+	[InvalidatedAt] DATETIME2(7) NULL
 )
-GO
-
-CREATE UNIQUE CLUSTERED INDEX IX_UserRegistrations_Tokens_ClusterKey ON UserRegistrations.Tokens(ClusterKey);
 GO
 
 ALTER TABLE [UserRegistrations].[Tokens] ADD CONSTRAINT [FK_UserRegistrations_Tokens_TokenTypes_TokenTypeId]
 FOREIGN KEY ([TokenTypeId]) REFERENCES [UserRegistrations].[TokenTypes]([Id]);
+GO

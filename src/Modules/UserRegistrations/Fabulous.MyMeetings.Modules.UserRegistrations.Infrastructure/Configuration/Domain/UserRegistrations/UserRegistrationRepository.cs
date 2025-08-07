@@ -12,7 +12,7 @@ internal class UserRegistrationRepository(UserRegistrationsContext userRegistrat
 
     public Task<UserRegistration?> GetByIdAsync(UserRegistrationId userRegistrationId)
     {
-        return userRegistrationsContext.UserRegistrations.FirstOrDefaultAsync(x => x.Id == userRegistrationId);
+        return userRegistrationsContext.UserRegistrations.FindAsync(userRegistrationId).AsTask();
     }
 
     public Task<UserRegistration?> GetByIdEmail(string email)

@@ -4,13 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.InternalCommands;
 
-internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration<InternalCommand>
+internal class InternalCommandEntityTypeConfiguration : IEntityTypeConfiguration<InternalCommandEntity>
 {
-    public void Configure(EntityTypeBuilder<InternalCommand> builder)
+    public void Configure(EntityTypeBuilder<InternalCommandEntity> builder)
     {
-        builder.ToTable("InternalCommands", "users");
+        builder.ToTable("InternalCommands", "Users");
 
         builder.HasKey(b => b.Id);
         builder.Property(b => b.Id).ValueGeneratedNever();
+        builder.Property(b => b.Type);
+        builder.Property(b => b.Data);
+        builder.Property(b => b.ProcessedDate);
     }
 }

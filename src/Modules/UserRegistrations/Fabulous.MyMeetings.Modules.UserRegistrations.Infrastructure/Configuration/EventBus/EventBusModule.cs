@@ -8,5 +8,6 @@ internal static class EventBusModule
     public static void AddEventBus(this IServiceCollection services, IEventBus eventBus)
     {
         services.AddScoped<IEventBus>(_ => eventBus);
+        services.AddHostedService<EventBusHostedService>();
     }
 }

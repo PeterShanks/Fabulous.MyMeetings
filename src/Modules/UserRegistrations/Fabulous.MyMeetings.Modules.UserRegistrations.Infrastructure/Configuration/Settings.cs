@@ -1,22 +1,9 @@
 ﻿using System.Reflection;
-using System.Text.Json;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.Serialization;
-using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
 
 public static class Settings
 {
-    private static readonly Lazy<JsonSerializerOptions> LazyJsonSerializerOptions =
-        new(() => new JsonSerializerOptions(JsonSerializerDefaults.Web)
-        {
-            Converters = {
-                new PolymorphicJsonConverterFactory(
-                    typeof(InternalCommand),
-                    typeof(InternalCommand<>)),
-            }
-        });
-
     private static readonly Lazy<IReadOnlyCollection<Assembly>> AssembliesLazy = new(
         () => typeof(Settings)
             .Assembly
@@ -31,12 +18,9 @@ public static class Settings
     private static readonly Lazy<IReadOnlyCollection<Type>> AssemblyTypes =
         new(() => Assemblies.SelectMany(a => a.GetTypes()).ToList());
 
-    public static JsonSerializerOptions JsonSerializerOptionsInstance => LazyJsonSerializerOptions.Value;
-
     public static IReadOnlyCollection<Assembly> Assemblies => AssembliesLazy.Value;
 
     public static IReadOnlyCollection<Type> AllTypes => AssemblyTypes.Value;
-
     public static Assembly? GetAssemblyOfType(this string typeName)
     {
         return Assemblies.SingleOrDefault(assembly => typeName.StartsWith(assembly.GetName().Name!));

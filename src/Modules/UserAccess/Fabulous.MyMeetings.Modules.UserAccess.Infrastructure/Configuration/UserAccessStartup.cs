@@ -1,7 +1,7 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
-using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Authentication;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Domain;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Email;
@@ -9,6 +9,7 @@ using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventB
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Logging;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Mediation;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing;
+using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.InternalCommands;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.Outbox;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Quartz;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,8 +34,11 @@ public class UserAccessStartup
         var services = new ServiceCollection();
 
         var domainNotificationMap = new BiDictionary<string, Type>();
+        var internalCommandMap = new BiDictionary<string, Type>();
 
+        services.AddInternalCommandsModule(internalCommandMap);
         services.AddLogging(loggerFactory);
+        services.AddUserAuthentication();
         services.AddDataAccess(connectionString);
         services.AddDomainServices();
         services.AddMediator();

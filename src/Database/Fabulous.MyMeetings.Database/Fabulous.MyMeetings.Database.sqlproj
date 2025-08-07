@@ -65,6 +65,12 @@
     <Folder Include="Schema\UserRegistrations" />
     <Folder Include="Schema\UserRegistrations\Tables" />
     <Folder Include="Schema\UserRegistrations\Views" />
+    <Folder Include="Schema\Meetings" />
+    <Folder Include="Schema\Meetings\Tables" />
+    <Folder Include="Schema\Meetings\Views" />
+    <Folder Include="Schema\Administration" />
+    <Folder Include="Schema\Administration\Tables" />
+    <Folder Include="Schema\Administration\Views" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Schema\Users\Tables\Users.sql" />
@@ -86,6 +92,40 @@
     <Build Include="Schema\UserRegistrations\Tables\TokenTypes.sql" />
     <Build Include="Schema\UserRegistrations\Tables\DataProtectionKeys.sql" />
     <Build Include="Schema\UserRegistrations\Tables\Tokens.sql" />
+    <Build Include="Schema\Meetings\Tables\Countries.sql" />
+    <Build Include="Schema\Meetings\Tables\InboxMessages.sql" />
+    <Build Include="Schema\Meetings\Tables\InternalCommands.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingAttendees.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingCommentingConfigurations.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingComments.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingGroupMembers.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingGroupProposals.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingGroups.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingMemberCommentLikes.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingNotAttendees.sql" />
+    <Build Include="Schema\Meetings\Tables\Meetings.sql" />
+    <Build Include="Schema\Meetings\Tables\MeetingWaitlistMembers.sql" />
+    <Build Include="Schema\Meetings\Tables\Members.sql" />
+    <Build Include="Schema\Meetings\Tables\MemberSubscriptions.sql" />
+    <Build Include="Schema\Meetings\Tables\OutboxMessages.sql" />
+    <Build Include="Schema\Meetings\Views\v_Countries.sql" />
+    <Build Include="Schema\Meetings\Views\v_MeetingAttendees.sql" />
+    <Build Include="Schema\Meetings\Views\v_MeetingComments.sql" />
+    <Build Include="Schema\Meetings\Views\v_MeetingDetails.sql" />
+    <Build Include="Schema\Meetings\Views\v_MeetingGroupMembers.sql" />
+    <Build Include="Schema\Meetings\Views\v_MeetingGroupProposals.sql" />
+    <Build Include="Schema\Meetings\Views\v_MeetingGroups.sql" />
+    <Build Include="Schema\Meetings\Views\v_Meetings.sql" />
+    <Build Include="Schema\Meetings\Views\v_MemberMeetingGroups.sql" />
+    <Build Include="Schema\Meetings\Views\v_MemberMeetings.sql" />
+    <Build Include="Schema\Meetings\Views\v_Members.sql" />
+    <Build Include="Schema\Administration\Tables\InboxMessages.sql" />
+    <Build Include="Schema\Administration\Tables\OutboxMessages.sql" />
+    <Build Include="Schema\Administration\Tables\InternalCommands.sql" />
+    <Build Include="Schema\Administration\Tables\Members.sql" />
+    <Build Include="Schema\Administration\Tables\MeetingGroupProposals.sql" />
+    <Build Include="Schema\Administration\Views\v_Members.sql" />
+    <Build Include="Schema\Administration\Views\v_MeetingGroupProposals.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Fabulous.MyMeetings.Database.publish.xml" />

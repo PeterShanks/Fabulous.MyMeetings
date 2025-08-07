@@ -1,6 +1,4 @@
-﻿namespace _build;
-
-public class Constants
+﻿public class Constants
 {
     public const string TargetFramework = "TargetFramework";
 

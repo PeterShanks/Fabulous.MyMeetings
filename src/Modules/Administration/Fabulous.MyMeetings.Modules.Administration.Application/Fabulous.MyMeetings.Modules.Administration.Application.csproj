@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\BuildingBlocks\Fabulous.MyMeetings.BuildingBlocks.Application\Fabulous.MyMeetings.BuildingBlocks.Application.csproj" />
+    <ProjectReference Include="..\..\Meetings\Fabulous.MyMeetings.Modules.Meetings.IntegrationEvents\Fabulous.MyMeetings.Modules.Meetings.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\..\UserRegistrations\Fabulous.MyMeetings.Modules.UserRegistrations.IntegrationEvents\Fabulous.MyMeetings.Modules.UserRegistrations.IntegrationEvents.csproj" />
+    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.Administration.Domain\Fabulous.MyMeetings.Modules.Administration.Domain.csproj" />
+    <ProjectReference Include="..\Fabulous.MyMeetings.Modules.Administration.IntegrationEvents\Fabulous.MyMeetings.Modules.Administration.IntegrationEvents.csproj" />
+  </ItemGroup>
+
+</Project>

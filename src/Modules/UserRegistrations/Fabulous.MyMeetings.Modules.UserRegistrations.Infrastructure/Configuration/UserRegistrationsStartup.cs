@@ -12,6 +12,7 @@ using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Logging;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Mediation;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.InternalCommands;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.Outbox;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Quartz;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.UserAccess;
@@ -19,78 +20,81 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration
+namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
+
+public class UserRegistrationsStartup
 {
-    public class UserRegistrationsStartup
+    private static IServiceProvider _serviceProvider = null!;
+    private static readonly IEnumerable<KeyValuePair<string, object>> ModuleState = [new("Module", "Registrations")];
+
+    public static void Initialize(
+        string connectionString,
+        IExecutionContextAccessor executionContextAccessor,
+        ILoggerFactory loggerFactory,
+        IHostApplicationLifetime hostApplicationLifetime,
+        SiteSettings siteSettings,
+        IEmailService emailSender,
+        IEventBus eventBus,
+        long? internalProcessingPoolingInterval = null)
     {
-        private static IServiceProvider _serviceProvider = null!;
-        private static readonly IEnumerable<KeyValuePair<string, object>> ModuleState = [new("Module", "Registrations")];
+        var services = new ServiceCollection();
 
-        public static void Initialize(
-            string connectionString,
-            IExecutionContextAccessor executionContextAccessor,
-            ILoggerFactory loggerFactory,
-            IHostApplicationLifetime hostApplicationLifetime,
-            SiteSettings siteSettings,
-            IEmailService emailSender,
-            IEventBus eventBus,
-            long? internalProcessingPoolingInterval = null)
+        var domainNotificationMap = new BiDictionary<string, Type>();
+        domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
+        domainNotificationMap.Add("UserRegistrationConfirmedNotification", typeof(UserRegistrationConfirmedNotification));
+        domainNotificationMap.Add("TokenCreatedDomainNotification", typeof(TokenCreatedDomainNotification));
+
+        var internalCommandMap = new BiDictionary<string, Type>();
+
+
+        services.AddLogging(loggerFactory);
+        services.AddInternalCommandsModule(internalCommandMap);
+        services.AddDataAccess(connectionString);
+        services.AddDomainServices(siteSettings);
+        services.AddMediator();
+        services.AddProcessing(domainNotificationMap);
+        services.AddEventBus(eventBus);
+        services.AddOutbox();
+        services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
+        services.AddEmail(emailSender);
+        services.AddSingleton(executionContextAccessor);
+        services.AddUserAccess();
+
+        _serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions()
         {
-            var services = new ServiceCollection();
+            ValidateOnBuild = true,
+            ValidateScopes = true
+        });
+    }
 
-            var domainNotificationMap = new BiDictionary<string, Type>();
-            domainNotificationMap.Add("NewUserRegisteredNotification", typeof(NewUserRegisteredNotification));
-            domainNotificationMap.Add("UserRegistrationConfirmedNotification", typeof(UserRegistrationConfirmedNotification));
-            domainNotificationMap.Add("TokenCreatedDomainNotification", typeof(TokenCreatedDomainNotification));
+    public static async Task StartBackgroundServices()
+    {
+        if (_serviceProvider is null)
+            throw new InvalidOperationException("RegistrationsStartup has not been initialized!");
 
-            services.AddLogging(loggerFactory);
-            services.AddDataAccess(connectionString);
-            services.AddDomainServices(siteSettings);
-            services.AddMediator();
-            services.AddProcessing(domainNotificationMap);
-            services.AddEventBus(eventBus);
-            services.AddOutbox();
-            services.AddQuartz(hostApplicationLifetime, internalProcessingPoolingInterval);
-            services.AddEmail(emailSender);
-            services.AddSingleton(executionContextAccessor);
-            services.AddUserAccess();
-
-            _serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions()
-            {
-                ValidateOnBuild = true,
-                ValidateScopes = true
-            });
-        }
-
-        public static async Task StartBackgroundServices()
+        using var scope = BeginLoggerScope();
+        foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
         {
-            if (_serviceProvider is null)
-                throw new InvalidOperationException("RegistrationsStartup has not been initialized!");
-
-            using var scope = BeginLoggerScope();
-            foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
-            {
-                await hostedService.StartAsync(default);
-            }
+            await hostedService.StartAsync(default);
         }
+    }
 
-        public static async Task StopBackgroundServices()
+    public static async Task StopBackgroundServices()
+    {
+        if (_serviceProvider is null)
+            throw new InvalidOperationException("RegistrationsStartup has not been initialized!");
+
+        using var scope = BeginLoggerScope();
+        foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
         {
-            if (_serviceProvider is null)
-                throw new InvalidOperationException("RegistrationsStartup has not been initialized!");
-
-            using var scope = BeginLoggerScope();
-            foreach (var hostedService in _serviceProvider.GetServices<IHostedService>())
-            {
-                await hostedService.StopAsync(default);
-            }
+            await hostedService.StopAsync(default);
         }
+    }
 
-        internal static AsyncServiceScope BeginScope() => _serviceProvider!.CreateAsyncScope();
+    internal static AsyncServiceScope BeginScope() => _serviceProvider!.CreateAsyncScope();
 
-        internal static IDisposable? BeginLoggerScope()
-        {
-            return _serviceProvider.GetRequiredService<ILogger<UserRegistrationsStartup>>().BeginScope(ModuleState);
-        }
+    internal static IDisposable? BeginLoggerScope()
+    {
+        return _serviceProvider.GetRequiredService<ILogger<UserRegistrationsStartup>>().BeginScope(ModuleState);
     }
 }

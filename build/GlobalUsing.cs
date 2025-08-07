@@ -1,3 +1,3 @@
-﻿global using static _build.Paths;
-global using static _build.Constants;
-global using static _build.ProjectExtensions;
+﻿global using static Paths;
+global using static Constants;
+global using static ProjectExtensions;

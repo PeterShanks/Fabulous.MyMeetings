@@ -1,5 +1,4 @@
 ﻿using Dapper;
-using Fabulous.MyMeetings.BuildingBlocks.Application;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetUserPermissions;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Queries;
@@ -9,14 +8,12 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Application.Authorization.GetAu
 internal class
     GetAuthenticatedUserPermissionsQueryHandler(
     ISqlConnectionFactory sqlConnectionFactory,
-    IExecutionContextAccessor executionContextAccessor) : IQueryHandler<GetAuthenticatedUserPermissionsQuery,
+    IUserContext userContext) : IQueryHandler<GetAuthenticatedUserPermissionsQuery,
     List<UserPermissionDto>>
 {
     public async Task<List<UserPermissionDto>> Handle(GetAuthenticatedUserPermissionsQuery request,
         CancellationToken cancellationToken)
     {
-        if (!executionContextAccessor.IsAvailable) return [];
-
         var connection = sqlConnectionFactory.GetOpenConnection();
 
         const string sql =
@@ -29,7 +26,7 @@ internal class
 
         var permissions = await connection.QueryAsync<UserPermissionDto>(
             sql,
-            new { executionContextAccessor.UserId });
+            new { UserId = userContext.UserId.Value });
 
         return permissions.AsList();
     }

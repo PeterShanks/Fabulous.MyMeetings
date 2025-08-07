@@ -2,10 +2,10 @@
 
 public abstract class Command : ICommand
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; } = Guid.CreateVersion7();
 }
 
 public abstract class Command<TResult> : ICommand<TResult>
 {
-    public Guid Id { get; } = Guid.NewGuid();
+    public Guid Id { get; } = Guid.CreateVersion7();
 }

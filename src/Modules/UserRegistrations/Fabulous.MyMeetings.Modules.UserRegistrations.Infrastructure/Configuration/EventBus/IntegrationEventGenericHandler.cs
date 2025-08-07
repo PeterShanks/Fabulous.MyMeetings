@@ -5,18 +5,20 @@ using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.EventBus;
 
-internal class IntegrationEventGenericHandler<T>(ISqlConnectionFactory sqlConnectionFactory) : IIntegrationEventHandler<T>
+internal class IntegrationEventGenericHandler<T>(
+    ISqlConnectionFactory sqlConnectionFactory,
+    JsonSerializerOptions jsonSerializerOptions) : IIntegrationEventHandler<T>
     where T : IntegrationEvent
 {
     public async Task Handle(T @event)
     {
         using var connection = sqlConnectionFactory.GetOpenConnection();
 
-        var json = JsonSerializer.Serialize(@event, JsonSerializerOptionsInstance);
+        var json = JsonSerializer.Serialize(@event, @event.GetType(), jsonSerializerOptions);
 
         const string sql =
             """
-            INSERT INTO Users.InboxMessages (
+            INSERT INTO UserRegistrations.InboxMessages (
                 Id,
                 OccurredOn,
                 Type,

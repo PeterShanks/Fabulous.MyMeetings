@@ -1,12 +1,11 @@
-﻿namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ConfirmUserRegistration
+﻿namespace Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ConfirmUserRegistration;
+
+public interface IUserCreator
 {
-    public interface IUserCreator
-    {
-        public Task Create(
-            Guid userRegistrationId,
-            string password,
-            string email,
-            string firstName,
-            string lastName);
-    }
+    public Task Create(
+        Guid userRegistrationId,
+        string password,
+        string email,
+        string firstName,
+        string lastName);
 }

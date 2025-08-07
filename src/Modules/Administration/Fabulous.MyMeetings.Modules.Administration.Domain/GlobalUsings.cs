@@ -1,0 +1,1 @@
+﻿global using Fabulous.MyMeetings.BuildingBlocks.Domain;

@@ -1,4 +1,4 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
