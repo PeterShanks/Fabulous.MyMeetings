@@ -8,7 +8,7 @@ namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configura
 
 internal class EventBusHostedService(
     IEventBus eventBus, 
-    ILogger logger,
+    ILogger<EventBusHostedService> logger,
     ISqlConnectionFactory sqlConnectionFactory,
     JsonSerializerOptions jsonSerializerOptions) : BackgroundService
 {

@@ -23,7 +23,7 @@ public static class AuthorizationChecker
             .Where(m => m.Method.IsPublic && m.Method.DeclaringType == m.Controller)
             .ToList();
 
-        var scopeUnprotectedMethods = GetUnprotectedActionMethods<HasScopeAttribute>(controllerMethods, (scopeAttribute, _) => scopeAttribute.Scopes.Any());
+        var scopeUnprotectedMethods = GetUnprotectedActionMethods<HasScopeAttribute>(controllerMethods);
         var noScopeUnprotectedMethods = GetUnprotectedActionMethods<NoScopeRequired>(scopeUnprotectedMethods);
         var permissionUnprotectedMethods = GetUnprotectedActionMethods<HasPermissionAttribute>(controllerMethods);
         var methodsWithNoPermissionAttributes = GetUnprotectedActionMethods<NoPermissionRequiredAttribute>(permissionUnprotectedMethods);
@@ -31,7 +31,7 @@ public static class AuthorizationChecker
         Throw(noScopeUnprotectedMethods.Concat(methodsWithNoPermissionAttributes).ToList());
     }
 
-    private static List<ControllerMethod> GetUnprotectedActionMethods<T>(List<ControllerMethod> controllerMethods, Func<T, ControllerMethod, bool>? filter = null)
+    private static List<ControllerMethod> GetUnprotectedActionMethods<T>(List<ControllerMethod> controllerMethods)
         where T : Attribute
     {
         var unprotectedMethods = new List<ControllerMethod>();
@@ -41,7 +41,7 @@ public static class AuthorizationChecker
             var attribute = controllerMethod.Controller.GetCustomAttribute<T>()
                             ?? controllerMethod.Method.GetCustomAttribute<T>();
 
-            if (attribute is null || filter is null || filter(attribute ,controllerMethod))
+            if (attribute is null)
             {
                 unprotectedMethods.Add(controllerMethod);
             }

@@ -14,7 +14,7 @@ public class MeetingGroupProposalsController(
     IAdministrationModule administrationModule): ControllerBase
 {
     [HasPermission(AdministrationPermissions.AcceptMeetingGroupProposal)]
-    [HasScope(Scope.User.Read, Scope.User.Write)]
+    [HasScope(Scope.User.Read)]
     [HttpGet]
     public async Task<IActionResult> GetMeetingGroupProposals()
     {

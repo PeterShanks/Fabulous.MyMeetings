@@ -1,9 +1,11 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.Authorization.Permission;
+using Fabulous.MyMeetings.Api.Configuration.Authorization.Scope;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroupProposals.GetAllMeetingGroupProposals;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroupProposals.GetMeetingGroupProposal;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroupProposals.GetMemberMeetingGroupProposals;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroupProposals.ProposeMeetingGroup;
+using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabulous.MyMeetings.Api.Modules.Meetings.MeetingGroupProposals;
@@ -14,6 +16,7 @@ public class MeetingGroupProposalsController(IMeetingsModule meetingsModule) : C
 {
     [HttpGet("")]
     [HasPermission(MeetingsPermissions.GetMeetingGroupProposals)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<MeetingGroupProposalDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMemberMeetingGroupProposals()
     {
@@ -25,6 +28,7 @@ public class MeetingGroupProposalsController(IMeetingsModule meetingsModule) : C
 
     [HttpGet("all")]
     [HasPermission(MeetingsPermissions.GetMeetingGroupProposals)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<MeetingGroupProposalDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetingGroupProposals(int? page, int? perPage)
     {
@@ -36,6 +40,7 @@ public class MeetingGroupProposalsController(IMeetingsModule meetingsModule) : C
 
     [HttpPost("")]
     [HasPermission(MeetingsPermissions.ProposeMeetingGroup)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ProposeMeetingGroup(ProposeMeetingGroupRequest request)
     {

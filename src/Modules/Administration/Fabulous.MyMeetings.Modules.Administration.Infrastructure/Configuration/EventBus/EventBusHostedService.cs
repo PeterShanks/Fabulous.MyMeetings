@@ -5,13 +5,15 @@ using Fabulous.MyMeetings.Modules.UserRegistrations.IntegrationEvents;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration.EventBus;
 
 internal class EventBusHostedService(
     IEventBus eventBus, 
-    ILogger logger, 
+    ILogger<EventBusHostedService> logger, 
     ISqlConnectionFactory sqlConnectionFactory,
+    IServiceScopeFactory serviceScopeFactory,
     JsonSerializerOptions jsonSerializerOptions) : BackgroundService
 {
     protected override Task ExecuteAsync(CancellationToken stoppingToken)

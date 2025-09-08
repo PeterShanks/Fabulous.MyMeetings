@@ -1,6 +1,8 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.Authorization.Permission;
+using Fabulous.MyMeetings.Api.Configuration.Authorization.Scope;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Countries;
+using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabulous.MyMeetings.Api.Modules.Meetings.Countries;
@@ -11,6 +13,7 @@ public class CountriesController(IMeetingsModule meetingsModule) : ControllerBas
 {
     [HttpGet("")]
     [HasPermission(MeetingsPermissions.GetMeetingGroupProposals)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<CountryDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllCountries(int? page, int? perPage)
     {

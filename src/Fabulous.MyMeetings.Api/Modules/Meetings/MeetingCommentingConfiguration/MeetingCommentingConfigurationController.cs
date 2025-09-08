@@ -1,7 +1,9 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.Authorization.Permission;
+using Fabulous.MyMeetings.Api.Configuration.Authorization.Scope;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.DisableMeetingCommentingConfiguration;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.EnableMeetingCommentingConfiguration;
+using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabulous.MyMeetings.Api.Modules.Meetings.MeetingCommentingConfiguration;
@@ -12,6 +14,7 @@ public class MeetingCommentingConfigurationController(IMeetingsModule meetingsMo
 {
     [HttpPatch("disable")]
     [HasPermission(MeetingsPermissions.DisableMeetingCommenting)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> DisableCommenting(Guid meetingId)
     {
@@ -21,6 +24,7 @@ public class MeetingCommentingConfigurationController(IMeetingsModule meetingsMo
 
     [HttpPatch("enable")]
     [HasPermission(MeetingsPermissions.EnableMeetingCommenting)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> EnableCommenting(Guid meetingId)
     {

@@ -1,4 +1,5 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.Authorization.Permission;
+using Fabulous.MyMeetings.Api.Configuration.Authorization.Scope;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings.AddMeetingAttendee;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings.AddMeetingNotAttendee;
@@ -14,6 +15,7 @@ using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings.SetMeetingAttend
 using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings.SetMeetingHostRole;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings.SignOffMemberFromWaitlist;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings.SignUpMemberToWaitlist;
+using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabulous.MyMeetings.Api.Modules.Meetings.Meetings;
@@ -24,6 +26,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 {
     [HttpGet("")]
     [HasPermission(MeetingsPermissions.GetAuthenticatedMemberMeetings)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<MemberMeetingDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAuthenticatedMemberMeetings()
     {
@@ -34,6 +37,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpGet("{meetingId}")]
     [HasPermission(MeetingsPermissions.GetMeetingDetails)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(MeetingDetailsDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMeetingDetails(Guid meetingId)
     {
@@ -44,6 +48,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPost("")]
     [HasPermission(MeetingsPermissions.CreateNewMeeting)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CreateNewMeeting([FromBody] CreateMeetingRequest request)
     {
@@ -70,6 +75,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPut("{meetingId}")]
     [HasPermission(MeetingsPermissions.EditMeeting)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> EditMeeting(
         [FromRoute] Guid meetingId,
@@ -97,6 +103,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpGet("{meetingId}/attendees")]
     [HasPermission(MeetingsPermissions.GetMeetingAttendees)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<MeetingAttendeeDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMeetingAttendees(Guid meetingId)
     {
@@ -107,6 +114,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPost("{meetingId}/attendees")]
     [HasPermission(MeetingsPermissions.AddMeetingAttendee)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddMeetingAttendee(
         [FromRoute] Guid meetingId,
@@ -121,6 +129,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpDelete("{meetingId}/attendees/{attendeeId}")]
     [HasPermission(MeetingsPermissions.RemoveMeetingAttendee)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> RemoveMeetingAttendee(
         Guid meetingId,
@@ -135,6 +144,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPost("{meetingId}/notAttendees")]
     [HasPermission(MeetingsPermissions.AddNotAttendee)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> AddNotAttendee(Guid meetingId)
     {
@@ -145,6 +155,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpDelete("{meetingId}/notAttendees")]
     [HasPermission(MeetingsPermissions.ChangeNotAttendeeDecision)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> ChangeNotAttendeeDecision(Guid meetingId)
     {
@@ -155,6 +166,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPost("{meetingId}/waitlistMembers")]
     [HasPermission(MeetingsPermissions.SignUpMemberToWaitlist)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SignUpMemberToWaitlist(Guid meetingId)
     {
@@ -165,6 +177,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpDelete("{meetingId}/waitlistMembers")]
     [HasPermission(MeetingsPermissions.SignOffMemberFromWaitlist)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SignOffMemberFromWaitlist(Guid meetingId)
     {
@@ -175,6 +188,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPost("{meetingId}/hosts")]
     [HasPermission(MeetingsPermissions.SetMeetingHostRole)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SetMeetingHostRole(Guid meetingId, SetMeetingHostRequest request)
     {
@@ -185,6 +199,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPost("{meetingId}/attendees/attendeeRole")]
     [HasPermission(MeetingsPermissions.SetMeetingAttendeeRole)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> SetMeetingAttendeeRole(Guid meetingId, SetMeetingHostRequest request)
     {
@@ -195,6 +210,7 @@ public class MeetingsController(IMeetingsModule meetingsModule) : ControllerBase
 
     [HttpPatch("{meetingId}/cancel")]
     [HasPermission(MeetingsPermissions.CancelMeeting)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> CancelMeeting(Guid meetingId)
     {

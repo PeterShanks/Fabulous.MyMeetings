@@ -15,16 +15,16 @@ public class HasScopeAuthorizationHandler : AttributeAuthorizationHandler
         var scopeClaim = user.Claims.FirstOrDefault(c => c.Type == "scope");
         if (scopeClaim is null)
         {
-            context.Fail(new AuthorizationFailureReason(this, $"Missing either of scopes [{string.Join(", ", attribute.Scopes)}]"));
+            context.Fail(new AuthorizationFailureReason(this, $"Missing scope {attribute.Scope}"));
             return Task.CompletedTask;
         }
 
         var tokenScopes = scopeClaim.Value.Split(' ');
 
-        if (tokenScopes.Any(ts => attribute.Scopes.Contains(ts, StringComparer.OrdinalIgnoreCase)))
+        if (tokenScopes.Contains(attribute.Scope, StringComparer.OrdinalIgnoreCase))
             context.Succeed(requirement);
         else
-            context.Fail(new AuthorizationFailureReason(this, $"Missing either of scope [{string.Join(", ", attribute.Scopes)}]"));
+            context.Fail(new AuthorizationFailureReason(this, $"Missing scope {attribute.Scope}"));
 
         return Task.CompletedTask;
     }
