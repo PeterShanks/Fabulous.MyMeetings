@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Polly;
 using Polly.Retry;
 using Scrutor;
+using System.Text.Json;
 
 namespace Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing;
 
@@ -22,6 +23,10 @@ internal static class ProcessingModule
         CheckMappings(domainNotificationsMap);
         services.AddSingleton(domainNotificationsMap);
 
+        services.AddSingleton(_ => new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+            AllowTrailingCommas = true
+        });
         services.AddSingleton<TimeProvider>(TimeProvider.System);
         services.AddScoped<IDomainEventsDispatcher, DomainEventsDispatcher>();
         services.AddScoped<IDomainNotificationsMapper, DomainNotificationsMapper>();

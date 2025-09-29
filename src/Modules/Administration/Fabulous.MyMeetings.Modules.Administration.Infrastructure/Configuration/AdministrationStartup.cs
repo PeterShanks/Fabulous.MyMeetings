@@ -13,6 +13,8 @@ using Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration.Qu
 using Fabulous.MyMeetings.Modules.Administration.Application.MeetingGroupProposals.AcceptMeetingGroupProposal;
 using Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration.Authentication;
 using Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration.Processing.InternalCommands;
+using Fabulous.MyMeetings.Modules.Administration.Application.MeetingGroupProposals.RequestMeetingGroupProposalVerification;
+using Fabulous.MyMeetings.Modules.Administration.Application.Members.CreateMember;
 
 namespace Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration;
 
@@ -35,6 +37,9 @@ public class AdministrationStartup
         domainNotificationMap.Add("MeetingGroupProposalAcceptedNotification", typeof(MeetingGroupProposalAcceptedNotification));
 
         var internalCommandsMap = new BiDictionary<string, Type>();
+        internalCommandsMap.Add("RequestMeetingGroupProposalVerificationCommand", typeof(RequestMeetingGroupProposalVerificationCommand));
+        internalCommandsMap.Add("CreateMemberCommand", typeof(CreateMemberCommand));
+
 
         services.AddAuthentication();
         services.AddInternalCommandsModule(internalCommandsMap);

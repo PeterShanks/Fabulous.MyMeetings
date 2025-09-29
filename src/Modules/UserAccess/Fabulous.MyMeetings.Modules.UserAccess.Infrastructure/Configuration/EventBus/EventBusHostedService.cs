@@ -1,16 +1,14 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
-using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventBus;
 
 internal class EventBusHostedService(
     IEventBus eventBus, 
-    ILogger logger,
-    ISqlConnectionFactory sqlConnectionFactory,
-    JsonSerializerOptions jsonSerializerOptions) : BackgroundService
+    ILogger<EventBusHostedService> logger,
+    IServiceScopeFactory serviceScopeFactory) : BackgroundService
 {
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
@@ -22,6 +20,6 @@ internal class EventBusHostedService(
         where T : IntegrationEvent
     {
         logger.LogInformation("Subscribed to {IntegrationEvent}", typeof(T).FullName);
-        eventBus.Subscribe(new IntegrationEventGenericHandler<T>(sqlConnectionFactory, jsonSerializerOptions));
+        eventBus.Subscribe(new IntegrationEventGenericHandler<T>(serviceScopeFactory));
     }
 }

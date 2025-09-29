@@ -1,17 +1,20 @@
 ﻿using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
 using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
+using Microsoft.Extensions.DependencyInjection;
 using System.Text.Json;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.EventBus;
 
 internal class IntegrationEventGenericHandler<T>(
-    ISqlConnectionFactory sqlConnectionFactory,
-    JsonSerializerOptions jsonSerializerOptions) : IIntegrationEventHandler<T>
+    IServiceScopeFactory serviceScopeFactory) : IIntegrationEventHandler<T>
     where T : IntegrationEvent
 {
     public async Task Handle(T @event)
     {
+        await using var scope = serviceScopeFactory.CreateAsyncScope();
+        var sqlConnectionFactory = scope.ServiceProvider.GetRequiredService<ISqlConnectionFactory>();
+        var jsonSerializerOptions = scope.ServiceProvider.GetRequiredService<JsonSerializerOptions>();
         using var connection = sqlConnectionFactory.GetOpenConnection();
 
         var json = JsonSerializer.Serialize(@event, @event.GetType(), jsonSerializerOptions);

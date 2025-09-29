@@ -20,6 +20,7 @@ public class TypedIdValueConverterSelector(ValueConverterSelectorDependencies de
     : ValueConverterSelector(dependencies)
 {
     private readonly ConcurrentDictionary<(Type ModelClrType, Type ProviderClrType), ValueConverterInfo> _converters = [];
+    private static readonly Type TypedIdType = typeof(TypedId);
     private static readonly Type TypedIdValueConverterType = typeof(TypedIdValueConverter<>);
 
     public override IEnumerable<ValueConverterInfo> Select(Type modelClrType, Type? providerClrType = null)
@@ -38,7 +39,7 @@ public class TypedIdValueConverterSelector(ValueConverterSelectorDependencies de
         if (underlyingProviderType is not null && underlyingProviderType != typeof(Guid)) 
             yield break;
 
-        if (!TypedIdValueConverterType.IsAssignableFrom(underlyingModelType)) 
+        if (!TypedIdType.IsAssignableFrom(underlyingModelType)) 
             yield break;
 
         var converterType = TypedIdValueConverterType.MakeGenericType(underlyingModelType);

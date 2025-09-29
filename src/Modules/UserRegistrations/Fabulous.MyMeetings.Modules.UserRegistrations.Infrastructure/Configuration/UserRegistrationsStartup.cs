@@ -5,6 +5,7 @@ using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Tokens.CreateEmailConfirmationToken;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.ConfirmUserRegistration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.RegisterNewUser;
+using Fabulous.MyMeetings.Modules.UserRegistrations.Application.UserRegistrations.SendUserRegistrationConfirmationEmail;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.DataAccess;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Domain;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Email;
@@ -45,7 +46,8 @@ public class UserRegistrationsStartup
         domainNotificationMap.Add("TokenCreatedDomainNotification", typeof(TokenCreatedDomainNotification));
 
         var internalCommandMap = new BiDictionary<string, Type>();
-
+        internalCommandMap.Add("CreateEmailConfirmationTokenCommand", typeof(CreateEmailConfirmationTokenCommand));
+        internalCommandMap.Add("SendUserRegistrationConfirmationEmailCommand", typeof(SendUserRegistrationConfirmationEmailCommand));
 
         services.AddLogging(loggerFactory);
         services.AddInternalCommandsModule(internalCommandMap);

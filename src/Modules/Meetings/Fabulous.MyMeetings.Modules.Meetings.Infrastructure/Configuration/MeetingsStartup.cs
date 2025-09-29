@@ -22,6 +22,11 @@ using Fabulous.MyMeetings.Modules.Meetings.Application.Members.CreateMember;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MemberSubscriptions;
 using Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration.Authentication;
 using Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration.Processing.InternalCommands;
+using Fabulous.MyMeetings.Modules.Meetings.Application.MemberSubscriptions.ChangeSubscriptionExpirationDateForMember;
+using Fabulous.MyMeetings.Modules.Meetings.Application.Meetings;
+using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.SetMeetingGroupExpirationDate;
+using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.SendMeetingGroupCreatedEmail;
+using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.CreateNewMeetingGroup;
 
 namespace Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration;
 
@@ -53,6 +58,14 @@ public class MeetingsStartup
         domainNotificationMap.Add("MeetingCommentUnlikedNotification", typeof(MeetingCommentUnlikedNotification));
 
         var internalCommandsMap = new BiDictionary<string, Type>();
+        internalCommandsMap.Add("CreateMemberCommand", typeof(CreateMemberCommand));
+        internalCommandsMap.Add("ChangeSubscriptionExpirationDateForMemberCommand", typeof(ChangeSubscriptionExpirationDateForMemberCommand));
+        internalCommandsMap.Add("MarkMeetingAttendeeFeeAsPayedCommand", typeof(MarkMeetingAttendeeFeeAsPayedCommand));
+        internalCommandsMap.Add("SendMeetingAttendeeAddedEmailCommand", typeof(SendMeetingAttendeeAddedEmailCommand));
+        internalCommandsMap.Add("SetMeetingGroupExpirationDateCommand", typeof(SetMeetingGroupExpirationDateCommand));
+        internalCommandsMap.Add("SendMeetingGroupCreatedEmailCommand", typeof(SendMeetingGroupCreatedEmailCommand));
+        internalCommandsMap.Add("CreateNewMeetingGroupCommand", typeof(CreateNewMeetingGroupCommand));
+        internalCommandsMap.Add("AcceptMeetingGroupProposalCommand", typeof(AcceptMeetingGroupProposalCommand));
 
         services.AddLogging(loggerFactory);
         services.AddInternalCommandsModule(internalCommandsMap);

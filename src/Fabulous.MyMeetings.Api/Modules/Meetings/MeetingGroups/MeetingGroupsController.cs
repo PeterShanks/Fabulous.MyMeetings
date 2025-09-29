@@ -1,4 +1,5 @@
 ﻿using Fabulous.MyMeetings.Api.Configuration.Authorization.Permission;
+using Fabulous.MyMeetings.Api.Configuration.Authorization.Scope;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.EditMeetingGroupGeneralAttributes;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.GetAllMeetingGroups;
@@ -6,6 +7,7 @@ using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.GetAuthenti
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.GetMeetingGroupDetails;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.JoinToGroup;
 using Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroups.LeaveMeetingGroup;
+using Fabulous.MyMeetings.Scopes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Fabulous.MyMeetings.Api.Modules.Meetings.MeetingGroups;
@@ -16,6 +18,7 @@ public class MeetingGroupsController(IMeetingsModule meetingsModule) : Controlle
 {
     [HttpGet("")]
     [HasPermission(MeetingsPermissions.GetAuthenticatedMemberMeetingGroups)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<MemberMeetingGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAuthenticatedMemberMeetingGroups()
     {
@@ -27,6 +30,7 @@ public class MeetingGroupsController(IMeetingsModule meetingsModule) : Controlle
 
     [HttpGet("{meetingGroupId}")]
     [HasPermission(MeetingsPermissions.GetMeetingGroupDetails)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(MeetingGroupDetailsDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetMeetingGroupDetails(Guid meetingGroupId)
     {
@@ -38,6 +42,7 @@ public class MeetingGroupsController(IMeetingsModule meetingsModule) : Controlle
 
     [HttpGet("all")]
     [HasPermission(MeetingsPermissions.GetAllMeetingGroups)]
+    [HasScope(Scope.User.Read)]
     [ProducesResponseType(typeof(List<MeetingGroupDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAllMeetingGroups()
     {
@@ -48,6 +53,7 @@ public class MeetingGroupsController(IMeetingsModule meetingsModule) : Controlle
 
     [HttpPut("{meetingGroupId}")]
     [HasPermission(MeetingsPermissions.EditMeetingGroupGeneralAttributes)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> EditMeetingGroupGeneralAttributes(
         [FromRoute] Guid meetingGroupId,
@@ -65,6 +71,7 @@ public class MeetingGroupsController(IMeetingsModule meetingsModule) : Controlle
 
     [HttpPost("{meetingGroupId}/members")]
     [HasPermission(MeetingsPermissions.JoinToGroup)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> JoinToGroup(Guid meetingGroupId)
     {
@@ -75,6 +82,7 @@ public class MeetingGroupsController(IMeetingsModule meetingsModule) : Controlle
 
     [HttpDelete("{meetingGroupId}/members")]
     [HasPermission(MeetingsPermissions.LeaveMeetingGroup)]
+    [HasScope(Scope.User.Write)]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> LeaveMeetingGroup(Guid meetingGroupId)
     {
