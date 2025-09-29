@@ -1,10 +1,12 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Application;
+﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Contracts;
 using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 
+[SkipAutoRegistration]
 internal class LoggingCommandHandlerWithResultDecorator<TCommand, TResult>(
     ILogger<LoggingCommandHandlerWithResultDecorator<TCommand, TResult>> logger,
     IExecutionContextAccessor executionContextAccessor,

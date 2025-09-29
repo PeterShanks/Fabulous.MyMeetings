@@ -1,0 +1,6 @@
+﻿using Fabulous.MyMeetings.BuildingBlocks.Application.Events;
+using Fabulous.MyMeetings.Modules.Meetings.Domain.MeetingGroupProposals.Events;
+
+namespace Fabulous.MyMeetings.Modules.Meetings.Application.MeetingGroupProposals.AcceptMeetingGroupProposal;
+
+public class MeetingGroupProposalAcceptedNotification(MeetingGroupProposalAcceptedDomainEvent domainEvent, Guid id) : DomainEventNotification<MeetingGroupProposalAcceptedDomainEvent>(domainEvent, id);

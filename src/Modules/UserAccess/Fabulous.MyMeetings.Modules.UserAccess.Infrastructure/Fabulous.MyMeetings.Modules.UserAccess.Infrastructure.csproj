@@ -7,20 +7,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Azure.Identity" Version="1.13.2" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.1" />
-    <PackageReference Include="Polly" Version="8.5.1" />
-    <PackageReference Include="Polly.Extensions" Version="8.5.1" />
-    <PackageReference Include="Quartz" Version="3.13.1" />
-    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.13.1" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.13.1" />
-    <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.13.1" />
-    <PackageReference Include="Quartz.Serialization.SystemTextJson" Version="3.13.1" />
-    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <PackageReference Include="Azure.Identity" Version="1.14.1" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+    <PackageReference Include="Polly" Version="8.6.1" />
+    <PackageReference Include="Polly.Extensions" Version="8.6.1" />
+    <PackageReference Include="Quartz" Version="3.14.0" />
+    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.14.0" />
+    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.14.0" />
+    <PackageReference Include="Quartz.Plugins.TimeZoneConverter" Version="3.14.0" />
+    <PackageReference Include="Quartz.Serialization.SystemTextJson" Version="3.14.0" />
+    <PackageReference Include="Scrutor" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

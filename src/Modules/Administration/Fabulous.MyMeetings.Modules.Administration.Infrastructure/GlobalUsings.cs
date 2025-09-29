@@ -1,0 +1,1 @@
+﻿global using static Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuration.Settings;

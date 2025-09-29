@@ -2,6 +2,4 @@
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class ProcessInternalCommandsCommand : Command, IRecurringCommand
-{
-}
+internal class ProcessInternalCommandsCommand : Command, IRecurringCommand;

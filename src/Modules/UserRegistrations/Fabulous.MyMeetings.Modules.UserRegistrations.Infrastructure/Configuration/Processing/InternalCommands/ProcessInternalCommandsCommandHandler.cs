@@ -1,6 +1,7 @@
 ﻿using System.Text.Json;
 using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 using MediatR;
 using Polly;
@@ -8,10 +9,13 @@ using Polly.Registry;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlConnectionFactory,
+internal class ProcessInternalCommandsCommandHandler(
+    ISqlConnectionFactory sqlConnectionFactory,
+    IInternalCommandsMapper internalCommandsMapper,
     IMediator mediator,
     ResiliencePipelineProvider<string> resiliencePipelineProvider,
-    TimeProvider timeProvider) : ICommandHandler<ProcessInternalCommandsCommand>
+    TimeProvider timeProvider,
+    JsonSerializerOptions jsonSerializerOptions) : ICommandHandler<ProcessInternalCommandsCommand>
 {
     public async Task Handle(ProcessInternalCommandsCommand request, CancellationToken cancellationToken)
     {
@@ -62,8 +66,10 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
 
     private Task ProcessCommand(InternalCommandDto commandDto, CancellationToken cancellationToken)
     {
-        var type = commandDto.Type.GetTypeByName();
-        var command = JsonSerializer.Deserialize(commandDto.Data, type!, JsonSerializerOptionsInstance);
+        var command = JsonSerializer.Deserialize(
+            commandDto.Data, 
+            internalCommandsMapper.GetType(commandDto.Type)!, 
+            jsonSerializerOptions);
 
         if (command is null)
             throw new InvalidOperationException($"Couldn't deserialize into type {commandDto.Type}");

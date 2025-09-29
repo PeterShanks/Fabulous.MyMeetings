@@ -7,14 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Dapper" Version="2.1.35" />
+    <PackageReference Include="Dapper" Version="2.1.66" />
     <PackageReference Include="MediatR" Version="12.4.1" />
-    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.1" />
-    <PackageReference Include="Scrutor" Version="6.0.1" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="6.0.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.6" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.6" />
+    <PackageReference Include="Scrutor" Version="6.1.0" />
   </ItemGroup>
 
   <ItemGroup>

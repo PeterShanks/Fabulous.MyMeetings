@@ -9,7 +9,8 @@ namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Pr
 internal class ProcessInboxCommandHandler(
     IMediator mediator,
     ISqlConnectionFactory sqlConnectionFactory,
-    TimeProvider timeProvider) : ICommandHandler<ProcessInboxCommand>
+    TimeProvider timeProvider,
+    JsonSerializerOptions jsonSerializerOptions) : ICommandHandler<ProcessInboxCommand>
 {
     public async Task Handle(ProcessInboxCommand request, CancellationToken cancellationToken)
     {
@@ -39,7 +40,7 @@ internal class ProcessInboxCommandHandler(
         {
             var type = message.Type.GetTypeByName();
 
-            if (JsonSerializer.Deserialize(message.Data, type!, JsonSerializerOptionsInstance) is not INotification
+            if (JsonSerializer.Deserialize(message.Data, type!, jsonSerializerOptions) is not INotification
                 notification)
                 throw new InvalidOperationException("Couldn't create notification object");
 

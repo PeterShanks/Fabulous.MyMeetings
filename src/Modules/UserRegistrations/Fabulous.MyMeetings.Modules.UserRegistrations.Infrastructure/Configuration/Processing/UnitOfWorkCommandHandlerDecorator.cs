@@ -1,10 +1,12 @@
 ﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.DependencyInjection;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Contracts;
 using Microsoft.EntityFrameworkCore;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing;
 
+[SkipAutoRegistration]
 internal class UnitOfWorkCommandHandlerDecorator<T>(ICommandHandler<T> decorated, IUnitOfWork unitOfWork,
     UserRegistrationsContext context,
     TimeProvider timeProvider) : ICommandHandler<T>

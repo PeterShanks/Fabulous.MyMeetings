@@ -9,9 +9,13 @@ using Microsoft.Extensions.Logging;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.Outbox;
 
-internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFactory sqlConnectionFactory,
-    IDomainNotificationsMapper domainNotificationsMapper, ILogger<ProcessOutboxCommandHandler> logger,
-    TimeProvider timeProvider) : ICommandHandler<ProcessOutboxCommand>
+internal class ProcessOutboxCommandHandler(
+    IMediator mediator, 
+    ISqlConnectionFactory sqlConnectionFactory,
+    IDomainNotificationsMapper domainNotificationsMapper, 
+    ILogger<ProcessOutboxCommandHandler> logger,
+    TimeProvider timeProvider,
+    JsonSerializerOptions jsonSerializerOptions) : ICommandHandler<ProcessOutboxCommand>
 {
     private readonly ILogger _logger = logger;
 
@@ -43,7 +47,7 @@ internal class ProcessOutboxCommandHandler(IMediator mediator, ISqlConnectionFac
         {
             var type = domainNotificationsMapper.GetType(message.Type);
             var notification =
-                JsonSerializer.Deserialize(message.Data, type!, JsonSerializerOptionsInstance) as
+                JsonSerializer.Deserialize(message.Data, type!, jsonSerializerOptions) as
                     IDomainEventNotification;
 
             if (notification is null)

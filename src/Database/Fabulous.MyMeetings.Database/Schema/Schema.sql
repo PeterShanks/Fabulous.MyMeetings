@@ -3,3 +3,9 @@ GO
 
 CREATE SCHEMA [UserRegistrations] AUTHORIZATION dbo
 GO
+
+CREATE SCHEMA [Meetings] AUTHORIZATION dbo
+GO
+
+CREATE SCHEMA [Administration] AUTHORIZATION dbo
+GO

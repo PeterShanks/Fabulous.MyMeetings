@@ -1,0 +1,3 @@
+﻿namespace Fabulous.MyMeetings.Modules.Meetings.Application.MeetingCommentingConfigurations.GetMeetingCommentingConfiguration;
+
+public record MeetingCommentingConfigurationDto(Guid MeetingId, bool IsCommentingEnabled);

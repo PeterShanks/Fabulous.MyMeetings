@@ -6,7 +6,7 @@ public class CorrelationMiddleware(RequestDelegate next)
 
     public async Task Invoke(HttpContext context)
     {
-        var correlationId = Guid.NewGuid();
+        var correlationId = Guid.CreateVersion7();
 
         context.Request?.Headers.Append(CorrelationHeaderKey, correlationId.ToString());
 

@@ -3,6 +3,7 @@ using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
 using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Domain.Users;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.DataAccess;
@@ -17,6 +18,7 @@ internal static class DataAccessModule
          services.AddDbContext<UserAccessContext>(b =>
          {
              b.UseSqlServer(databaseConnectionString)
+                 .ReplaceService<IValueConverterSelector, TypedIdValueConverterSelector>()
 #if DEBUG
                  .EnableDetailedErrors()
                  .EnableSensitiveDataLogging();

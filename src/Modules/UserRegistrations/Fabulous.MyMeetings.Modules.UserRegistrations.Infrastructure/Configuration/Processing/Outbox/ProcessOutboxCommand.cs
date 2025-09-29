@@ -2,6 +2,4 @@
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.Outbox;
 
-public class ProcessOutboxCommand : Command, IRecurringCommand
-{
-}
+public class ProcessOutboxCommand : Command, IRecurringCommand;

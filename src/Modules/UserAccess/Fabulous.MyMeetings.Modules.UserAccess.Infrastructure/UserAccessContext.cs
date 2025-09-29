@@ -11,7 +11,7 @@ internal class UserAccessContext(DbContextOptions<UserAccessContext> options) : 
 
     public DbSet<OutboxMessage> OutboxMessages { get; init; }
 
-    public DbSet<InternalCommand> InternalCommands { get; init; }
+    public DbSet<InternalCommandEntity> InternalCommands { get; init; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

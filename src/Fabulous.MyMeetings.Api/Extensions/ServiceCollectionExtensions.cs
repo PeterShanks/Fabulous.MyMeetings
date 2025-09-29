@@ -18,6 +18,10 @@ using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.EventBus;
 using Hellang.Middleware.ProblemDetails;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Exceptions;
 using Fabulous.MyMeetings.CommonServices.Email.MailKit;
+using Fabulous.MyMeetings.Modules.Administration.Application.Contracts;
+using Fabulous.MyMeetings.Modules.Administration.Infrastructure;
+using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
+using Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.Tokens;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
@@ -75,6 +79,8 @@ public static class ServiceCollectionExtensions
 
         services.AddScoped<IUserAccessModule, UserAccessModule>();
         services.AddScoped<IUserRegistrationsModule, UserRegistrationsModule>();
+        services.AddScoped<IAdministrationModule, AdministrationModule>();
+        services.AddScoped<IMeetingsModule, MeetingsModule>();
 
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthorizationMiddlewareResultHandler>();
 

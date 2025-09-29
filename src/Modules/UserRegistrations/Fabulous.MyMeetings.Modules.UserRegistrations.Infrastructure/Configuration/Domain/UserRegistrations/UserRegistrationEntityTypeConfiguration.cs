@@ -1,5 +1,4 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
-using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.UserRegistrations;
+﻿using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.UserRegistrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -13,7 +12,6 @@ internal class UserRegistrationEntityTypeConfiguration : IEntityTypeConfiguratio
         builder.HasKey(t => t.Id);
 
         builder.Property(p => p.Id)
-            .HasConversion<TypedIdValueConverter<UserRegistrationId>>()
             .ValueGeneratedNever();
 
         builder.Property(p => p.Password);

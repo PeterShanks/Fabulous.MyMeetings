@@ -5,13 +5,17 @@ using MediatR;
 using Polly;
 using Polly.Registry;
 using System.Text.Json;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 
 namespace Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlConnectionFactory,
+internal class ProcessInternalCommandsCommandHandler(
+    ISqlConnectionFactory sqlConnectionFactory,
+    IInternalCommandsMapper internalCommandsMapper,
     IMediator mediator,
     ResiliencePipelineProvider<string> resiliencePipelineProvider,
-    TimeProvider timeProvider) : ICommandHandler<ProcessInternalCommandsCommand>
+    TimeProvider timeProvider,
+    JsonSerializerOptions jsonSerializerOptions) : ICommandHandler<ProcessInternalCommandsCommand>
 {
     public async Task Handle(ProcessInternalCommandsCommand request, CancellationToken cancellationToken)
     {
@@ -62,8 +66,10 @@ internal class ProcessInternalCommandsCommandHandler(ISqlConnectionFactory sqlCo
 
     private Task ProcessCommand(InternalCommandDto commandDto, CancellationToken cancellationToken)
     {
-        var type = commandDto.Type.GetTypeByName();
-        var command = JsonSerializer.Deserialize(commandDto.Data, type!, JsonSerializerOptionsInstance);
+        var command = JsonSerializer.Deserialize(
+            commandDto.Data,
+            internalCommandsMapper.GetType(commandDto.Type)!, 
+            jsonSerializerOptions);
 
         if (command is null)
             throw new InvalidOperationException($"Couldn't deserialize into type {commandDto.Type}");

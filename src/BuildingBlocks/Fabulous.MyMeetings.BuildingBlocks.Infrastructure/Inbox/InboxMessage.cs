@@ -4,7 +4,7 @@ public class InboxMessage
 {
     public InboxMessage(DateTime occurredOn, string type, string data)
     {
-        Id = Guid.NewGuid();
+        Id = Guid.CreateVersion7();
         OccurredOn = occurredOn;
         Type = type;
         Data = data;

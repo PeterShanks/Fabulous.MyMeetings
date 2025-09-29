@@ -1,5 +1,4 @@
-﻿using Fabulous.MyMeetings.BuildingBlocks.Infrastructure;
-using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
+﻿using Fabulous.MyMeetings.Modules.UserAccess.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -14,7 +13,6 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
         builder.HasKey(x => x.Id);
 
         builder.Property(p => p.Id)
-            .HasConversion<TypedIdValueConverter<UserId>>()
             .ValueGeneratedNever();
 
         builder.Property(p => p.Email)
@@ -41,11 +39,10 @@ internal class UserConfiguration : IEntityTypeConfiguration<User>
                 .HasForeignKey("UserId");
 
             b.ToTable("UserRoles", "Users");
-            b.Property<UserId>("UserId")
-                .HasConversion<TypedIdValueConverter<UserId>>();
+            b.Property<UserId>("UserId");
             b.Property(p => p.Value)
                 .HasColumnName("RoleCode");
-            b.HasKey("UserId", "Value");
+            b.HasKey("UserId", nameof(UserRole.Value));
         });
     }
 }

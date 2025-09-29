@@ -1,19 +1,15 @@
 ﻿CREATE TABLE [Users].InternalCommands
 (
-	[ClusterKey] INT IDENTITY(1, 1) NOT NULL,
-	[Id] UNIQUEIDENTIFIER NOT NULL,
-	[EnqueueDate] DATETIME2 NOT NULL,
+	[Id] UNIQUEIDENTIFIER NOT NULL PRIMARY KEY CLUSTERED,
+	[EnqueueDate] DATETIME2(7) NOT NULL,
 	[Type] VARCHAR(255) NOT NULL,
 	[Data] VARCHAR(MAX) NOT NULL,
 	[ProcessedDate] DATETIME2(7) NULL,
-	[Error] NVARCHAR(MAX) NULL,
-	CONSTRAINT [PK_Users_InternalCommands_Id] PRIMARY KEY NONCLUSTERED([Id] ASC)
+	[Error] NVARCHAR(MAX) NULL
 )
 GO
 
-CREATE UNIQUE CLUSTERED INDEX IX_Users_InternalCommands_EnqueueDate_ClusterKey ON Users.InternalCommands(EnqueueDate, ClusterKey);
-GO
-
-CREATE NONCLUSTERED INDEX IX_Users_InternalCommands_ProcessedDate
-	ON Users.InternalCommands(ProcessedDate)
+CREATE NONCLUSTERED INDEX IX_Users_InternalCommands_Unprocessed
+	ON Users.InternalCommands(EnqueueDate, Id)
+	INCLUDE (Type, Data, ProcessedDate, Error)
 	WHERE ProcessedDate IS NULL

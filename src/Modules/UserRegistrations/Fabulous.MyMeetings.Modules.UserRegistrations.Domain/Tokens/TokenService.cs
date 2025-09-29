@@ -22,7 +22,7 @@ public class TokenService(
             previousIssuedToken.Invalidate();
         }
 
-        var tokenId = Guid.NewGuid();
+        var tokenId = Guid.CreateVersion7();
         var memoryStream = new MemoryStream();
         var createdAt = timeProvider.GetUtcNow().UtcDateTime;
         var expiresAt = createdAt.AddMinutes(10);

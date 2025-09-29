@@ -1,31 +1,40 @@
 ﻿using System.Text.Json;
 using Dapper;
 using Fabulous.MyMeetings.BuildingBlocks.Application.Data;
+using Fabulous.MyMeetings.BuildingBlocks.Infrastructure.InternalCommands;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Application.Configuration.Commands;
 
 namespace Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration.Processing.InternalCommands;
 
-internal class CommandsScheduler(ISqlConnectionFactory sqlConnectionFactory, TimeProvider timeProvider) : ICommandsScheduler
+internal class CommandsScheduler(
+    ISqlConnectionFactory sqlConnectionFactory,
+    IInternalCommandsMapper internalCommandsMapper,
+    TimeProvider timeProvider,
+    JsonSerializerOptions jsonSerializerOptions) : ICommandsScheduler
 {
     public Task EnqueueAsync(InternalCommand command)
     {
+        var commandType = command.GetType();
+
         return AddToInternalCommands(new
         {
             command.Id,
             EnqueueDate = timeProvider.GetUtcNow().UtcDateTime,
-            Type = command.GetType().FullName,
-            Data = JsonSerializer.Serialize(command, JsonSerializerOptionsInstance)
+            Type = internalCommandsMapper.GetName(commandType),
+            Data = JsonSerializer.Serialize(command, commandType, jsonSerializerOptions)
         });
     }
 
     public Task EnqueueAsync<T>(InternalCommand<T> command)
     {
+        var commandType = command.GetType();
+
         return AddToInternalCommands(new
         {
             command.Id,
             EnqueueDate = timeProvider.GetUtcNow().UtcDateTime,
-            Type = command.GetType().FullName,
-            Data = JsonSerializer.Serialize(command, JsonSerializerOptionsInstance)
+            Type = internalCommandsMapper.GetName(commandType),
+            Data = JsonSerializer.Serialize(command, commandType, jsonSerializerOptions)
         });
     }
 
