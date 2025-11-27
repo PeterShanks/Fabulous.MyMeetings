@@ -82,7 +82,7 @@ public class Index(
         if (ModelState.IsValid)
         {
             var authenticationResult = await userManagementService.AuthenticateUserAsync(
-                new AuthenticateRequest(Input.Username, Input.Password)
+                new AuthenticateRequest(Input.Username!, Input.Password!)
             );
 
             // validate username/password against in-memory store

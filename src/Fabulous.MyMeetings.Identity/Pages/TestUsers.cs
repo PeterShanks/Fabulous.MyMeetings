@@ -25,7 +25,7 @@ public static class TestUsers
 
             return new List<TestUser>
             {
-                new TestUser
+                new()
                 {
                     SubjectId = "1",
                     Username = "alice",
@@ -41,7 +41,7 @@ public static class TestUsers
                         new Claim(JwtClaimTypes.Address, JsonSerializer.Serialize(address), IdentityServerConstants.ClaimValueTypes.Json)
                     }
                 },
-                new TestUser
+                new()
                 {
                     SubjectId = "2",
                     Username = "bob",

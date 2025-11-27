@@ -20,7 +20,7 @@ public class AuthenticationResult
 
     public Guid? UserId { get; }
 
-    public static AuthenticationResult Success(Guid userId) => new AuthenticationResult(userId);
+    public static AuthenticationResult Success(Guid userId) => new(userId);
 
     public static AuthenticationResult Failure(string error)
     {

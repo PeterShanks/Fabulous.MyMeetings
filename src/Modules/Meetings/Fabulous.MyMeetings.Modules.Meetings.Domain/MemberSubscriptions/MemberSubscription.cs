@@ -22,8 +22,8 @@ public class MemberSubscription: Entity, IAggregateRoot
         AddDomainEvent(new MemberSubscriptionExpirationDateChangedDomainEvent(memberId, expirationDate));
     }
 
-    public static MemberSubscription CreateForMember(MemberId memberId, DateTime expirationDate)
-        => new MemberSubscription(memberId, expirationDate);
+    public static MemberSubscription CreateForMember(MemberId memberId, DateTime expirationDate) =>
+        new(memberId, expirationDate);
 
     public void ChangeExpirationDate(DateTime expirationDate)
     {

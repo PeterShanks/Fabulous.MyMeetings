@@ -4,7 +4,7 @@ namespace Fabulous.MyMeetings.Modules.Meetings.Domain.Meetings;
 
 public class Term: ValueObject
 {
-    public static Term NoTerm => new Term(null, null);
+    public static Term NoTerm => new(null, null);
     public DateTime? StartDate { get; }
     public DateTime? EndDate { get; }
 

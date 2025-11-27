@@ -59,7 +59,7 @@ public class CustomMediator(IServiceProvider serviceProvider, INotificationPubli
             else if (TryGetInterfaceImplementation(requestType, typeof(IRequest), out _))
                 wrapperType = typeof(RequestHandlerWrapperImpl<>).MakeGenericType(requestType);
             else
-                throw new ArgumentException($"{requestType.Name} does not implement {nameof(IRequest)}", nameof(request));
+                throw new ArgumentException($"{requestType.Name} does not implement {nameof(IRequest)}", nameof(requestType));
 
             var wrapper = Activator.CreateInstance(wrapperType) ?? throw new InvalidOperationException($"Could not create wrapper for type {requestType}");
             return (RequestHandlerBase)wrapper;
@@ -71,22 +71,22 @@ public class CustomMediator(IServiceProvider serviceProvider, INotificationPubli
     }
 
     public IAsyncEnumerable<TResponse> CreateStream<TResponse>(IStreamRequest<TResponse> request,
-        CancellationToken cancellationToken = new CancellationToken())
+        CancellationToken cancellationToken = new())
     {
         return _mediator.CreateStream(request, cancellationToken);
     }
 
-    public IAsyncEnumerable<object?> CreateStream(object request, CancellationToken cancellationToken = new CancellationToken())
+    public IAsyncEnumerable<object?> CreateStream(object request, CancellationToken cancellationToken = new())
     {
         return _mediator.CreateStream(request, cancellationToken);
     }
 
-    public Task Publish(object notification, CancellationToken cancellationToken = new CancellationToken())
+    public Task Publish(object notification, CancellationToken cancellationToken = new())
     {
         return _mediator.Publish(notification, cancellationToken);
     }
 
-    public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = new CancellationToken()) where TNotification : INotification
+    public Task Publish<TNotification>(TNotification notification, CancellationToken cancellationToken = new()) where TNotification : INotification
     {
         return _mediator.Publish(notification, cancellationToken);
     }
@@ -133,10 +133,10 @@ public class CommandHandlerWrapperImpl<TCommand> : RequestHandlerWrapperImpl<TCo
     public override Task<Unit> Handle(IRequest request, IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
-        async Task<Unit> Handler()
+        async Task<Unit> Handler(CancellationToken t = default)
         {
             await serviceProvider.GetRequiredService<ICommandHandler<TCommand>>()
-                .Handle((TCommand)request, cancellationToken);
+                .Handle((TCommand)request, t);
 
             return Unit.Value;
         }
@@ -145,7 +145,7 @@ public class CommandHandlerWrapperImpl<TCommand> : RequestHandlerWrapperImpl<TCo
             .GetServices<IPipelineBehavior<TCommand, Unit>>()
             .Reverse()
             .Aggregate((RequestHandlerDelegate<Unit>)Handler,
-                (next, pipeline) => () => pipeline.Handle((TCommand)request, next, cancellationToken))();
+                (next, pipeline) => (t) => pipeline.Handle((TCommand)request, next, t == CancellationToken.None ? cancellationToken : t))();
     }
 }
 
@@ -155,13 +155,13 @@ public class CommandHandlerWrapperImpl<TCommand, TResponse> : RequestHandlerWrap
     public override Task<TResponse> Handle(IRequest<TResponse> request, IServiceProvider serviceProvider,
         CancellationToken cancellationToken)
     {
-        Task<TResponse> Handler() => serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResponse>>()
-            .Handle((TCommand)request, cancellationToken);
+        Task<TResponse> Handler(CancellationToken t = default) => serviceProvider.GetRequiredService<ICommandHandler<TCommand, TResponse>>()
+            .Handle((TCommand)request, t);
 
         return serviceProvider
             .GetServices<IPipelineBehavior<TCommand, TResponse>>()
             .Reverse()
             .Aggregate((RequestHandlerDelegate<TResponse>)Handler,
-                (next, pipeline) => () => pipeline.Handle((TCommand)request, next, cancellationToken))();
+                (next, pipeline) => (t) => pipeline.Handle((TCommand)request, next, t == CancellationToken.None ? cancellationToken : t))();
     }
 }

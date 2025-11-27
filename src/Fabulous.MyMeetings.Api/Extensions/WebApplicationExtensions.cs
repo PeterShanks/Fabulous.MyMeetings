@@ -8,6 +8,7 @@ using Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserAccess.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Infrastructure.Configuration;
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.OpenApi;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
 
@@ -46,7 +47,10 @@ public static class WebApplicationExtensions
 
     private static WebApplication UseSwaggerDocumentation(this WebApplication app)
     {
-        app.UseSwagger();
+        app.UseSwagger(opts =>
+        {
+            opts.OpenApiVersion = OpenApiSpecVersion.OpenApi3_1;
+        });
         app.UseSwaggerUI(opts =>
         {
             opts.SwaggerEndpoint("/swagger/v1/swagger.json", "MyMeetings API");

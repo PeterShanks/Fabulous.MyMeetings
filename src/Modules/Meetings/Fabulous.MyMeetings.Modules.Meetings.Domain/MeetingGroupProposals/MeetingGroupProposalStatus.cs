@@ -6,8 +6,8 @@ public class MeetingGroupProposalStatus: ValueObject
 {
     public string Value { get; }
 
-    internal static MeetingGroupProposalStatus InVerification => new MeetingGroupProposalStatus(nameof(InVerification));
-    internal static MeetingGroupProposalStatus Accepted => new MeetingGroupProposalStatus(nameof(Accepted));
+    internal static MeetingGroupProposalStatus InVerification => new(nameof(InVerification));
+    internal static MeetingGroupProposalStatus Accepted => new(nameof(Accepted));
 
     internal bool IsAccepted => Value == nameof(Accepted);
 

@@ -16,10 +16,9 @@ public class MeetingGroupProposal: Entity, IAggregateRoot
     public MemberId ProposalUserId { get; }
     public MeetingGroupProposalStatus Status { get; private set; }
 
-    public static MeetingGroupProposal ProposeNew(
-        string name, string description,
-        MeetingGroupLocation location, MemberId proposalUserId)
-        => new MeetingGroupProposal(name, description, location, proposalUserId);
+    public static MeetingGroupProposal ProposeNew(string name, string description, MeetingGroupLocation location,
+        MemberId proposalUserId) =>
+        new(name, description, location, proposalUserId);
 
     private MeetingGroupProposal()
     {

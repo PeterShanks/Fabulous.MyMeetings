@@ -14,7 +14,7 @@ public class RegisterNewUserRequest
 
 
     public RegisterNewUserCommand ToCommand()
-        => new RegisterNewUserCommand(
+        => new(
             Password,
             Email,
             FirstName,

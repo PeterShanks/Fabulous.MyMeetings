@@ -60,6 +60,6 @@ public class MeetingGroupProposal: Entity, IAggregateRoot
         MeetingGroupLocation location,
         UserId proposalUserId,
         DateTime proposalDate)
-        => new MeetingGroupProposal(new MeetingGroupProposalId(meetingGroupProposalId), name, description, location,
+        => new(new MeetingGroupProposalId(meetingGroupProposalId), name, description, location,
             proposalDate, proposalUserId);
 }

@@ -5,5 +5,5 @@ namespace Fabulous.MyMeetings.Modules.Administration.Infrastructure.Configuratio
 
 internal class UserContext(IExecutionContextAccessor executionContextAccessor): IUserContext
 {
-    public UserId UserId => new UserId(executionContextAccessor.UserId);
+    public UserId UserId => new(executionContextAccessor.UserId);
 }

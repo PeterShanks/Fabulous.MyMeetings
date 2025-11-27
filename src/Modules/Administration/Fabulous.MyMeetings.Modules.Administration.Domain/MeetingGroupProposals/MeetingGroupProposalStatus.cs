@@ -2,8 +2,8 @@
 
 public class MeetingGroupProposalStatus: ValueObject
 {
-    public static MeetingGroupProposalStatus ToVerify => new MeetingGroupProposalStatus(nameof(ToVerify));
-    public static MeetingGroupProposalStatus Verified => new MeetingGroupProposalStatus(nameof(Verified));
+    public static MeetingGroupProposalStatus ToVerify => new(nameof(ToVerify));
+    public static MeetingGroupProposalStatus Verified => new(nameof(Verified));
     internal static MeetingGroupProposalStatus Create(string value)
     {
         return new MeetingGroupProposalStatus(value);

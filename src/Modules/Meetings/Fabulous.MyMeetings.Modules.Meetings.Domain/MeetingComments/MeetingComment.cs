@@ -80,8 +80,8 @@ public class MeetingComment: Entity, IAggregateRoot
     }
 
     public MeetingComment Reply(MemberId replierId, string reply, MeetingGroup meetingGroup,
-        MeetingCommentingConfiguration meetingCommentingConfiguration)
-        => new MeetingComment(MeetingId, replierId, reply, Id, meetingCommentingConfiguration, meetingGroup);
+        MeetingCommentingConfiguration meetingCommentingConfiguration) =>
+            new(MeetingId, replierId, reply, Id, meetingCommentingConfiguration, meetingGroup);
 
     public MeetingMemberCommentLike Like(
         MemberId likerId,
@@ -100,5 +100,5 @@ public class MeetingComment: Entity, IAggregateRoot
         string comment,
         MeetingGroup meetingGroup,
         MeetingCommentingConfiguration meetingCommentingConfiguration)
-        => new MeetingComment(meetingId, authorId, comment, null, meetingCommentingConfiguration, meetingGroup);
+            => new(meetingId, authorId, comment, null, meetingCommentingConfiguration, meetingGroup);
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using System.Reflection;
 using Serilog;
-using System.Reflection;
 using Fabulous.MyMeetings.Api.Configuration.Authorization.Permission;
 using Fabulous.MyMeetings.Api.Configuration.Authorization.Scope;
 using Fabulous.MyMeetings.Modules.UserAccess.Application.Contracts;
@@ -23,6 +22,7 @@ using Fabulous.MyMeetings.Modules.Administration.Infrastructure;
 using Fabulous.MyMeetings.Modules.Meetings.Application.Contracts;
 using Fabulous.MyMeetings.Modules.Meetings.Infrastructure.Configuration;
 using Fabulous.MyMeetings.Modules.UserRegistrations.Domain.Tokens;
+using Microsoft.OpenApi;
 
 namespace Fabulous.MyMeetings.Api.Extensions;
 
@@ -105,27 +105,18 @@ public static class ServiceCollectionExtensions
 
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.ApiKey,
+                Type = SecuritySchemeType.Http,
                 Description =
                     "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
                 Name = "Authorization",
                 In = ParameterLocation.Header,
-                Scheme = "oauth2"
+                Scheme = "bearer",
+                BearerFormat = "JWT"
             });
 
-            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            options.AddSecurityRequirement(openApiDocument => new OpenApiSecurityRequirement
             {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new List<string>()
-                }
+                [new OpenApiSecuritySchemeReference("Bearer", openApiDocument)] = []
             });
 
             var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";

@@ -4,7 +4,7 @@ namespace Fabulous.MyMeetings.Modules.Meetings.Domain.Meetings;
 
 public class MoneyValue: ValueObject
 {
-    public static MoneyValue Undefined => new MoneyValue(null, null);
+    public static MoneyValue Undefined => new(null, null);
 
     public decimal? Value { get; }
     public string? Currency { get; }

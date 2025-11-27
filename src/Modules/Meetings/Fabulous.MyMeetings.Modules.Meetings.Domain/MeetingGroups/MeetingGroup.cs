@@ -24,7 +24,7 @@ public class MeetingGroup: Entity, IAggregateRoot
         string name,
         string description,
         MeetingGroupLocation location,
-        MemberId creatorId) => new MeetingGroup(meetingGroupProposalId, name, description, location, creatorId);
+        MemberId creatorId) => new(meetingGroupProposalId, name, description, location, creatorId);
 
     private MeetingGroup()
     {

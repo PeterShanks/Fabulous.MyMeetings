@@ -1,41 +1,52 @@
-﻿using System.CommandLine;
-using System.Text.RegularExpressions;
-using DatabaseScriptCreator;
+﻿using DatabaseScriptCreator;
 using Microsoft.SqlServer.Dac;
+using System.CommandLine;
+using System.Text.RegularExpressions;
 
 var connectionStringOption = new Option<string>(
     "--connection-string",
     "Database connection")
 {
-    IsRequired = true
+    Required = true
 };
-connectionStringOption.AddAlias("-cs");
+connectionStringOption.Aliases.Add("-cs");
 
 var dacpacPathOption = new Option<string>(
     "--dacpac-path",
     "Path to the DACPAC file")
 {
-    IsRequired = true
+    Required = true
 };
-dacpacPathOption.AddAlias("-dp");
+dacpacPathOption.Aliases.Add("-dp");
 
 var outputScriptPathOption = new Option<string>(
     "--output-script-path",
     "Path to save the generated script")
 {
-    IsRequired = true
+    Required = true
 };
-outputScriptPathOption.AddAlias("-o");
+outputScriptPathOption.Aliases.Add("-o");
 
-var rootCommand = new RootCommand
-{
-    connectionStringOption,
-    dacpacPathOption,
-    outputScriptPathOption
-};
+var rootCommand = new RootCommand("");
+rootCommand.Options.Add(connectionStringOption);
+rootCommand.Options.Add(dacpacPathOption);
+rootCommand.Options.Add(outputScriptPathOption);
 
-rootCommand.SetHandler((connectionString, dacpacPath, outputPath) =>
+rootCommand.SetAction((parsedResult =>
 {
+    if (parsedResult.Errors.Count > 0)
+    {
+        foreach (var error in parsedResult.Errors)
+        {
+            Console.WriteLine(error.Message);
+        }
+        return;
+    }
+
+    var connectionString = parsedResult.GetRequiredValue(connectionStringOption);
+    var dacpacPath = parsedResult.GetRequiredValue(dacpacPathOption);
+    var outputPath = parsedResult.GetRequiredValue(outputScriptPathOption);
+
     var databaseNameRegex = new Regex("(?<=\\b(?:Database|Initial Catalog)=)[^;]+", RegexOptions.Compiled);
     var match = databaseNameRegex.Match(connectionString);
     if (!match.Success)
@@ -46,9 +57,10 @@ rootCommand.SetHandler((connectionString, dacpacPath, outputPath) =>
     var targetDatabaseName = match.Value;
 
     CreateMigrationScript(connectionString, dacpacPath, outputPath, targetDatabaseName);
-}, connectionStringOption, dacpacPathOption, outputScriptPathOption );
+}));
 
-await rootCommand.InvokeAsync(args);
+var parsedResult = rootCommand.Parse(args);
+await parsedResult.InvokeAsync();
 
 static void CreateMigrationScript(string connectionString, string dacpacPath, string outputScriptPath, string targetDatabaseName)
 {

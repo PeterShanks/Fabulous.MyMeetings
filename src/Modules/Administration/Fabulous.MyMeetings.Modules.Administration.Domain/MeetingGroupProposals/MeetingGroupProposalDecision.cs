@@ -20,17 +20,16 @@ public class MeetingGroupProposalDecision: ValueObject
     public string? Code { get; }
     public string? RejectReason { get; }
 
-    internal static MeetingGroupProposalDecision NoDecision =>
-        new MeetingGroupProposalDecision(null, null, null, null);
+    internal static MeetingGroupProposalDecision NoDecision => new(null, null, null, null);
 
     private bool IsAccepted => Code == Accept;
     private bool IsRejected => Code == Reject;
 
     internal static MeetingGroupProposalDecision AcceptDecision(DateTime date, UserId userId) =>
-        new MeetingGroupProposalDecision(date, userId, Accept, null);
+        new(date, userId, Accept, null);
 
     internal static MeetingGroupProposalDecision RejectDecision(DateTime date, UserId userId, string rejectReason) =>
-        new MeetingGroupProposalDecision(date, userId, Reject, rejectReason);
+        new(date, userId, Reject, rejectReason);
 
     internal MeetingGroupProposalStatus GetStatusForDecision()
     {

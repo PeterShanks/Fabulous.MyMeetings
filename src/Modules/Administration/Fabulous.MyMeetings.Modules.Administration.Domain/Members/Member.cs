@@ -28,6 +28,6 @@ public class Member: Entity, IAggregateRoot
         AddDomainEvent(new MemberCreatedDomainEvent(Id));
     }
 
-    public static Member Create(Guid id, string email, string firstName, string lastName, string name)
-        => new Member(id, email, firstName, lastName, name);
+    public static Member Create(Guid id, string email, string firstName, string lastName, string name) =>
+        new(id, email, firstName, lastName, name);
 }
