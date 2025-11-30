@@ -4,7 +4,7 @@ namespace Fabulous.MyMeetings.BuildingBlocks.Application.PasswordManager;
 
 public class PasswordHasherOptions
 {
-    private static readonly RandomNumberGenerator _defaultRng = RandomNumberGenerator.Create(); // secure PRNG
+    private static readonly RandomNumberGenerator DefaultRng = RandomNumberGenerator.Create(); // secure PRNG
 
     /// <summary>
     ///     Gets or sets the compatibility mode used when hashing passwords. Defaults to 'ASP.NET Identity version 3'.
@@ -27,5 +27,5 @@ public class PasswordHasherOptions
     public int IterationCount { get; set; } = 10000;
 
     // for unit testing
-    internal RandomNumberGenerator Rng { get; set; } = _defaultRng;
+    internal RandomNumberGenerator Rng { get; set; } = DefaultRng;
 }

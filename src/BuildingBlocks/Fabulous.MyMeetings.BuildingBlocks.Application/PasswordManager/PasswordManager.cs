@@ -74,19 +74,19 @@ public class PasswordManager : IPasswordManager
 
     private static byte[] HashPasswordV2(string password, RandomNumberGenerator rng)
     {
-        const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
-        const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
-        const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
-        const int SaltSize = 128 / 8; // 128 bits
+        const KeyDerivationPrf pbkdf2Prf = KeyDerivationPrf.HMACSHA1; // default for Rfc2898DeriveBytes
+        const int pbkdf2IterationCount = 1000_000; // default for Rfc2898DeriveBytes
+        const int pbkdf2SubkeyLength = 256 / 8; // 256 bits
+        const int saltSize = 128 / 8; // 128 bits
 
-        var salt = new byte[SaltSize];
+        var salt = new byte[saltSize];
         rng.GetBytes(salt);
-        var subKey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
+        var subKey = KeyDerivation.Pbkdf2(password, salt, pbkdf2Prf, pbkdf2IterationCount, pbkdf2SubkeyLength);
 
-        var outputBytes = new byte[1 + SaltSize + Pbkdf2SubkeyLength];
+        var outputBytes = new byte[1 + saltSize + pbkdf2SubkeyLength];
         outputBytes[0] = 0x00;
-        Buffer.BlockCopy(salt, 0, outputBytes, 1, SaltSize);
-        Buffer.BlockCopy(subKey, 0, outputBytes, 1 + SaltSize, Pbkdf2SubkeyLength);
+        Buffer.BlockCopy(salt, 0, outputBytes, 1, saltSize);
+        Buffer.BlockCopy(subKey, 0, outputBytes, 1 + saltSize, pbkdf2SubkeyLength);
         return outputBytes;
     }
 
@@ -122,21 +122,21 @@ public class PasswordManager : IPasswordManager
 
     private static bool VerifyHashedPasswordV2(byte[] hashedPassword, string password)
     {
-        const KeyDerivationPrf Pbkdf2Prf = KeyDerivationPrf.HMACSHA1;
-        const int Pbkdf2IterCount = 1000; // default for Rfc2898DeriveBytes
-        const int Pbkdf2SubkeyLength = 256 / 8; // 256 bits
-        const int SaltSize = 128 / 8; // 128 bits
+        const KeyDerivationPrf pbkdf2Prf = KeyDerivationPrf.HMACSHA1;
+        const int pbkdf2IterationCount = 1000_000; // default for Rfc2898DeriveBytes
+        const int pbkdf2SubkeyLength = 256 / 8; // 256 bits
+        const int saltSize = 128 / 8; // 128 bits
 
         // We know ahead of time the exact length of a valid hashed password payload.
-        if (hashedPassword.Length != 1 + SaltSize + Pbkdf2SubkeyLength) return false; // bad size
+        if (hashedPassword.Length != 1 + saltSize + pbkdf2SubkeyLength) return false; // bad size
 
-        var salt = new byte[SaltSize];
+        var salt = new byte[saltSize];
         Buffer.BlockCopy(hashedPassword, 1, salt, 0, salt.Length);
 
-        var expectedSubkey = new byte[Pbkdf2SubkeyLength];
+        var expectedSubkey = new byte[pbkdf2SubkeyLength];
         Buffer.BlockCopy(hashedPassword, 1 + salt.Length, expectedSubkey, 0, expectedSubkey.Length);
 
-        var actualSubkey = KeyDerivation.Pbkdf2(password, salt, Pbkdf2Prf, Pbkdf2IterCount, Pbkdf2SubkeyLength);
+        var actualSubkey = KeyDerivation.Pbkdf2(password, salt, pbkdf2Prf, pbkdf2IterationCount, pbkdf2SubkeyLength);
         return ByteArraysEqual(actualSubkey, expectedSubkey);
     }
 

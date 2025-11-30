@@ -1,6 +1,6 @@
 ﻿namespace Fabulous.MyMeetings.BuildingBlocks.Application.Emails;
 
-public struct EmailMessage(
+public readonly struct EmailMessage(
     string toAddress,
     string toName,
     string subject,
